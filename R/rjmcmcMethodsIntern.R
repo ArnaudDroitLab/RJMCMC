@@ -1,0 +1,308 @@
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param k a \code{numerical} TODO
+#'
+#' @param lambda a \code{vector} TODO
+#'
+#' @param kmax a \code{numeric} TODO
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @importFrom stats dpois
+#' @keywords internal
+Dk <- function(k, lambda, kmax) {
+    ifelse((k==1||k>kmax),0,0.5*min(1,dpois(k-1,lambda)/dpois(k,lambda)))
+}
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param k a \code{numerical} TODO
+#'
+#' @param lambda a \code{vector} TODO
+#'
+#' @param kmax a \code{numeric} TODO
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @importFrom stats dpois
+#' @keywords internal
+Bk <- function(k, lambda, kmax) {
+    ifelse((k==1 || k>kmax), 0, 0.5*min(1,dpois(k+1,lambda)/dpois(k,lambda)))
+}
+
+
+#' @title Truncated random deviate from a normal distribution
+#'
+#' @description Generate a random deviate value from a normal
+#'    distribution. The value must be included inside a
+#'    specified range.
+#'
+#' @param mu a \code{numerical} The mean value of the normal distribution.
+#'
+#' @param sigma a \code{vector} TODO
+#'
+#' @param a a \code{numeric} The inferior boundary of the range
+#'      in which the deviate value must be located. The
+#'      deviate value has to be superior to \code{a}.
+#'
+#' @param b a \code{numeric} The superior boundary of the range
+#'      in which the deviate value must be located. The
+#'      deviate value has to be inferior to \code{b}.
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+tnormale = function(mu, sigma, a, b)
+{
+    repeat {
+        y <- rnorm(1, mu, sd = sqrt(sigma))
+        if (y > a & y < b) break()
+    }
+    return(y)
+}
+
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param i a \code{vector} TODO
+#'
+#' @param k a \code{vector} TODO
+#'
+#' @param w a \code{vector} TODO
+#'
+#' @param mu a \code{vector} TODO
+#'
+#' @param sigma a \code{vector} TODO
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+normal.mixture <- function(i,k,w,mu,sigma)
+{
+    v <- c(0,w)
+    u <- runif(1,0,1)
+    for (j in 1:k) {
+        if (sum(v[1:j])<u & u<=sum(v[1:(j+1)]))
+        {
+            mixte <- rnorm(1,mu[j],sd=sqrt(sigma[j]))
+        }
+    }
+    return(mixte)
+}
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param sample a \code{vector} TODO
+
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+priormu = function(mu,y)
+{
+    k <- length(mu)
+    T <- matrix(nrow=k,ncol=k)
+    for (i in 1:k) {
+        for (j in 1:k) {
+            if (j == i) {T[i,j] <- 1}
+            else if (j == i-1) {T[i,j] <- -1}
+            else {T[i,j] <- 0 }}}
+    omega <- t(T)%*%T
+    R <- max(y) - min(y)
+    E <- (max(y) + min(y))/2
+    tau <- 1/R^2
+    M <- rep(E,k)
+    const <- (pi/(2*tau))^{-k/2}
+    prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)) )
+    return(prior)
+}
+
+
+
+#' @title TODO
+#'
+#' @description TODO
+#'
+#' @param sample a \code{vector} TODO
+
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+mode <- function(sample) {
+    tabsample <- tabulate(sample)
+    samplemode <- which(tabsample == max(tabsample))[1]
+    if(sum(tabsample == max(tabsample)) > 1) {
+        samplemode <- NA
+    }
+    samplemode
+}
+
+
+#' @title Merging two nucleosomal regions
+#'
+#' @description TODO
+#'
+#' @param yf TODO
+#'
+#' @param yr TODO
+#'
+#' @param y TODO
+#'
+#' @param liste TODO
+#'
+#' @param ecartmin TODO
+#'
+#' @param ecartmax TODO
+#'
+#' @param minReads TODO
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+{
+    k <- length(liste$mu)
+    if (k>1) {
+        ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+        if (ecart.min < ecartmin)
+        {
+            repeat
+            {
+                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.min)[1]
+
+                classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
+                classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
+                classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
+
+                if (length(classes)>minReads){
+                    mu <- mean(round(classes))
+                } else {
+                    mu <- mean(c(liste$mu[p], liste$mu[p+1]))
+                }
+
+                liste$mu <- sort(liste$mu[-p])
+                liste$mu[p] <- mu
+                liste$mu <- sort(liste$mu)
+                liste$sigmaf <- liste$sigmaf[-p]
+                liste$sigmar <- liste$sigmar[-p]
+                liste$delta <- liste$delta[-p]
+                liste$dl <- liste$dl[-p]
+                liste$w <- liste$w[-p]/sum(liste$w[-p])
+                k <- k-1
+                if ( k > 1 ) {ecart.min <- min(sapply(1:(k-1),function(i){liste$mu[i+1]-liste$mu[i]}))}
+                if ( k == 1 ||  ecart.min>ecartmin) break()
+            } ### end of boucle repeat
+            liste <- list(k = k,
+                          mu = liste$mu,
+                          sigmaf = liste$sigmaf,
+                          sigmar = liste$sigmar,
+                          delta = liste$delta,
+                          dl = liste$dl,
+                          w = liste$w)
+        } ### end of condition if (ecart.min < ecartmin)
+        else {
+            liste <- liste
+        }
+        liste <- split(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+    } ### condition else if (k > 1)
+    return(liste)
+}
+
+
+#' @title Spliting a nucleosomal region into two regions
+#'
+#' @description TODO
+#'
+#' @param yf TODO
+#'
+#' @param yr TODO
+#'
+#' @param y TODO
+#'
+#' @param liste TODO
+#'
+#' @param ecartmin TODO
+#'
+#' @param ecartmax TODO
+#'
+#' @param minReads TODO
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+{
+    k <- length(liste$mu)
+    if (k>1) {
+        ecart.max <- max(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+        if (ecart.max > ecartmax) {
+            j <- 1
+            repeat {
+                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.max)
+                classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
+                classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
+                classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
+                j <- 1
+                if (length(classes)>minReads)
+                {
+                    new.mu <- sort(c(liste$mu[1:k],mean(round(classes))))
+                    new.sigmaf <- c(liste$sigmaf[1:k], (liste$sigmaf[p]+liste$sigmaf[p+1])/2)
+                    new.sigmaf[p+1] <- (liste$sigmaf[p]+liste$sigmaf[p+1])/2
+                    new.sigmaf[k+1] <- liste$sigmaf[k]
+                    new.sigmar <- c(liste$sigmar[1:k], (liste$sigmar[p]+liste$sigmar[p+1])/2)
+                    new.sigmar[p+1] <- (liste$sigmar[p]+liste$sigmar[p+1])/2
+                    new.sigmar[k+1] <- liste$sigmar[k]
+                    new.delta <- c(liste$delta[1:k],
+                                   (liste$delta[p]+liste$delta[p+1])/2)
+                    new.delta[p+1] <- (liste$delta[p]+liste$delta[p+1])/2
+                    new.delta[k+1] <- liste$delta[k]
+                    new.dl <- round(c(liste$dl[1:k],
+                                      (liste$dl[p]+liste$dl[p+1])/2))
+                    new.dl[p+1] <- (liste$dl[p]+liste$dl[p+1])/2
+                    new.dl[k+1] <- liste$dl[k]
+                    new.w <- c(liste$w[1:k], (liste$w[p]+liste$w[p+1])/2)
+                    new.w[p+1] <- (liste$w[p]+liste$w[p+1])/2
+                    new.w[k+1] <- liste$w[k]
+                    k <- length(new.mu)
+                    liste <- list(k = k,
+                                  mu = new.mu,
+                                  sigmaf = new.sigmaf,
+                                  sigmar = new.sigmar,
+                                  delta = new.delta,
+                                  dl = new.dl,
+                                  w = new.w/sum(new.w))
+                    ecart.max <- max(sapply(1:(k-1),
+                                    function(j){liste$mu[j+1]-liste$mu[j]}))
+                }
+                else
+                {
+                    liste <- liste
+                    ecart.max <- sort(sapply(1:(k-1),
+                                    function(j){liste$mu[j+1]-liste$mu[j]}))[k-1-j]
+                    j <- j+1
+                }
+                if ( j==(k-1) || ecart.max <=ecartmax) break()
+            } ### end of boucle repeat
+        } ### end of condition if (ecart.max > ecartmax)
+    } ### end of condition if (k>1)
+    return(liste)
+}
+
