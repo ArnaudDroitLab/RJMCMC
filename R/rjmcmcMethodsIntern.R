@@ -1,68 +1,91 @@
-#' @title TODO
+#' @title Death Submove Probability
 #'
-#' @description TODO
+#' @description Calculation of the death submove
+#'      probability using a truncated Poisson distribution
 #'
 #' @param k a \code{numerical} TODO
 #'
-#' @param lambda a \code{vector} TODO
+#' @param lambda a \code{numerical} used as the lambda
+#'      value in the truncated Poisson distribution.
 #'
-#' @param kmax a \code{numeric} TODO
+#' @param kmax a \code{numeric} indicating the maximum
+#'      value authorized for the \code{k} parameter. When
+#'      \code{k} is equal or superior to \code{kmax}, the
+#'      returned value is \code{0}.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical} value. The value \code{0} when
+#'      \code{k} is equal or superior to \code{kmax} or
+#'      when \code{k} is equal to \code{1}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
 Dk <- function(k, lambda, kmax) {
-    ifelse((k == 1 || k > kmax), 0, 0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
+    ## TODO : voir si k et kmax ne doivent pas être un integer
+    ifelse((k == 1 || k > kmax), 0,
+            0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
 }
 
 
-#' @title TODO
+#' @title Birth Submove Probability
 #'
-#' @description TODO
+#' @description Calculation of the birth submove
+#'      probability using a truncated Poisson distribution
 #'
-#' @param k a \code{numerical} TODO
+#' @param k a \code{numerical} used as the lambda
+#'      value in the truncated Poisson distribution.
 #'
-#' @param lambda a \code{vector} TODO
+#' @param lambda a \code{numerical} used as the lambda
+#'      value in the truncated Poisson distribution.
 #'
-#' @param kmax a \code{numeric} TODO
+#' @param kmax a \code{numeric} indicating the maximum
+#'      value authorized for the \code{k} parameter. When
+#'      \code{k} is equal or superior to \code{kmax}, the
+#'      returned value is \code{0}.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical} value. The value \code{0} when
+#'      \code{k} is equal or superior to \code{kmax} or
+#'      when \code{k} is equal to \code{1}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kmax) {
-    ifelse((k == 1 || k > kmax), 0, 0.5*min(1, dpois(k+1, lambda)/dpois(k, lambda)))
+    ## TODO : voir si k et kmax ne doivent pas être un integer
+    ifelse((k == 1 || k > kmax), 0,
+           0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
 
 #' @title Truncated random deviate from a normal distribution
 #'
 #' @description Generate a random deviate value from a normal
-#'    distribution. The value must be included inside a
-#'    specified range.
+#'    distribution. The returned value is included inside a
+#'    specified range ]a,b[ specified by user. The mean and
+#'    variance of the normal distribution is also specified by
+#'    user.
 #'
-#' @param mu a \code{numerical} The mean value of the normal distribution.
+#' @param mu a \code{numerical} The mean of the normal distribution.
 #'
-#' @param sigma a \code{vector} TODO
+#' @param sigma a \code{vector} The variance of the normal distribution.
 #'
 #' @param a a \code{numeric} The inferior boundary of the range
-#'      in which the deviate value must be located. The
-#'      deviate value has to be superior to \code{a}.
+#'      in which the output value must be located. The
+#'      output value has to be superior to \code{a}.
 #'
 #' @param b a \code{numeric} The superior boundary of the range
-#'      in which the deviate value must be located. The
-#'      deviate value has to be inferior to \code{b}.
+#'      in which the output value must be located. The
+#'      output value has to be inferior to \code{b}.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numeric} superior to \code{a} and inferior
+#'      to \code{b}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
 #' @keywords internal
 tnormale <- function(mu, sigma, a, b)
 {
+    ## TODO : voir si on ne peut pas optimiser en créant un vecteur de valeurs
     repeat {
         y <- rnorm(1, mu, sd = sqrt(sigma))
         if (y > a & y < b) break()

@@ -2,22 +2,30 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{Bk}
 \alias{Bk}
-\title{TODO}
+\title{Birth Submove Probability}
 \usage{
 Bk(k, lambda, kmax)
 }
 \arguments{
-\item{k}{a \code{numerical} TODO}
+\item{k}{a \code{numerical} used as the lambda
+     value in the truncated Poisson distribution.}
 
-\item{lambda}{a \code{vector} TODO}
+\item{lambda}{a \code{numerical} used as the lambda
+     value in the truncated Poisson distribution.}
 
-\item{kmax}{a \code{numeric} TODO}
+\item{kmax}{a \code{numeric} indicating the maximum
+     value authorized for the \code{k} parameter. When
+     \code{k} is equal or superior to \code{kmax}, the
+     returned value is \code{0}.}
 }
 \value{
-\code{0} TODO
+a \code{numerical} value. The value \code{0} when
+     \code{k} is equal or superior to \code{kmax} or
+     when \code{k} is equal to \code{1}.
 }
 \description{
-TODO
+Calculation of the birth submove
+     probability using a truncated Poisson distribution
 }
 \author{
 Rawane Samb

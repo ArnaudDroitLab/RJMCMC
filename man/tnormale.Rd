@@ -7,25 +7,28 @@
 tnormale(mu, sigma, a, b)
 }
 \arguments{
-\item{mu}{a \code{numerical} The mean value of the normal distribution.}
+\item{mu}{a \code{numerical} The mean of the normal distribution.}
 
-\item{sigma}{a \code{vector} TODO}
+\item{sigma}{a \code{vector} The variance of the normal distribution.}
 
 \item{a}{a \code{numeric} The inferior boundary of the range
-     in which the deviate value must be located. The
-     deviate value has to be superior to \code{a}.}
+     in which the output value must be located. The
+     output value has to be superior to \code{a}.}
 
 \item{b}{a \code{numeric} The superior boundary of the range
-     in which the deviate value must be located. The
-     deviate value has to be inferior to \code{b}.}
+     in which the output value must be located. The
+     output value has to be inferior to \code{b}.}
 }
 \value{
-\code{0} TODO
+a \code{numeric} superior to \code{a} and inferior
+     to \code{b}.
 }
 \description{
 Generate a random deviate value from a normal
-   distribution. The value must be included inside a
-   specified range.
+   distribution. The returned value is included inside a
+   specified range ]a,b[ specified by user. The mean and
+   variance of the normal distribution is also specified by
+   user.
 }
 \author{
 Rawane Samb

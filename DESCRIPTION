@@ -21,7 +21,8 @@ Author@R: c(person("Rawane", "Samb",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
     person("Arnaud", "Droit",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
-Depends: R (>= 3.2)
+Depends: R (>= 3.2),
+    BiocGenerics
 Imports: MCMCpack,
     stats
 Suggests: knitr,
