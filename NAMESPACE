@@ -3,4 +3,6 @@
 export(RJMCMC)
 importFrom(MCMCpack,ddirichlet)
 importFrom(MCMCpack,rdirichlet)
+importFrom(stats,dmultinom)
 importFrom(stats,dpois)
+importFrom(stats,rnorm)

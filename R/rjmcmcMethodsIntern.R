@@ -14,7 +14,7 @@
 #' @importFrom stats dpois
 #' @keywords internal
 Dk <- function(k, lambda, kmax) {
-    ifelse((k==1||k>kmax),0,0.5*min(1,dpois(k-1,lambda)/dpois(k,lambda)))
+    ifelse((k == 1 || k > kmax), 0, 0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
 }
 
 
@@ -34,7 +34,7 @@ Dk <- function(k, lambda, kmax) {
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kmax) {
-    ifelse((k==1 || k>kmax), 0, 0.5*min(1,dpois(k+1,lambda)/dpois(k,lambda)))
+    ifelse((k == 1 || k > kmax), 0, 0.5*min(1, dpois(k+1, lambda)/dpois(k, lambda)))
 }
 
 
@@ -59,8 +59,9 @@ Bk <- function(k, lambda, kmax) {
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
+#' @importFrom stats rnorm
 #' @keywords internal
-tnormale = function(mu, sigma, a, b)
+tnormale <- function(mu, sigma, a, b)
 {
     repeat {
         y <- rnorm(1, mu, sd = sqrt(sigma))
@@ -89,14 +90,14 @@ tnormale = function(mu, sigma, a, b)
 #'
 #' @author Rawane Samb
 #' @keywords internal
-normal.mixture <- function(i,k,w,mu,sigma)
+normal.mixture <- function(i, k, w, mu, sigma)
 {
-    v <- c(0,w)
-    u <- runif(1,0,1)
+    v <- c(0, w)
+    u <- runif(1, 0, 1)
     for (j in 1:k) {
-        if (sum(v[1:j])<u & u<=sum(v[1:(j+1)]))
+        if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
         {
-            mixte <- rnorm(1,mu[j],sd=sqrt(sigma[j]))
+            mixte <- rnorm(1, mu[j], sd=sqrt(sigma[j]))
         }
     }
     return(mixte)
@@ -113,10 +114,10 @@ normal.mixture <- function(i,k,w,mu,sigma)
 #'
 #' @author Rawane Samb
 #' @keywords internal
-priormu = function(mu,y)
+priormu <- function(mu, y)
 {
     k <- length(mu)
-    T <- matrix(nrow=k,ncol=k)
+    T <- matrix(nrow=k, ncol=k)
     for (i in 1:k) {
         for (j in 1:k) {
             if (j == i) {T[i,j] <- 1}
@@ -126,9 +127,9 @@ priormu = function(mu,y)
     R <- max(y) - min(y)
     E <- (max(y) + min(y))/2
     tau <- 1/R^2
-    M <- rep(E,k)
+    M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
-    prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)) )
+    prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
     return(prior)
 }
 
@@ -180,18 +181,18 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
     k <- length(liste$mu)
     if (k>1) {
-        ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+        ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1] - liste$mu[j]}))
         if (ecart.min < ecartmin)
         {
             repeat
             {
-                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.min)[1]
+                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1] - liste$mu[j]}) == ecart.min)[1]
 
-                classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
-                classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
-                classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
+                classes <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
+                classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
+                classesr <- yr[yr >= liste$mu[p] & yr < liste$mu[p+1]]
 
-                if (length(classes)>minReads){
+                if (length(classes) > minReads){
                     mu <- mean(round(classes))
                 } else {
                     mu <- mean(c(liste$mu[p], liste$mu[p+1]))
@@ -207,7 +208,7 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                 liste$w <- liste$w[-p]/sum(liste$w[-p])
                 k <- k-1
                 if ( k > 1 ) {ecart.min <- min(sapply(1:(k-1),function(i){liste$mu[i+1]-liste$mu[i]}))}
-                if ( k == 1 ||  ecart.min>ecartmin) break()
+                if ( k == 1 ||  ecart.min > ecartmin) break()
             } ### end of boucle repeat
             liste <- list(k = k,
                           mu = liste$mu,
@@ -299,7 +300,7 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                                     function(j){liste$mu[j+1]-liste$mu[j]}))[k-1-j]
                     j <- j+1
                 }
-                if ( j==(k-1) || ecart.max <=ecartmax) break()
+                if ( j == (k-1) || ecart.max <= ecartmax) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > ecartmax)
     } ### end of condition if (k>1)
