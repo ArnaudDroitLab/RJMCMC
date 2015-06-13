@@ -1,0 +1,34 @@
+Package: rjmcmc
+Version: 0.99.0
+Date: 2015-05-01
+Title: Nucleosome Positioning
+Description: This package does nucleosome positioning using informative
+    Multinomial-Dirichlet prior in a t-mixture with reversible jump
+    estimation of nucleosome positions for genome-wide.
+Author: Rawane Samb [cre, aut], Astrid Louise Deschenes [aut],
+    Khader Khadraoui [aut], Lajmi Lakhal [aut],
+    Pascal Belleau [aut], Arnaud Droit [aut]
+Author@R: c(person("Rawane", "Samb",
+    email="rawane.samb.1@ulaval.ca", role=c("cre", "aut")),
+    person("Astrid Louise", "Deschenes",
+    email="Astrid-Louise.Deschenes@crchudequebec.ulaval.ca",
+    role=c("cre","aut")),
+    person("Khader", "Khadraoui",
+    email="Khader.Khadraoui@mat.ulaval.ca", role=c("aut")),
+    person("Lajmi", "Lakhal",
+    email="Lajmi.Lakhal@mat.ulaval.ca;", role=c("aut")),
+    person("Pascal", "Belleau",
+    email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
+    person("Arnaud", "Droit",
+    email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
+Depends: R (>= 3.2),
+    BiocGenerics
+Imports: MCMCpack,
+    stats
+Suggests: knitr,
+    RUnit
+License: Artistic-2.0 | file LICENSE
+VignetteBuilder: knitr
+NeedsCompilation: no
+biocViews: BiologicalQuestion, ChIPSeq
+Maintainer: Rawane Samb <rawane.samb.1@ulaval.ca>
