@@ -195,22 +195,39 @@ priormu <- function(mu, y)
 
 
 
-#' @title TODO
+#' @title Element with the hightest number of occurences
 #'
-#' @description TODO
+#' @description \code{mode} takes the integer-valued vector \code{sample} and
+#'      returned the \code{integer} with the highest number of occurences. When
+#'      more than one \code{integer} have the highest number of occurences,
+#'      \code{NA} is returned.
 #'
-#' @param sample a \code{vector} TODO
+#' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
+#'      values). If the elements of \code{sample} are \code{numeric} but not
+#'      \code{integer}, the elements are truncated by \code{as.integer}.
 
-#' @return \code{0} TODO
+#' @return  a \code{integer} with the highest number of occurences or
+#'      \code{NA} when more than one \code{integer} have the highest number
+#'      of occurences.
 #'
-#' @author Rawane Samb
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
+#' @examples
+#'      data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
+#'      rjmcmc:::mode(data01)
+#'
+#'      data02 <- c(3L, 6L, 4L, 3L, 6L)
+#'      rjmcmc:::mode(data02)
+#'
 mode <- function(sample) {
     tabsample <- tabulate(sample)
-    samplemode <- which(tabsample == max(tabsample))[1]
-    if(sum(tabsample == max(tabsample)) > 1) {
-        samplemode <- NA
-    }
+    #samplemode <- which(tabsample == max(tabsample))[1]
+    #if(sum(tabsample == max(tabsample)) > 1) {
+    #    samplemode <- NA
+    #}
+    ## CODE MODIFIER PAR ASTRID
+    maxOccurence <- tabsample == max(tabsample)
+    samplemode <- ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
     samplemode
 }
 
@@ -240,13 +257,16 @@ mode <- function(sample) {
 merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
     k <- length(liste$mu)
-    if (k>1) {
-        ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1] - liste$mu[j]}))
+    if (k > 1) {
+        ecart.min <- min(sapply(1:(k-1),
+                            function(j){liste$mu[j+1] - liste$mu[j]}))
         if (ecart.min < ecartmin)
         {
             repeat
             {
-                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1] - liste$mu[j]}) == ecart.min)[1]
+                p <- which(sapply(1:(k-1),
+                            function(j){liste$mu[j+1] - liste$mu[j]}) ==
+                            ecart.min)[1]
 
                 classes <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
                 classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
@@ -267,16 +287,18 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                 liste$dl <- liste$dl[-p]
                 liste$w <- liste$w[-p]/sum(liste$w[-p])
                 k <- k-1
-                if ( k > 1 ) {ecart.min <- min(sapply(1:(k-1),function(i){liste$mu[i+1]-liste$mu[i]}))}
-                if ( k == 1 ||  ecart.min > ecartmin) break()
+                if (k > 1) {
+                    ecart.min <- min(sapply(1:(k-1),
+                                    function(i){liste$mu[i+1]-liste$mu[i]}))}
+                if (k == 1 || ecart.min > ecartmin) break()
             } ### end of boucle repeat
             liste <- list(k = k,
-                          mu = liste$mu,
-                          sigmaf = liste$sigmaf,
-                          sigmar = liste$sigmar,
-                          delta = liste$delta,
-                          dl = liste$dl,
-                          w = liste$w)
+                            mu = liste$mu,
+                            sigmaf = liste$sigmaf,
+                            sigmar = liste$sigmar,
+                            delta = liste$delta,
+                            dl = liste$dl,
+                            w = liste$w)
         } ### end of condition if (ecart.min < ecartmin)
         else {
             liste <- liste
@@ -313,22 +335,29 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
     k <- length(liste$mu)
     if (k>1) {
-        ecart.max <- max(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+        ecart.max <- max(sapply(1:(k-1),
+                                function(j){liste$mu[j+1]-liste$mu[j]}))
         if (ecart.max > ecartmax) {
             j <- 1
             repeat {
-                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.max)
+                p <- which(sapply(1:(k-1),
+                                function(j){
+                                    liste$mu[j+1]-liste$mu[j]
+                                }) == ecart.max)
+
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
                 j <- 1
-                if (length(classes)>minReads)
+                if (length(classes) > minReads)
                 {
                     new.mu <- sort(c(liste$mu[1:k],mean(round(classes))))
-                    new.sigmaf <- c(liste$sigmaf[1:k], (liste$sigmaf[p]+liste$sigmaf[p+1])/2)
+                    new.sigmaf <- c(liste$sigmaf[1:k],
+                                        (liste$sigmaf[p]+liste$sigmaf[p+1])/2)
                     new.sigmaf[p+1] <- (liste$sigmaf[p]+liste$sigmaf[p+1])/2
                     new.sigmaf[k+1] <- liste$sigmaf[k]
-                    new.sigmar <- c(liste$sigmar[1:k], (liste$sigmar[p]+liste$sigmar[p+1])/2)
+                    new.sigmar <- c(liste$sigmar[1:k],
+                                        (liste$sigmar[p]+liste$sigmar[p+1])/2)
                     new.sigmar[p+1] <- (liste$sigmar[p]+liste$sigmar[p+1])/2
                     new.sigmar[k+1] <- liste$sigmar[k]
                     new.delta <- c(liste$delta[1:k],
@@ -336,7 +365,7 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                     new.delta[p+1] <- (liste$delta[p]+liste$delta[p+1])/2
                     new.delta[k+1] <- liste$delta[k]
                     new.dl <- round(c(liste$dl[1:k],
-                                      (liste$dl[p]+liste$dl[p+1])/2))
+                                        (liste$dl[p]+liste$dl[p+1])/2))
                     new.dl[p+1] <- (liste$dl[p]+liste$dl[p+1])/2
                     new.dl[k+1] <- liste$dl[k]
                     new.w <- c(liste$w[1:k], (liste$w[p]+liste$w[p+1])/2)
@@ -344,12 +373,12 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                     new.w[k+1] <- liste$w[k]
                     k <- length(new.mu)
                     liste <- list(k = k,
-                                  mu = new.mu,
-                                  sigmaf = new.sigmaf,
-                                  sigmar = new.sigmar,
-                                  delta = new.delta,
-                                  dl = new.dl,
-                                  w = new.w/sum(new.w))
+                                    mu = new.mu,
+                                    sigmaf = new.sigmaf,
+                                    sigmar = new.sigmar,
+                                    delta = new.delta,
+                                    dl = new.dl,
+                                    w = new.w/sum(new.w))
                     ecart.max <- max(sapply(1:(k-1),
                                     function(j){liste$mu[j+1]-liste$mu[j]}))
                 }
@@ -357,13 +386,14 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                 {
                     liste <- liste
                     ecart.max <- sort(sapply(1:(k-1),
-                                    function(j){liste$mu[j+1]-liste$mu[j]}))[k-1-j]
-                    j <- j+1
+                                    function(j){
+                                        liste$mu[j+1]-liste$mu[j]
+                                    }))[k - 1 - j]
+                    j <- j + 1
                 }
-                if ( j == (k-1) || ecart.max <= ecartmax) break()
+                if ( j == (k - 1) || ecart.max <= ecartmax) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > ecartmax)
     } ### end of condition if (k>1)
     return(liste)
 }
-

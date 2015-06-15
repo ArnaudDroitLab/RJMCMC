@@ -2,21 +2,35 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{mode}
 \alias{mode}
-\title{TODO}
+\title{Element with the hightest number of occurences}
 \usage{
 mode(sample)
 }
 \arguments{
-\item{sample}{a \code{vector} TODO}
+\item{sample}{a \code{numeric} \code{vector} (of positive \code{integer}
+values). If the elements of \code{sample} are \code{numeric} but not
+\code{integer}, the elements are truncated by \code{as.integer}.}
 }
 \value{
-\code{0} TODO
+a \code{integer} with the highest number of occurences or
+     \code{NA} when more than one \code{integer} have the highest number
+     of occurences.
 }
 \description{
-TODO
+\code{mode} takes the integer-valued vector \code{sample} and
+     returned the \code{integer} with the highest number of occurences. When
+     more than one \code{integer} have the highest number of occurences,
+     \code{NA} is returned.
+}
+\examples{
+data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
+     rjmcmc:::mode(data01)
+
+     data02 <- c(3L, 6L, 4L, 3L, 6L)
+     rjmcmc:::mode(data02)
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 
