@@ -71,33 +71,65 @@ test.Bk_result_with_various_values_of_lambda <- function() {
     checkEqualsNumeric(obs, exp, msg = message)
 }
 
-# test.tnormale_result_with_various_values_of_mu <- function() {
-#     set.seed(101)
-#     obs <- mapply(c(9, 8, 6, 2, 24, 3, 1),
-#                   FUN = function(x) {rjmcmc:::tnormale(x, 7, 7, 10)})
-#     exp <- c(7.0218905285, 9.5625980973, 8.5250712962, 8.4394940419,
-#              7.4477169047, 9.5883395894, 7.7767406354)
-#     message <- paste0(" tnormale_result_with_various_values_of_lambda() ",
-#                       "- Not all tested data with various lambda generated",
-#                       " expected values.")
-#     checkEqualsNumeric(obs, exp, msg = message)
-# }
+test.tnormale_result_with_various_values_of_mu <- function() {
+    set.seed(101)
+    obs <- mapply(c(9, 8, 6, 2, 24, 3, 1),
+                  FUN = function(x) {rjmcmc:::tnormale(x, 7, x-1, x+1)})
+    exp <- c(8.1373885, 8.5671418, 6.8222181, 1.7017330, 23.4093112,
+             2.3737946,  0.48847584)
+    message <- paste0(" tnormale_result_with_various_values_ofm_mu() ",
+                      "- Not all tested data with various mu generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
 
+test.tnormale_result_with_various_values_of_a <- function() {
+    set.seed(101)
+    obs <- mapply(c(1, 2, 3, 4, 5, 6, 7),
+                  FUN = function(x) {rjmcmc:::tnormale(8, 10090, x, 10)})
+    exp <- c(2.2091408741, 2.8786961586, 8.5411309921, 4.5581059972,
+             7.8565459593, 6.2785794538, 9.8004753529)
+    message <- paste0(" tnormale_result_with_various_values_of_a() ",
+                      "- Not all tested data with various a generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
+
+test.tnormale_result_with_various_values_of_b <- function() {
+    set.seed(101)
+    obs <- mapply(c(11, 12, 13, 14, 15, 16, 17),
+                  FUN = function(x) {rjmcmc:::tnormale(10, 10090, 10, x)})
+    exp <- c(10.5411309921, 11.8004753529, 12.4993162124, 10.5176897766,
+             11.2364951059, 15.3437143272, 15.1289317804)
+    message <- paste0(" tnormale_result_with_various_values_of_b() ",
+                      "- Not all tested data with various b generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
 
 test.tnormale_result_with_various_values_of_lambda <- function() {
     set.seed(101)
     obs <- mapply(c(9, 8, 6, 2, 24, 3, 1),
                   FUN = function(x) {rjmcmc:::tnormale(8, x, 7, 10)})
     exp <- c(7.0218905285, 9.5625980973, 8.5250712962, 8.4394940419,
-                7.4477169047, 9.5883395894, 7.7767406354)
+             7.4477169047, 9.5883395894, 7.7767406354)
     message <- paste0(" tnormale_result_with_various_values_of_lambda() ",
                       "- Not all tested data with various lambda generated",
                       " expected values.")
     checkEqualsNumeric(obs, exp, msg = message)
 }
 
-
-
+test.priormu_results_with_various_values_of_mu <- function() {
+    set.seed(101)
+    obs <- mapply(c(9, 8, 6, 2, 24, 3, 1),
+                  FUN = function(x) {rjmcmc:::priormu(x, 1:10)})
+    exp <- c(0.0821972680, 0.0852986904, 0.0885171341, 0.0821972680,
+             0.0107197199, 0.0852986904, 0.0782367393)
+    message <- paste0(" priormu_result_with_various_values_of_mu() ",
+                      "- Not all tested data with various mu generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
 
 
 

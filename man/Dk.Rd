@@ -4,7 +4,7 @@
 \alias{Dk}
 \title{Death Submove Probability}
 \usage{
-Dk(k, lambda, kmax)
+Dk(k, lambda, kMax)
 }
 \arguments{
 \item{k}{a \code{numerical} TODO}
@@ -12,14 +12,14 @@ Dk(k, lambda, kmax)
 \item{lambda}{a \code{numerical} used as the lambda
      value in the truncated Poisson distribution.}
 
-\item{kmax}{a \code{numeric} indicating the maximum
+\item{kMax}{a \code{numeric} indicating the maximum
      value authorized for the \code{k} parameter. When
-     \code{k} is equal or superior to \code{kmax}, the
+     \code{k} is equal or superior to \code{kMax}, the
      returned value is \code{0}.}
 }
 \value{
 a \code{numerical} value. The value \code{0} when
-     \code{k} is equal or superior to \code{kmax} or
+     \code{k} is equal or superior to \code{kMax} or
      when \code{k} is equal to \code{1}.
 }
 \description{

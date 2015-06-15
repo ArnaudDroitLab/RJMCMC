@@ -4,29 +4,29 @@
 \alias{tnormale}
 \title{Truncated random deviate from a normal distribution}
 \usage{
-tnormale(mu, sigma, a, b)
+tnormale(mu, sigma, minValue, maxValue)
 }
 \arguments{
-\item{mu}{a \code{numerical} The mean of the normal distribution.}
+\item{mu}{a \code{numerical} mean of the normal distribution.}
 
-\item{sigma}{a \code{vector} The variance of the normal distribution.}
+\item{sigma}{a \code{numerical} variance of the normal distribution.}
 
-\item{a}{a \code{numeric} The inferior boundary of the range
+\item{minValue}{a \code{numeric} inferior boundary of the range
      in which the output value must be located. The
-     output value has to be superior to \code{a}.}
+     output value has to be superior to \code{minValue}.}
 
-\item{b}{a \code{numeric} The superior boundary of the range
+\item{maxValue}{a \code{numeric} superior boundary of the range
      in which the output value must be located. The
-     output value has to be inferior to \code{b}.}
+     output value has to be inferior to \code{maxValue}.}
 }
 \value{
-a \code{numeric} superior to \code{a} and inferior
-     to \code{b}.
+a \code{numeric} superior to \code{minValue} and inferior
+     to \code{maxValue}.
 }
 \description{
 Generate a random deviate value from a normal
    distribution. The returned value is included inside a
-   specified range ]a,b[ specified by user. The mean and
+   specified range ]minValue,maxValue[ specified by user. The mean and
    variance of the normal distribution is also specified by
    user.
 }

@@ -8,21 +8,21 @@
 #' @param lambda a \code{numerical} used as the lambda
 #'      value in the truncated Poisson distribution.
 #'
-#' @param kmax a \code{numeric} indicating the maximum
+#' @param kMax a \code{numeric} indicating the maximum
 #'      value authorized for the \code{k} parameter. When
-#'      \code{k} is equal or superior to \code{kmax}, the
+#'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
 #' @return a \code{numerical} value. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kmax} or
+#'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
-Dk <- function(k, lambda, kmax) {
-    ## TODO : voir si k et kmax ne doivent pas être un integer
-    ifelse((k == 1 || k > kmax), 0,
+Dk <- function(k, lambda, kMax) {
+    ## TODO : voir si k et kMax ne doivent pas être un integer
+    ifelse((k == 1 || k > kMax), 0,
             0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
 }
 
@@ -30,7 +30,7 @@ Dk <- function(k, lambda, kmax) {
 #' @title Birth Submove Probability
 #'
 #' @description Calculation of the birth submove
-#'      probability using a truncated Poisson distribution
+#'      probability using a truncated Poisson distribution.
 #'
 #' @param k a \code{numerical} used as the lambda
 #'      value in the truncated Poisson distribution.
@@ -38,21 +38,21 @@ Dk <- function(k, lambda, kmax) {
 #' @param lambda a \code{numerical} used as the lambda
 #'      value in the truncated Poisson distribution.
 #'
-#' @param kmax a \code{numeric} indicating the maximum
+#' @param kMax a \code{numeric} indicating the maximum
 #'      value authorized for the \code{k} parameter. When
-#'      \code{k} is equal or superior to \code{kmax}, the
+#'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
 #' @return a \code{numerical} value. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kmax} or
+#'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
-Bk <- function(k, lambda, kmax) {
+Bk <- function(k, lambda, kMax) {
     ## TODO : voir si k et kmax ne doivent pas être un integer
-    ifelse((k == 1 || k > kmax), 0,
+    ifelse((k == 1 || k > kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
@@ -61,41 +61,76 @@ Bk <- function(k, lambda, kmax) {
 #'
 #' @description Generate a random deviate value from a normal
 #'    distribution. The returned value is included inside a
-#'    specified range ]a,b[ specified by user. The mean and
+#'    specified range ]minValue,maxValue[ specified by user. The mean and
 #'    variance of the normal distribution is also specified by
 #'    user.
 #'
-#' @param mu a \code{numerical} The mean of the normal distribution.
+#' @param mu a \code{numerical} mean of the normal distribution.
 #'
-#' @param sigma a \code{vector} The variance of the normal distribution.
+#' @param sigma a \code{numerical} variance of the normal distribution.
 #'
-#' @param a a \code{numeric} The inferior boundary of the range
+#' @param minValue a \code{numeric} inferior boundary of the range
 #'      in which the output value must be located. The
-#'      output value has to be superior to \code{a}.
+#'      output value has to be superior to \code{minValue}.
 #'
-#' @param b a \code{numeric} The superior boundary of the range
+#' @param maxValue a \code{numeric} superior boundary of the range
 #'      in which the output value must be located. The
-#'      output value has to be inferior to \code{b}.
+#'      output value has to be inferior to \code{maxValue}.
 #'
-#' @return a \code{numeric} superior to \code{a} and inferior
-#'      to \code{b}.
+#' @return a \code{numeric} superior to \code{minValue} and inferior
+#'      to \code{maxValue}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
 #' @keywords internal
-tnormale <- function(mu, sigma, a, b)
+tnormale <- function(mu, sigma, minValue, maxValue)
 {
     ## TODO : voir si on ne peut pas optimiser en créant un vecteur de valeurs
     repeat {
         y <- rnorm(1, mu, sd = sqrt(sigma))
-        if (y > a & y < b) break()
+        if (y > minValue & y < maxValue) break()
     }
     return(y)
 }
 
 
+#' @title Student Mixture Model
+#'
+#' @description TODO
+#'
+#' @param i a \code{vector} TODO
+#'
+#' @param k a \code{integer} number of nucleosomes in a region.
+#'
+#' @param w a \code{vector} weight for the nucleosome occupancy.
+#'
+#' @param mu a \code{vector} mean of the Student-t distribution.
+#'
+#' @param sigma a \code{vector} TODO
+#'
+#' @param dfr a \code{vector} of \code{numerical} containing the degree
+#'      of freedom.
+#'
+#' @return \code{0} TODO
+#'
+#' @author Rawane Samb
+#' @keywords internal
+student.mixture <- function(i, k, w, mu, sigma, dfr)
+{
+    ## TODO : valider si k doit petre un entier
+    ## TODO : i n'est pas utilisé
+    v <- c(0, w)
+    u <- runif(1, 0, 1)
+    for (j in 1:k) {
+        if(sum(v[1:j]) < u & u <= sum(v[1:(j+1)])) {
+            mixte <- mu[j] + sqrt(sigma[j]) * rt(1, dfr[j])
+        }
+    }
+    return(mixte)
+}
 
-#' @title TODO
+
+#' @title Normal Mixture Model
 #'
 #' @description TODO
 #'
@@ -120,19 +155,21 @@ normal.mixture <- function(i, k, w, mu, sigma)
     for (j in 1:k) {
         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
         {
-            mixte <- rnorm(1, mu[j], sd=sqrt(sigma[j]))
+            mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
         }
     }
     return(mixte)
 }
 
 
-#' @title TODO
+#' @title Prior expectation of \eqn{mu}
 #'
 #' @description TODO
 #'
-#' @param sample a \code{vector} TODO
-
+#' @param mu a \code{vector} TODO
+#'
+#' @param y a \code{vector} TODO
+#'
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
