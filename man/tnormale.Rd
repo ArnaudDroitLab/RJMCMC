@@ -26,7 +26,8 @@ a \code{numeric} superior to \code{minValue} and inferior
 \description{
 Generate a random deviate value from a normal
    distribution. The returned value is included inside a
-   specified range ]minValue,maxValue[ specified by user. The mean and
+   sp
+   ecified range ]minValue,maxValue[ specified by user. The mean and
    variance of the normal distribution is also specified by
    user.
 }
