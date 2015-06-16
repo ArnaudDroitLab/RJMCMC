@@ -61,7 +61,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
     k[1] <- 1
 
-    mu[1, 1] <- runif(1, min(y), (min(y) + 200))
+    mu[1, 1] <- runif(1,min(y),max(y))#runif(1, min(y), (min(y) + 200))
     sigmaf[1, 1] <- 1
     sigmar[1, 1] <- 1
     delta[1, 1] <- runif(1, 0, 2*(mu[1,1]-min(y)))
