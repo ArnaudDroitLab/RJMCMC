@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{normal.mixture}
 \alias{normal.mixture}
-\title{TODO}
+\title{Normal Mixture Model}
 \usage{
 normal.mixture(i, k, w, mu, sigma)
 }

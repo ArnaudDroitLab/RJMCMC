@@ -2,12 +2,14 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{priormu}
 \alias{priormu}
-\title{TODO}
+\title{Prior expectation of \eqn{mu} for a list of nucleosome positions}
 \usage{
 priormu(mu, y)
 }
 \arguments{
-\item{sample}{a \code{vector} TODO}
+\item{mu}{a \code{vector} TODO}
+
+\item{y}{a \code{vector} of reads}
 }
 \value{
 \code{0} TODO
