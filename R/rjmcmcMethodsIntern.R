@@ -1,9 +1,10 @@
 #' @title Death Submove Probability
 #'
 #' @description Calculation of the death submove
-#'      probability using a truncated Poisson distribution
+#'      probability pf a randomly selected nucleosome using
+#'      a truncated Poisson distribution.
 #'
-#' @param k a \code{numerical} TODO
+#' @param k a \code{numerical} the number of nucleosomes.
 #'
 #' @param lambda a \code{numerical} used as the lambda
 #'      value in the truncated Poisson distribution.
@@ -30,7 +31,8 @@ Dk <- function(k, lambda, kMax) {
 #' @title Birth Submove Probability
 #'
 #' @description Calculation of the birth submove
-#'      probability using a truncated Poisson distribution.
+#'      probability of adding a new nucleosome using a
+#'      truncated Poisson distribution.
 #'
 #' @param k a \code{numerical} used as the lambda
 #'      value in the truncated Poisson distribution.
@@ -61,7 +63,8 @@ Bk <- function(k, lambda, kMax) {
 #'
 #' @description Generate a random deviate value from a normal
 #'    distribution. The returned value is included inside a
-#'    specified range ]minValue,maxValue[ specified by user. The mean and
+#'    sp
+#'    ecified range ]minValue,maxValue[ specified by user. The mean and
 #'    variance of the normal distribution is also specified by
 #'    user.
 #'
@@ -86,6 +89,8 @@ Bk <- function(k, lambda, kMax) {
 tnormale <- function(mu, sigma, minValue, maxValue)
 {
     ## TODO : voir si on ne peut pas optimiser en créant un vecteur de valeurs
+    ## Astrid : Est-ce qu'on doit ajouter une contrainte sur le nombre de
+    ## boucles maximum
     repeat {
         y <- rnorm(1, mu, sd = sqrt(sigma))
         if (y > minValue & y < maxValue) break()
@@ -162,13 +167,13 @@ normal.mixture <- function(i, k, w, mu, sigma)
 }
 
 
-#' @title Prior expectation of \eqn{mu}
+#' @title Prior expectation of \eqn{mu} for a list of nucleosome positions
 #'
 #' @description TODO
 #'
 #' @param mu a \code{vector} TODO
 #'
-#' @param y a \code{vector} TODO
+#' @param y a \code{vector} of reads
 #'
 #' @return \code{0} TODO
 #'
@@ -178,13 +183,16 @@ priormu <- function(mu, y)
 {
     k <- length(mu)
     T <- matrix(nrow=k, ncol=k)
+    ## TODO : changer le nom de la variable T qui est associee a TRUE
     for (i in 1:k) {
         for (j in 1:k) {
             if (j == i) {T[i,j] <- 1}
             else if (j == i-1) {T[i,j] <- -1}
             else {T[i,j] <- 0 }}}
     omega <- t(T)%*%T
+    # Calculating the range (R)
     R <- max(y) - min(y)
+    # Calculating the mean (E)
     E <- (max(y) + min(y))/2
     tau <- 1/R^2
     M <- rep(E, k)
@@ -333,6 +341,8 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 #' @keywords internal
 split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
+    ## Astrid : on devrait changer le nom car porte a confusion avec
+    ## les fonctions split() existantes
     k <- length(liste$mu)
     if (k>1) {
         ecart.max <- max(sapply(1:(k-1),
