@@ -25,7 +25,8 @@ a \code{numeric} value. The value \code{0} when
 }
 \description{
 Calculation of the birth submove
-     probability using a truncated Poisson distribution.
+     probability of adding a new nucleosome using a
+     truncated Poisson distribution.
 }
 \examples{
 ## Return the birth submove probability

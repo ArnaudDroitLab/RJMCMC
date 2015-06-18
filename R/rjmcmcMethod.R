@@ -1,22 +1,25 @@
-#' @title TODO
+#' @title Nucleosome positioning mapping
 #'
-#' @description TODO
+#' @description Use of a fully Bayesian hierarchical model for genome-wide
+#' profiling of nucleosome positions based on high-throughput short-read
+#' data (MNase-Seq data).
 #'
-#' @param yf a \code{numerical} TODO
+#' @param yf a \code{GRanges} of forward reads.
 #'
-#' @param yr a \code{vector} TODO
+#' @param yr a \code{GRanges} of reverse reads.
 #'
-#' @param niter a \code{numeric} TODO
+#' @param niter a \code{numeric} number of iterations.
 #'
-#' @param kmax a \code{numeric} TODO
+#' @param kmax a \code{numeric} maximum number of nucleosomes per region.
 #'
-#' @param lambda a \code{numeric} TODO
+#' @param lambda a \code{numeric} parameter of the Poisson distribution.
 #'
-#' @param ecartmin a \code{numeric} TODO
+#' @param ecartmin a \code{numeric} minimum distance between two nucleosomes.
 #'
-#' @param ecartmax a \code{numeric} TODO
+#' @param ecartmax a \code{numeric} maximum distance between two nucleosomes.
 #'
-#' @param minReads a \code{numeric} TODO
+#' @param minReads a \code{numeric} minimum number of reads in a potential
+#'      canditate region.
 #'
 #' @return \code{0} TODO
 #'
@@ -26,12 +29,15 @@
 #' @export
 RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 {
+    ## ASTRID : voir si kmax, niter, ecartmin, ecartmax, lambda, minReads ne pourraient pas etre des integers
+    ## ASTRID : il faudrait aussi penser au nom des variables
     y <- sort(c(yf,yr))
     n <- length(y)
     size <- n
     nf <- length(yf)
     nr <- length(yr)
     d <- sapply(1:size, function(m){ifelse(min(abs(yr-y[m])) == 0,-1,1)})
+    ## ASTRID : voir si zeta, detamin, deltamax devraient etre des integer
     zeta <- 147
     deltamin <- 142
     deltamax <- 152
@@ -61,7 +67,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
     k[1] <- 1
 
-    mu[1, 1] <- runif(1, min(y), (min(y) + 200))
+    mu[1, 1] <- runif(1,min(y),max(y))#runif(1, min(y), (min(y) + 200))
     sigmaf[1, 1] <- 1
     sigmar[1, 1] <- 1
     delta[1, 1] <- runif(1, 0, 2*(mu[1,1]-min(y)))
@@ -833,7 +839,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
         w[i,1:k[i]]      <- liste$w
     }
 
-
+    ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     km <- mode(k)
     K <- which(k==km)
 

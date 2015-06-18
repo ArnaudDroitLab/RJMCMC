@@ -7,7 +7,7 @@
 Dk(k, lambda, kMax)
 }
 \arguments{
-\item{k}{a \code{numeric} The number of nucleosomes.}
+\item{k}{a \code{numeric} which is the number of nucleosomes.}
 
 \item{lambda}{a \code{numeric} used as the lambda
      value in the truncated Poisson distribution.}
@@ -24,7 +24,8 @@ a \code{numeric} value. The value \code{0} when
 }
 \description{
 Calculation of the death submove
-     probability using a truncated Poisson distribution
+     probability pf a randomly selected nucleosome using
+     a truncated Poisson distribution.
 }
 \examples{
 ## Return the death submove probability

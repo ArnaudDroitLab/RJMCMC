@@ -2,32 +2,35 @@
 % Please edit documentation in R/rjmcmcMethod.R
 \name{RJMCMC}
 \alias{RJMCMC}
-\title{TODO}
+\title{Nucleosome positioning mapping}
 \usage{
 RJMCMC(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 }
 \arguments{
-\item{yf}{a \code{numerical} TODO}
+\item{yf}{a \code{GRanges} of forward reads.}
 
-\item{yr}{a \code{vector} TODO}
+\item{yr}{a \code{GRanges} of reverse reads.}
 
-\item{niter}{a \code{numeric} TODO}
+\item{niter}{a \code{numeric} number of iterations.}
 
-\item{kmax}{a \code{numeric} TODO}
+\item{kmax}{a \code{numeric} maximum number of nucleosomes per region.}
 
-\item{lambda}{a \code{numeric} TODO}
+\item{lambda}{a \code{numeric} parameter of the Poisson distribution.}
 
-\item{ecartmin}{a \code{numeric} TODO}
+\item{ecartmin}{a \code{numeric} minimum distance between two nucleosomes.}
 
-\item{ecartmax}{a \code{numeric} TODO}
+\item{ecartmax}{a \code{numeric} maximum distance between two nucleosomes.}
 
-\item{minReads}{a \code{numeric} TODO}
+\item{minReads}{a \code{numeric} minimum number of reads in a potential
+     canditate region.}
 }
 \value{
 \code{0} TODO
 }
 \description{
-TODO
+Use of a fully Bayesian hierarchical model for genome-wide
+profiling of nucleosome positions based on high-throughput short-read
+data (MNase-Seq data).
 }
 \author{
 Rawane Samb
