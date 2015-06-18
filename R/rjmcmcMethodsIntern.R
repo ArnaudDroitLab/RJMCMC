@@ -3,9 +3,9 @@
 #' @description Calculation of the death submove
 #'      probability using a truncated Poisson distribution
 #'
-#' @param k a \code{numerical} TODO
+#' @param k a \code{numeric} The number of nucleosomes.
 #'
-#' @param lambda a \code{numerical} used as the lambda
+#' @param lambda a \code{numeric} used as the lambda
 #'      value in the truncated Poisson distribution.
 #'
 #' @param kMax a \code{numeric} indicating the maximum
@@ -13,9 +13,19 @@
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
-#' @return a \code{numerical} value. The value \code{0} when
+#' @return a \code{numeric} value. The value \code{0} when
 #'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
+#' @examples
+#'
+#' ## Return the death submove probability
+#' rjmcmc:::Dk(k = 12L, lambda = 4.4, kMax = 30L)
+#'
+#' ## Zero is returned when k = 1
+#' rjmcmc:::Dk(k = 1L, lambda = 4.4, kMax = 30L)
+#'
+#' ## Zerio is returned when k is superior to kMax
+#' rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -32,10 +42,10 @@ Dk <- function(k, lambda, kMax) {
 #' @description Calculation of the birth submove
 #'      probability using a truncated Poisson distribution.
 #'
-#' @param k a \code{numerical} used as the lambda
-#'      value in the truncated Poisson distribution.
+#' @param k a \code{numeric} value which is the number of
+#'      nucleosomes.
 #'
-#' @param lambda a \code{numerical} used as the lambda
+#' @param lambda a \code{numeric} used as the lambda
 #'      value in the truncated Poisson distribution.
 #'
 #' @param kMax a \code{numeric} indicating the maximum
@@ -43,9 +53,19 @@ Dk <- function(k, lambda, kMax) {
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
-#' @return a \code{numerical} value. The value \code{0} when
+#' @return a \code{numeric} value. The value \code{0} when
 #'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
+#' @examples
+#'
+#' ## Return the birth submove probability
+#' rjmcmc:::Dk(k = 14L, lambda = 2.4, kMax = 22L)
+#'
+#' ## Zero is returned when k = 1
+#' rjmcmc:::Dk(k = 1L, lambda = 3.4, kMax = 20L)
+#'
+#' ## Zerio is returned when k is superior to kMax
+#' rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -65,9 +85,9 @@ Bk <- function(k, lambda, kMax) {
 #'    variance of the normal distribution is also specified by
 #'    user.
 #'
-#' @param mu a \code{numerical} mean of the normal distribution.
+#' @param mu a \code{numeric} mean of the normal distribution.
 #'
-#' @param sigma a \code{numerical} variance of the normal distribution.
+#' @param sigma a \code{numeric} variance of the normal distribution.
 #'
 #' @param minValue a \code{numeric} inferior boundary of the range
 #'      in which the output value must be located. The
@@ -108,7 +128,7 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #'
 #' @param sigma a \code{vector} TODO
 #'
-#' @param dfr a \code{vector} of \code{numerical} containing the degree
+#' @param dfr a \code{vector} of \code{numeric} containing the degree
 #'      of freedom.
 #'
 #' @return \code{0} TODO
@@ -227,8 +247,7 @@ mode <- function(sample) {
     #}
     ## CODE MODIFIER PAR ASTRID
     maxOccurence <- tabsample == max(tabsample)
-    samplemode <- ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
-    samplemode
+    ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
 }
 
 
