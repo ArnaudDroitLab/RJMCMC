@@ -7,7 +7,8 @@ This package uses informative Multinomial-Dirichlet prior in a t-mixture with re
 
 [Rawane Samb](https://ca.linkedin.com/in/rawanesamb "Rawane Samb"), 
 [Astrid Louise Deschenes](http://ca.linkedin.com/in/astriddeschenes "Astrid Louise Deschenes"),
-[Khader Khadraoui](http://archimede.mat.ulaval.ca/pages/khaderk/ "Khader Khadraoui"), Lajmi Lakhal-Chaieb, 
+[Khader Khadraoui](http://archimede.mat.ulaval.ca/pages/khaderk/ "Khader Khadraoui"), 
+[Lajmi Lakhal-Chaieb](https://www.researchgate.net/profile/Lajmi_Lakhal-Chaieb "Lajmi Lakhal-Chaieb"), 
 [Pascal Belleau](http://ca.linkedin.com/in/pascalbelleau "Pascal Belleau") 
 and [Arnaud Droit](http://ca.linkedin.com/in/drarnaud "Arnaud Droit").
 
