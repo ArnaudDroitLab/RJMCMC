@@ -241,11 +241,13 @@ priormu <- function(mu, y)
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 #' @examples
-#'      data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#'      rjmcmc:::mode(data01)
 #'
-#'      data02 <- c(3L, 6L, 4L, 3L, 6L)
-#'      rjmcmc:::mode(data02)
+#' ## Return the element with the hightest number of occurence
+#' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
+#' rjmcmc:::mode(data01)
+#'
+#' data02 <- c(3L, 6L, 4L, 3L, 6L)
+#' rjmcmc:::mode(data02)
 #'
 mode <- function(sample) {
     tabsample <- tabulate(sample)

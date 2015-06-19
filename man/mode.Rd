@@ -23,11 +23,12 @@ a \code{integer} with the highest number of occurences or
      \code{NA} is returned.
 }
 \examples{
+## Return the element with the hightest number of occurence
 data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-     rjmcmc:::mode(data01)
+rjmcmc:::mode(data01)
 
-     data02 <- c(3L, 6L, 4L, 3L, 6L)
-     rjmcmc:::mode(data02)
+data02 <- c(3L, 6L, 4L, 3L, 6L)
+rjmcmc:::mode(data02)
 }
 \author{
 Rawane Samb, Astrid Louise Deschenes
