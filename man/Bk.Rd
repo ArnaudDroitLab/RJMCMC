@@ -7,10 +7,10 @@
 Bk(k, lambda, kMax)
 }
 \arguments{
-\item{k}{a \code{numerical} used as the lambda
-     value in the truncated Poisson distribution.}
+\item{k}{a \code{numeric} value which is the number of
+     nucleosomes.}
 
-\item{lambda}{a \code{numerical} used as the lambda
+\item{lambda}{a \code{numeric} used as the lambda
      value in the truncated Poisson distribution.}
 
 \item{kMax}{a \code{numeric} indicating the maximum
@@ -19,7 +19,7 @@ Bk(k, lambda, kMax)
      returned value is \code{0}.}
 }
 \value{
-a \code{numerical} value. The value \code{0} when
+a \code{numeric} value. The value \code{0} when
      \code{k} is equal or superior to \code{kMax} or
      when \code{k} is equal to \code{1}.
 }
@@ -27,6 +27,16 @@ a \code{numerical} value. The value \code{0} when
 Calculation of the birth submove
      probability of adding a new nucleosome using a
      truncated Poisson distribution.
+}
+\examples{
+## Return the birth submove probability
+rjmcmc:::Dk(k = 14L, lambda = 2.4, kMax = 22L)
+
+## Zero is returned when k = 1
+rjmcmc:::Dk(k = 1L, lambda = 3.4, kMax = 20L)
+
+## Zerio is returned when k is superior to kMax
+rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
 }
 \author{
 Rawane Samb

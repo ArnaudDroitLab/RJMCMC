@@ -17,7 +17,7 @@ student.mixture(i, k, w, mu, sigma, dfr)
 
 \item{sigma}{a \code{vector} TODO}
 
-\item{dfr}{a \code{vector} of \code{numerical} containing the degree
+\item{dfr}{a \code{vector} of \code{numeric} containing the degree
      of freedom.}
 }
 \value{

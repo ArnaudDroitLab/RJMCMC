@@ -7,9 +7,9 @@
 tnormale(mu, sigma, minValue, maxValue)
 }
 \arguments{
-\item{mu}{a \code{numerical} mean of the normal distribution.}
+\item{mu}{a \code{numeric} mean of the normal distribution.}
 
-\item{sigma}{a \code{numerical} variance of the normal distribution.}
+\item{sigma}{a \code{numeric} variance of the normal distribution.}
 
 \item{minValue}{a \code{numeric} inferior boundary of the range
      in which the output value must be located. The
