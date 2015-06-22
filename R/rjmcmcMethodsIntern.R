@@ -191,7 +191,7 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #' @description Computes the prior density of \eqn{mu} conditionally to
 #'  the number of nucleosomes.
 #'
-#'  For more information on the calculation of the prior density of \equ{mu},
+#'  For more information on the calculation of the prior density of \eqn{mu},
 #'  see Proposotion 1 of the cited article.
 #'
 #' @param mu a \code{vector} of positive \code{integer} containing the
@@ -200,7 +200,7 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #' @param reads a \code{vector} of \code{TODO} corresponding to the read
 #'      data, including forward and reverse strands.
 #'
-#' @return  the exact prior density of \code{\mu} given the
+#' @return  the exact prior density of \code{mu} given the
 #'      number of nucleosomes.
 #'
 #' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using

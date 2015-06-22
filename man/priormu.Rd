@@ -14,14 +14,14 @@ priormu(mu, reads)
      data, including forward and reverse strands.}
 }
 \value{
-the exact prior density of \code{\mu} given the
+the exact prior density of \code{mu} given the
      number of nucleosomes.
 }
 \description{
 Computes the prior density of \eqn{mu} conditionally to
  the number of nucleosomes.
 
- For more information on the calculation of the prior density of \equ{mu},
+ For more information on the calculation of the prior density of \eqn{mu},
  see Proposotion 1 of the cited article.
 }
 \author{
