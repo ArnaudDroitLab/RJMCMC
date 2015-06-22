@@ -186,33 +186,48 @@ normal.mixture <- function(i, k, w, mu, sigma)
 }
 
 
-#' @title Prior expectation of \eqn{mu} for a list of nucleosome positions
+#' @title Prior density of \eqn{mu}
 #'
-#' @description TODO
+#' @description Computes the prior density of \eqn{mu} conditionally to
+#'  the number of nucleosomes.
 #'
-#' @param mu a \code{vector} TODO
+#'  For more information on the calculation of the prior density of \equ{mu},
+#'  see Proposotion 1 of the cited article.
 #'
-#' @param y a \code{vector} of reads
+#' @param mu a \code{vector} of positive \code{integer} containing the
+#'      positions of all nucleosomes.
 #'
-#' @return \code{0} TODO
+#' @param reads a \code{vector} of \code{TODO} corresponding to the read
+#'      data, including forward and reverse strands.
 #'
-#' @author Rawane Samb
+#' @return  the exact prior density of \code{\mu} given the
+#'      number of nucleosomes.
+#'
+#' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
+#'      informative Multinomial-Dirichlet prior in a t-mixture with
+#'      reversible jump estimation of nucleosome positions for genome-wide
+#'      profiling. Submitted (2015).
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priormu <- function(mu, y)
+priormu <- function(mu, reads)
 {
     k <- length(mu)
-    T <- matrix(nrow=k, ncol=k)
-    ## TODO : changer le nom de la variable T qui est associee a TRUE
+    ## Create a matrix used in the calculation of the priors
+    basicMatrix <- matrix(0L, nrow = k, ncol = k)
     for (i in 1:k) {
         for (j in 1:k) {
-            if (j == i) {T[i,j] <- 1}
-            else if (j == i-1) {T[i,j] <- -1}
-            else {T[i,j] <- 0 }}}
-    omega <- t(T)%*%T
+            if (j == i) {
+                basicMatrix[i, j] <- 1L
+            } else if (j == i - 1) {
+                basicMatrix[i, j] <- -1L
+            }
+        }
+    }
+    omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)
-    R <- max(y) - min(y)
+    R <- max(reads) - min(reads)
     # Calculating the mean (E)
-    E <- (max(y) + min(y))/2
+    E <- (max(reads) + min(reads))/2
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
@@ -225,9 +240,9 @@ priormu <- function(mu, y)
 #' @title Element with the hightest number of occurences
 #'
 #' @description \code{mode} takes the integer-valued vector \code{sample} and
-#'      returned the \code{integer} with the highest number of occurences. When
-#'      more than one \code{integer} have the highest number of occurences,
-#'      \code{NA} is returned.
+#'      returned the \code{integer} with the highest number of occurences.
+#'      When more than one \code{integer} have the highest number of
+#'      occurences, \code{NA} is returned.
 #'
 #' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
 #'      values). If the elements of \code{sample} are \code{numeric} but not

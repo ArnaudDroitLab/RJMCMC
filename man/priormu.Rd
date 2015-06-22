@@ -2,23 +2,36 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{priormu}
 \alias{priormu}
-\title{Prior expectation of \eqn{mu} for a list of nucleosome positions}
+\title{Prior density of \eqn{mu}}
 \usage{
-priormu(mu, y)
+priormu(mu, reads)
 }
 \arguments{
-\item{mu}{a \code{vector} TODO}
+\item{mu}{a \code{vector} of positive \code{integer} containing the
+     positions of all nucleosomes.}
 
-\item{y}{a \code{vector} of reads}
+\item{reads}{a \code{vector} of \code{TODO} corresponding to the read
+     data, including forward and reverse strands.}
 }
 \value{
-\code{0} TODO
+the exact prior density of \code{\mu} given the
+     number of nucleosomes.
 }
 \description{
-TODO
+Computes the prior density of \eqn{mu} conditionally to
+ the number of nucleosomes.
+
+ For more information on the calculation of the prior density of \equ{mu},
+ see Proposotion 1 of the cited article.
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
+}
+\references{
+Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
+     informative Multinomial-Dirichlet prior in a t-mixture with
+     reversible jump estimation of nucleosome positions for genome-wide
+     profiling. Submitted (2015).
 }
 \keyword{internal}
 
