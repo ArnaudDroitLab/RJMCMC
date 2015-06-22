@@ -7,24 +7,25 @@
 Dk(k, lambda, kMax)
 }
 \arguments{
-\item{k}{a \code{numeric} which is the number of nucleosomes.}
+\item{k}{a positive \code{integer}, the number of nucleosomes.}
 
-\item{lambda}{a \code{numeric} used as the lambda
-     value in the truncated Poisson distribution.}
+\item{lambda}{a \code{numeric}, the theorical mean
+     of the Poisson distribution.}
 
-\item{kMax}{a \code{numeric} indicating the maximum
-     value authorized for the \code{k} parameter. When
+\item{kMax}{a positive \code{numeric}, the maximum number of nucleosomes
+     authorized. When
      \code{k} is equal or superior to \code{kMax}, the
      returned value is \code{0}.}
 }
 \value{
-a \code{numeric} value. The value \code{0} when
+a \code{numeric} value representing the calculated death submove
+     probability. The value \code{0} when
      \code{k} is equal or superior to \code{kMax} or
      when \code{k} is equal to \code{1}.
 }
 \description{
 Calculation of the death submove
-     probability pf a randomly selected nucleosome using
+     probability of a randomly selected nucleosome using
      a truncated Poisson distribution.
 }
 \examples{

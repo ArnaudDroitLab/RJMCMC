@@ -1,20 +1,21 @@
 #' @title Death Submove Probability
 #'
 #' @description Calculation of the death submove
-#'      probability pf a randomly selected nucleosome using
+#'      probability of a randomly selected nucleosome using
 #'      a truncated Poisson distribution.
 #'
-#' @param k a \code{numeric} which is the number of nucleosomes.
+#' @param k a positive \code{integer}, the number of nucleosomes.
 #'
-#' @param lambda a \code{numeric} used as the lambda
-#'      value in the truncated Poisson distribution.
+#' @param lambda a \code{numeric}, the theorical mean
+#'      of the Poisson distribution.
 #'
-#' @param kMax a \code{numeric} indicating the maximum
-#'      value authorized for the \code{k} parameter. When
+#' @param kMax a positive \code{numeric}, the maximum number of nucleosomes
+#'      authorized. When
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
-#' @return a \code{numeric} value. The value \code{0} when
+#' @return a \code{numeric} value representing the calculated death submove
+#'      probability. The value \code{0} when
 #'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
 #' @examples
@@ -32,7 +33,6 @@
 #' @importFrom stats dpois
 #' @keywords internal
 Dk <- function(k, lambda, kMax) {
-    ## TODO : voir si k et kMax ne doivent pas être un integer
     ifelse((k == 1 || k > kMax), 0,
             0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
 }
@@ -44,14 +44,14 @@ Dk <- function(k, lambda, kMax) {
 #'      probability of adding a new nucleosome using a
 #'      truncated Poisson distribution.
 #'
-#' @param k a \code{numeric} value which is the number of
+#' @param k a positive \code{integer}, the number of
 #'      nucleosomes.
 #'
-#' @param lambda a \code{numeric} used as the lambda
-#'      value in the truncated Poisson distribution.
+#' @param lambda a \code{numeric}, the theorical mean
+#'      of the Poisson distribution.
 #'
-#' @param kMax a \code{numeric} indicating the maximum
-#'      value authorized for the \code{k} parameter. When
+#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
+#'      authorized. When
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
@@ -61,19 +61,18 @@ Dk <- function(k, lambda, kMax) {
 #' @examples
 #'
 #' ## Return the birth submove probability
-#' rjmcmc:::Dk(k = 14L, lambda = 2.4, kMax = 22L)
+#' rjmcmc:::Bk(k = 14L, lambda = 2.4, kMax = 22L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Dk(k = 1L, lambda = 3.4, kMax = 20L)
+#' rjmcmc:::Bk(k = 1L, lambda = 3.4, kMax = 20L)
 #'
 #' ## Zerio is returned when k is superior to kMax
-#' rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
+#' rjmcmc:::Bk(k = 31L, lambda = 4.4, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kMax) {
-    ## TODO : voir si k et kmax ne doivent pas être un integer
     ifelse((k == 1 || k > kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
