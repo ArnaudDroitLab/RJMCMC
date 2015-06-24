@@ -29,7 +29,8 @@
 #' @export
 RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 {
-    ## ASTRID : voir si kmax, niter, ecartmin, ecartmax, lambda, minReads ne pourraient pas etre des integers
+    ## ASTRID : voir si kmax, niter, ecartmin, ecartmax, lambda, minReads
+    ## ne pourraient pas etre des integers
     ## ASTRID : il faudrait aussi penser au nom des variables
     y <- sort(c(yf,yr))
     n <- length(y)

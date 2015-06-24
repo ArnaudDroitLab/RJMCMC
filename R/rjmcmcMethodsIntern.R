@@ -1,20 +1,21 @@
 #' @title Death Submove Probability
 #'
 #' @description Calculation of the death submove
-#'      probability pf a randomly selected nucleosome using
+#'      probability of a randomly selected nucleosome using
 #'      a truncated Poisson distribution.
 #'
-#' @param k a \code{numeric} which is the number of nucleosomes.
+#' @param k a positive \code{integer}, the number of nucleosomes.
 #'
-#' @param lambda a \code{numeric} used as the lambda
-#'      value in the truncated Poisson distribution.
+#' @param lambda a \code{numeric}, the theorical mean
+#'      of the Poisson distribution.
 #'
-#' @param kMax a \code{numeric} indicating the maximum
-#'      value authorized for the \code{k} parameter. When
+#' @param kMax a positive \code{numeric}, the maximum number of nucleosomes
+#'      authorized. When
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
-#' @return a \code{numeric} value. The value \code{0} when
+#' @return a \code{numeric} value representing the calculated death submove
+#'      probability. The value \code{0} when
 #'      \code{k} is equal or superior to \code{kMax} or
 #'      when \code{k} is equal to \code{1}.
 #' @examples
@@ -32,7 +33,6 @@
 #' @importFrom stats dpois
 #' @keywords internal
 Dk <- function(k, lambda, kMax) {
-    ## TODO : voir si k et kMax ne doivent pas être un integer
     ifelse((k == 1 || k > kMax), 0,
             0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
 }
@@ -44,14 +44,14 @@ Dk <- function(k, lambda, kMax) {
 #'      probability of adding a new nucleosome using a
 #'      truncated Poisson distribution.
 #'
-#' @param k a \code{numeric} value which is the number of
+#' @param k a positive \code{integer}, the number of
 #'      nucleosomes.
 #'
-#' @param lambda a \code{numeric} used as the lambda
-#'      value in the truncated Poisson distribution.
+#' @param lambda a \code{numeric}, the theorical mean
+#'      of the Poisson distribution.
 #'
-#' @param kMax a \code{numeric} indicating the maximum
-#'      value authorized for the \code{k} parameter. When
+#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
+#'      authorized. When
 #'      \code{k} is equal or superior to \code{kMax}, the
 #'      returned value is \code{0}.
 #'
@@ -61,19 +61,18 @@ Dk <- function(k, lambda, kMax) {
 #' @examples
 #'
 #' ## Return the birth submove probability
-#' rjmcmc:::Dk(k = 14L, lambda = 2.4, kMax = 22L)
+#' rjmcmc:::Bk(k = 14L, lambda = 2.4, kMax = 22L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Dk(k = 1L, lambda = 3.4, kMax = 20L)
+#' rjmcmc:::Bk(k = 1L, lambda = 3.4, kMax = 20L)
 #'
 #' ## Zerio is returned when k is superior to kMax
-#' rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
+#' rjmcmc:::Bk(k = 31L, lambda = 4.4, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kMax) {
-    ## TODO : voir si k et kmax ne doivent pas être un integer
     ifelse((k == 1 || k > kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
@@ -187,33 +186,48 @@ normal.mixture <- function(i, k, w, mu, sigma)
 }
 
 
-#' @title Prior expectation of \eqn{mu} for a list of nucleosome positions
+#' @title Prior density of \eqn{mu}
 #'
-#' @description TODO
+#' @description Computes the prior density of \eqn{mu} conditionally to
+#'  the number of nucleosomes.
 #'
-#' @param mu a \code{vector} TODO
+#'  For more information on the calculation of the prior density of \eqn{mu},
+#'  see Proposotion 1 of the cited article.
 #'
-#' @param y a \code{vector} of reads
+#' @param mu a \code{vector} of positive \code{integer} containing the
+#'      positions of all nucleosomes.
 #'
-#' @return \code{0} TODO
+#' @param reads a \code{vector} of \code{TODO} corresponding to the read
+#'      data, including forward and reverse strands.
 #'
-#' @author Rawane Samb
+#' @return  the exact prior density of \code{mu} given the
+#'      number of nucleosomes.
+#'
+#' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
+#'      informative Multinomial-Dirichlet prior in a t-mixture with
+#'      reversible jump estimation of nucleosome positions for genome-wide
+#'      profiling. Submitted (2015).
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priormu <- function(mu, y)
+priormu <- function(mu, reads)
 {
     k <- length(mu)
-    T <- matrix(nrow=k, ncol=k)
-    ## TODO : changer le nom de la variable T qui est associee a TRUE
+    ## Create a matrix used in the calculation of the priors
+    basicMatrix <- matrix(0L, nrow = k, ncol = k)
     for (i in 1:k) {
         for (j in 1:k) {
-            if (j == i) {T[i,j] <- 1}
-            else if (j == i-1) {T[i,j] <- -1}
-            else {T[i,j] <- 0 }}}
-    omega <- t(T)%*%T
+            if (j == i) {
+                basicMatrix[i, j] <- 1L
+            } else if (j == i - 1) {
+                basicMatrix[i, j] <- -1L
+            }
+        }
+    }
+    omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)
-    R <- max(y) - min(y)
+    R <- max(reads) - min(reads)
     # Calculating the mean (E)
-    E <- (max(y) + min(y))/2
+    E <- (max(reads) + min(reads))/2
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
@@ -226,9 +240,9 @@ priormu <- function(mu, y)
 #' @title Element with the hightest number of occurences
 #'
 #' @description \code{mode} takes the integer-valued vector \code{sample} and
-#'      returned the \code{integer} with the highest number of occurences. When
-#'      more than one \code{integer} have the highest number of occurences,
-#'      \code{NA} is returned.
+#'      returned the \code{integer} with the highest number of occurences.
+#'      When more than one \code{integer} have the highest number of
+#'      occurences, \code{NA} is returned.
 #'
 #' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
 #'      values). If the elements of \code{sample} are \code{numeric} but not
