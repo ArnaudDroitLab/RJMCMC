@@ -199,7 +199,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                     if (j==1) {qalloc <- 1/(mu[i-1,j]-min(y))}       #densit? de mutilde[i,j]
                     else {qalloc <- 1/(mu[i-1,j]-mu[i-1,j-1])}
 
-                    rap.priormu <- (priormu(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (rjmcmc:::priorMuDensity(mutilde[i,1:ktilde[i]],y)/rjmcmc:::priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
@@ -331,7 +331,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
                     rap.vrais <- rap.q
 
-                    rap.priormu <- (priormu(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (rjmcmc:::priorMuDensity(mutilde[i,1:ktilde[i]],y)/rjmcmc:::priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
                     rap.priork <- 1
@@ -479,7 +479,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                     else { if (j==k[i-1]) { qalloc <- 1/(max(y)-mu[i-1,j-1])}
                            else { qalloc <- 1/(mu[i-1,j+1]-mu[i-1,j-1]) }}
 
-                    rap.priormu <- (priormu(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (rjmcmc:::priorMuDensity(mutilde[i,1:ktilde[i]],y)/rjmcmc:::priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
@@ -631,7 +631,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                     if (j==1) { qalloc=1/(mu[i-1,j]-min(y)) }       #densit? de mutilde[i,j]
                     else { qalloc<-1/(mu[i-1,j]-mu[i-1,j-1]) }
 
-                    rap.priormu <- (priormu(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (rjmcmc:::priorMuDensity(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
@@ -772,7 +772,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
                     rap.vrais <- rap.q
 
-                    rap.priormu <- (priormu(mutilde[i,1:ktilde[i]],y)/priormu(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (rjmcmc:::priorMuDensity(mutilde[i,1:ktilde[i]],y)/rjmcmc:::priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]], alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha))
                     rap.priorenne <- dmultinom(ennetilde, n, wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
                     rap.priork <- (1)

@@ -218,31 +218,30 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #' mu <- c(10000L, 26700L, 45000L)
 #'
 #' ## Calculation of the exact prior density of mu
-#' density <- rjmcmc:::priormu(mu, readPositions)
+#' density <- rjmcmc:::priorMuDensity(mu, readPositions)
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priormu <- function(mu, reads)
+priorMuDensity <- function(mu, readPositions)
 {
+    ## Get the number of nucleosomes
     k <- length(mu)
     ## Create a matrix used in the calculation of the priors
     basicMatrix <- matrix(0L, nrow = k, ncol = k)
     for (i in 1:k) {
-        for (j in 1:k) {
-            if (j == i) {
-                basicMatrix[i, j] <- 1L
-            } else if (j == i - 1) {
-                basicMatrix[i, j] <- -1L
-            }
-        }
+        basicMatrix[i, i] <- 1L
+    }
+    for (i in 2:k) {
+        basicMatrix[i , i - 1] <- -1L
     }
     omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)
-    R <- max(reads) - min(reads)
+    R <- max(readPositions) - min(readPositions)
     # Calculating the mean (E)
-    E <- (max(reads) + min(reads))/2
+    E <- (max(readPositions) + min(readPositions))/2
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
+    ## Equation 11 in the cited article
     prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
     return(prior)
 }
