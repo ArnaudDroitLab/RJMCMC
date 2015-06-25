@@ -145,4 +145,28 @@ test.mode_results_with_different_vectors <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+test.prior_mu_with_1000_reads <- function() {
+    set.seed(101)
+    k <- 3L
+    nbrReads <- 500L
+    mu <- c(10000L, 26700L, 45000L)
+    sigma <- rep(400L, k)
+    delta  <- rep(147, k)
+    weight <- c(0.3, 0.2, 0.5)
+
+    readsForward <- sapply(1:nbrReads, rjmcmc:::normal.mixture, k = k,
+                        w = weight, mu = mu - delta/2, sigma = sigma)
+    readsReverse <- sapply(1:nbrReads, rjmcmc:::normal.mixture, k = k,
+                        w = weight, mu = mu - delta/2, sigma = sigma)
+
+    reads <- sort(c(readsForward, readsReverse))
+
+    obs <- rjmcmc:::priormu(mu, reads)
+
+    exp <- 8.0883349761e-15
+
+    message <- paste0(" prior_mu_with_1000_reads() ",
+                      "- The result is not the expected value.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
 

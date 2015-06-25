@@ -4,18 +4,18 @@
 \alias{Dk}
 \title{Death Submove Probability}
 \usage{
-Dk(k, lambda, kMax)
+Dk(k, lambda, kMax = 30)
 }
 \arguments{
 \item{k}{a positive \code{integer}, the number of nucleosomes.}
 
-\item{lambda}{a \code{numeric}, the theorical mean
+\item{lambda}{a positive \code{numeric}, the theorical mean
      of the Poisson distribution.}
 
-\item{kMax}{a positive \code{numeric}, the maximum number of nucleosomes
+\item{kMax}{a positive \code{integer}, the maximum number of nucleosomes
      authorized. When
      \code{k} is equal or superior to \code{kMax}, the
-     returned value is \code{0}.}
+     returned value is \code{0}. Default: \code{30}.}
 }
 \value{
 a \code{numeric} value representing the calculated death submove
@@ -30,13 +30,13 @@ Calculation of the death submove
 }
 \examples{
 ## Return the death submove probability
-rjmcmc:::Dk(k = 12L, lambda = 4.4, kMax = 30L)
+rjmcmc:::Dk(k = 12L, lambda = 2L, kMax = 30L)
 
 ## Zero is returned when k = 1
-rjmcmc:::Dk(k = 1L, lambda = 4.4, kMax = 30L)
+rjmcmc:::Dk(k = 1L, lambda = 3L, kMax = 30L)
 
 ## Zerio is returned when k is superior to kMax
-rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
+rjmcmc:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 }
 \author{
 Rawane Samb

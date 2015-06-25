@@ -10,8 +10,8 @@ priormu(mu, reads)
 \item{mu}{a \code{vector} of positive \code{integer} containing the
      positions of all nucleosomes.}
 
-\item{reads}{a \code{vector} of \code{TODO} corresponding to the read
-     data, including forward and reverse strands.}
+\item{reads}{a \code{vector} of \code{integer} corresponding to the position
+     of all reads, including forward and reverse strands.}
 }
 \value{
 the exact prior density of \code{mu} given the
@@ -22,7 +22,19 @@ Computes the prior density of \eqn{mu} conditionally to
  the number of nucleosomes.
 
  For more information on the calculation of the prior density of \eqn{mu},
- see Proposotion 1 of the cited article.
+ see Proposotion 1 and equation (11) of the cited article.
+}
+\examples{
+## Sorted vector of read positions, including forward and reverse
+readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
+             26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
+             44924L, 44931L, 44935L, 44942L, 44946L)
+
+## Position of the group of nucleosomes
+mu <- c(10000L, 26700L, 45000L)
+
+## Calculation of the exact prior density of mu
+density <- rjmcmc:::priormu(mu, readPositions)
 }
 \author{
 Rawane Samb, Astrid Louise Deschenes
