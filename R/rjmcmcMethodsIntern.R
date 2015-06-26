@@ -1,23 +1,21 @@
 #' @title Death Submove Probability
 #'
-#' @description Calculation of the death submove
-#'      probability of a randomly selected nucleosome using
-#'      a truncated Poisson distribution.
+#' @description Calculation of the death submove probability of a randomly
+#' selected nucleosome using a truncated Poisson distribution.
 #'
 #' @param k a positive \code{integer}, the number of nucleosomes.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
-#'      of the Poisson distribution.
+#' of the Poisson distribution.
 #'
 #' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#'      authorized. When
-#'      \code{k} is equal or superior to \code{kMax}, the
-#'      returned value is \code{0}. Default: \code{30}.
+#' authorized. When \code{k} is equal or superior to \code{kMax}, the
+#' returned value is \code{0}. Default: \code{30}.
 #'
 #' @return a \code{numeric} value representing the calculated death submove
-#'      probability. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kMax} or
-#'      when \code{k} is equal to \code{1}.
+#' probability. The value \code{0} when \code{k} is equal or superior to
+#' \code{kMax} or when \code{k} is equal to \code{1}.
+#'
 #' @examples
 #'
 #' ## Return the death submove probability
@@ -40,24 +38,21 @@ Dk <- function(k, lambda, kMax = 30) {
 
 #' @title Birth Submove Probability
 #'
-#' @description Calculation of the birth submove
-#'      probability of adding a new nucleosome using a
-#'      truncated Poisson distribution.
+#' @description Calculation of the birth submove probability of adding a new
+#' nucleosome using a truncated Poisson distribution.
 #'
-#' @param k a positive \code{integer}, the number of
-#'      nucleosomes.
+#' @param k a positive \code{integer}, the number of nucleosomes.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
-#'      of the Poisson distribution.
+#' of the Poisson distribution.
 #'
 #' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#'      authorized. When
-#'      \code{k} is equal or superior to \code{kMax}, the
-#'      returned value is \code{0}. Default: \code{30}.
+#' authorized. When \code{k} is equal or superior to \code{kMax}, the
+#' returned value is \code{0}. Default: \code{30}.
 #'
-#' @return a \code{numeric} value. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kMax} or
-#'      when \code{k} is equal to \code{1}.
+#' @return a \code{numeric} value. The value \code{0} when \code{k} is equal
+#' or superior to \code{kMax} or when \code{k} is equal to \code{1}.
+#'
 #' @examples
 #'
 #' ## Return the birth submove probability
@@ -78,29 +73,28 @@ Bk <- function(k, lambda, kMax = 30) {
 }
 
 
-#' @title Truncated random deviate from a normal distribution
+#' @title Random deviate from a truncated normal distribution
 #'
-#' @description Generate a random deviate value from a normal
-#'    distribution. The returned value is included inside a
-#'    sp
-#'    ecified range ]minValue,maxValue[ specified by user. The mean and
-#'    variance of the normal distribution is also specified by
-#'    user.
+#' @description Generate a random deviate value from a normal distribution.
+#' The returned value is included inside a specified range ]minValue,maxValue[
+#' specified by user. The mean and variance of the normal distribution is
+#' also specified by user.
 #'
-#' @param mu a \code{numeric} mean of the normal distribution.
+#' @param mu a \code{numeric} value, the mean of the normal distribution.
 #'
-#' @param sigma a \code{numeric} variance of the normal distribution.
+#' @param sigma a non-negative \code{numeric}, the variance of the normal
+#' distribution.
 #'
-#' @param minValue a \code{numeric} inferior boundary of the range
-#'      in which the output value must be located. The
-#'      output value has to be superior to \code{minValue}.
+#' @param minValue a \code{numeric} value, the inferior boundary of the
+#' range in which the output value must be located. The output value has to be
+#' superior to \code{minValue}.
 #'
-#' @param maxValue a \code{numeric} superior boundary of the range
-#'      in which the output value must be located. The
-#'      output value has to be inferior to \code{maxValue}.
+#' @param maxValue a \code{numeric} value, the superior boundary of the range
+#' in which the output value must be located. The output value has to be
+#' inferior to \code{maxValue}.
 #'
-#' @return a \code{numeric} superior to \code{minValue} and inferior
-#'      to \code{maxValue}.
+#' @return a \code{numeric} which is superior to \code{minValue} and inferior
+#' to \code{maxValue}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
@@ -124,7 +118,8 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #'
 #' @param i a \code{vector} TODO
 #'
-#' @param k a \code{integer} number of nucleosomes in a region.
+#' @param k a positive \code{integer} value, the number of nucleosomes in a
+#' region.
 #'
 #' @param w a \code{vector} weight for the nucleosome occupancy.
 #'
@@ -160,7 +155,8 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 #'
 #' @param i a \code{vector} TODO
 #'
-#' @param k a \code{vector} TODO
+#' @param k a positive \code{integer} value, the number of nucleosomes in a
+#' region.
 #'
 #' @param w a \code{vector} TODO
 #'
@@ -189,24 +185,24 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #' @title Prior density of \eqn{mu}
 #'
 #' @description Computes the prior density of \eqn{mu} conditionally to
-#'  the number of nucleosomes.
+#' the number of nucleosomes.
 #'
-#'  For more information on the calculation of the prior density of \eqn{mu},
-#'  see Proposotion 1 and equation (11) of the cited article.
+#' For more information on the calculation of the prior density of \eqn{mu},
+#' see Proposotion 1 and equation (11) of the cited article.
 #'
 #' @param mu a \code{vector} of positive \code{integer} containing the
-#'      positions of all nucleosomes.
+#' positions of all nucleosomes.
 #'
-#' @param reads a \code{vector} of \code{integer} corresponding to the position
-#'      of all reads, including forward and reverse strands.
+#' @param readPositions a \code{vector} of \code{integer} corresponding to the
+#' positions of all reads, including forward and reverse strands.
 #'
-#' @return  the exact prior density of \code{mu} given the
-#'      number of nucleosomes.
+#' @return  the exact prior density of \code{mu} given the number of
+#' nucleosomes.
 #'
 #' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
-#'      informative Multinomial-Dirichlet prior in a t-mixture with
-#'      reversible jump estimation of nucleosome positions for genome-wide
-#'      profiling. Submitted (2015).
+#' informative Multinomial-Dirichlet prior in a t-mixture with
+#' reversible jump estimation of nucleosome positions for genome-wide
+#' profiling. Submitted (2015).
 #' @examples
 #'
 #' ## Sorted vector of read positions, including forward and reverse
@@ -219,6 +215,7 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #'
 #' ## Calculation of the exact prior density of mu
 #' density <- rjmcmc:::priorMuDensity(mu, readPositions)
+#'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 priorMuDensity <- function(mu, readPositions)
@@ -251,17 +248,17 @@ priorMuDensity <- function(mu, readPositions)
 #' @title Element with the hightest number of occurences
 #'
 #' @description \code{mode} takes the integer-valued vector \code{sample} and
-#'      returned the \code{integer} with the highest number of occurences.
-#'      When more than one \code{integer} have the highest number of
-#'      occurences, \code{NA} is returned.
+#' returned the \code{integer} with the highest number of occurences.
+#' When more than one \code{integer} have the highest number of occurences,
+#' \code{NA} is returned.
 #'
 #' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
-#'      values). If the elements of \code{sample} are \code{numeric} but not
-#'      \code{integer}, the elements are truncated by \code{as.integer}.
-
+#' values). If the elements of \code{sample} are \code{numeric} but not
+#' \code{integer}, the elements are truncated by \code{as.integer}.
+#'
 #' @return  a \code{integer} with the highest number of occurences or
-#'      \code{NA} when more than one \code{integer} have the highest number
-#'      of occurences.
+#' \code{NA} when more than one \code{integer} have the highest number
+#' of occurences.
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal

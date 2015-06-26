@@ -9,7 +9,8 @@ normal.mixture(i, k, w, mu, sigma)
 \arguments{
 \item{i}{a \code{vector} TODO}
 
-\item{k}{a \code{vector} TODO}
+\item{k}{a positive \code{integer} value, the number of nucleosomes in a
+region.}
 
 \item{w}{a \code{vector} TODO}
 

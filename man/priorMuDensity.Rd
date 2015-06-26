@@ -8,21 +8,21 @@ priorMuDensity(mu, readPositions)
 }
 \arguments{
 \item{mu}{a \code{vector} of positive \code{integer} containing the
-     positions of all nucleosomes.}
+positions of all nucleosomes.}
 
-\item{reads}{a \code{vector} of \code{integer} corresponding to the position
-     of all reads, including forward and reverse strands.}
+\item{readPositions}{a \code{vector} of \code{integer} corresponding to the
+positions of all reads, including forward and reverse strands.}
 }
 \value{
-the exact prior density of \code{mu} given the
-     number of nucleosomes.
+the exact prior density of \code{mu} given the number of
+nucleosomes.
 }
 \description{
 Computes the prior density of \eqn{mu} conditionally to
- the number of nucleosomes.
+the number of nucleosomes.
 
- For more information on the calculation of the prior density of \eqn{mu},
- see Proposotion 1 and equation (11) of the cited article.
+For more information on the calculation of the prior density of \eqn{mu},
+see Proposotion 1 and equation (11) of the cited article.
 }
 \examples{
 ## Sorted vector of read positions, including forward and reverse
@@ -41,9 +41,9 @@ Rawane Samb, Astrid Louise Deschenes
 }
 \references{
 Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
-     informative Multinomial-Dirichlet prior in a t-mixture with
-     reversible jump estimation of nucleosome positions for genome-wide
-     profiling. Submitted (2015).
+informative Multinomial-Dirichlet prior in a t-mixture with
+reversible jump estimation of nucleosome positions for genome-wide
+profiling. Submitted (2015).
 }
 \keyword{internal}
 

@@ -7,26 +7,22 @@
 Bk(k, lambda, kMax = 30)
 }
 \arguments{
-\item{k}{a positive \code{integer}, the number of
-     nucleosomes.}
+\item{k}{a positive \code{integer}, the number of nucleosomes.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
-     of the Poisson distribution.}
+of the Poisson distribution.}
 
 \item{kMax}{a positive \code{integer}, the maximum number of nucleosomes
-     authorized. When
-     \code{k} is equal or superior to \code{kMax}, the
-     returned value is \code{0}. Default: \code{30}.}
+authorized. When \code{k} is equal or superior to \code{kMax}, the
+returned value is \code{0}. Default: \code{30}.}
 }
 \value{
-a \code{numeric} value. The value \code{0} when
-     \code{k} is equal or superior to \code{kMax} or
-     when \code{k} is equal to \code{1}.
+a \code{numeric} value. The value \code{0} when \code{k} is equal
+or superior to \code{kMax} or when \code{k} is equal to \code{1}.
 }
 \description{
-Calculation of the birth submove
-     probability of adding a new nucleosome using a
-     truncated Poisson distribution.
+Calculation of the birth submove probability of adding a new
+nucleosome using a truncated Poisson distribution.
 }
 \examples{
 ## Return the birth submove probability
