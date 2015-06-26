@@ -1,4 +1,4 @@
-RJMCMC : nucleosome positioning
+rjmcmc : nucleosome positioning
 ==============================================================
 
 This package uses informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide.
