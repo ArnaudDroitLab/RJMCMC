@@ -4,17 +4,18 @@
 \alias{normal.mixture}
 \title{Normal Mixture Model}
 \usage{
-normal.mixture(i, k, w, mu, sigma)
+normal.mixture(i, k, weight, mu, sigma)
 }
 \arguments{
 \item{i}{a \code{vector} TODO}
 
-\item{k}{a positive \code{integer} value, the number of nucleosomes in a
-region.}
+\item{k}{a positive \code{integer} value, the number of nucleosomes in the
+analyzed region.}
 
-\item{w}{a \code{vector} TODO}
+\item{weight}{a \code{vector} TODO}
 
-\item{mu}{a \code{vector} TODO}
+\item{mu}{a \code{vector} of positive \code{integer} values, the positions
+of all the nucleosomes in the analyzed region.}
 
 \item{sigma}{a \code{vector} TODO}
 }

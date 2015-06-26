@@ -155,12 +155,13 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 #'
 #' @param i a \code{vector} TODO
 #'
-#' @param k a positive \code{integer} value, the number of nucleosomes in a
-#' region.
+#' @param k a positive \code{integer} value, the number of nucleosomes in the
+#' analyzed region.
 #'
-#' @param w a \code{vector} TODO
+#' @param weight a \code{vector} TODO
 #'
-#' @param mu a \code{vector} TODO
+#' @param mu a \code{vector} of positive \code{integer} values, the positions
+#' of all the nucleosomes in the analyzed region.
 #'
 #' @param sigma a \code{vector} TODO
 #'
@@ -168,9 +169,9 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 #'
 #' @author Rawane Samb
 #' @keywords internal
-normal.mixture <- function(i, k, w, mu, sigma)
+normal.mixture <- function(i, k, weight, mu, sigma)
 {
-    v <- c(0, w)
+    v <- c(0, weight)
     u <- runif(1, 0, 1)
     for (j in 1:k) {
         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
