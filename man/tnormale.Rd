@@ -2,34 +2,33 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{tnormale}
 \alias{tnormale}
-\title{Truncated random deviate from a normal distribution}
+\title{Random deviate from a truncated normal distribution}
 \usage{
 tnormale(mu, sigma, minValue, maxValue)
 }
 \arguments{
-\item{mu}{a \code{numeric} mean of the normal distribution.}
+\item{mu}{a \code{numeric} value, the mean of the normal distribution.}
 
-\item{sigma}{a \code{numeric} variance of the normal distribution.}
+\item{sigma}{a non-negative \code{numeric}, the variance of the normal
+distribution.}
 
-\item{minValue}{a \code{numeric} inferior boundary of the range
-     in which the output value must be located. The
-     output value has to be superior to \code{minValue}.}
+\item{minValue}{a \code{numeric} value, the inferior boundary of the
+range in which the output value must be located. The output value has to be
+superior to \code{minValue}.}
 
-\item{maxValue}{a \code{numeric} superior boundary of the range
-     in which the output value must be located. The
-     output value has to be inferior to \code{maxValue}.}
+\item{maxValue}{a \code{numeric} value, the superior boundary of the range
+in which the output value must be located. The output value has to be
+inferior to \code{maxValue}.}
 }
 \value{
-a \code{numeric} superior to \code{minValue} and inferior
-     to \code{maxValue}.
+a \code{numeric} which is superior to \code{minValue} and inferior
+to \code{maxValue}.
 }
 \description{
-Generate a random deviate value from a normal
-   distribution. The returned value is included inside a
-   sp
-   ecified range ]minValue,maxValue[ specified by user. The mean and
-   variance of the normal distribution is also specified by
-   user.
+Generate a random deviate value from a normal distribution.
+The returned value is included inside a specified range ]minValue,maxValue[
+specified by user. The mean and variance of the normal distribution is
+also specified by user.
 }
 \author{
 Rawane Samb

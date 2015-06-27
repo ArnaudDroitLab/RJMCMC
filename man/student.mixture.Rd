@@ -9,7 +9,8 @@ student.mixture(i, k, w, mu, sigma, dfr)
 \arguments{
 \item{i}{a \code{vector} TODO}
 
-\item{k}{a \code{integer} number of nucleosomes in a region.}
+\item{k}{a positive \code{integer} value, the number of nucleosomes in a
+region.}
 
 \item{w}{a \code{vector} weight for the nucleosome occupancy.}
 

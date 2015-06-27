@@ -1,106 +1,100 @@
 #' @title Death Submove Probability
 #'
-#' @description Calculation of the death submove
-#'      probability of a randomly selected nucleosome using
-#'      a truncated Poisson distribution.
+#' @description Calculation of the death submove probability of a randomly
+#' selected nucleosome using a truncated Poisson distribution.
 #'
 #' @param k a positive \code{integer}, the number of nucleosomes.
 #'
-#' @param lambda a \code{numeric}, the theorical mean
-#'      of the Poisson distribution.
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
 #'
-#' @param kMax a positive \code{numeric}, the maximum number of nucleosomes
-#'      authorized. When
-#'      \code{k} is equal or superior to \code{kMax}, the
-#'      returned value is \code{0}.
+#' @param kMax a positive \code{integer}, the maximum number of nucleosomes
+#' authorized. When \code{k} is equal or superior to \code{kMax}, the
+#' returned value is \code{0}. Default: \code{30}.
 #'
 #' @return a \code{numeric} value representing the calculated death submove
-#'      probability. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kMax} or
-#'      when \code{k} is equal to \code{1}.
+#' probability. The value \code{0} when \code{k} is equal or superior to
+#' \code{kMax} or when \code{k} is equal to \code{1}.
+#'
 #' @examples
 #'
 #' ## Return the death submove probability
-#' rjmcmc:::Dk(k = 12L, lambda = 4.4, kMax = 30L)
+#' rjmcmc:::Dk(k = 12L, lambda = 2L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Dk(k = 1L, lambda = 4.4, kMax = 30L)
+#' rjmcmc:::Dk(k = 1L, lambda = 3L, kMax = 30L)
 #'
 #' ## Zerio is returned when k is superior to kMax
-#' rjmcmc:::Dk(k = 31L, lambda = 4.4, kMax = 30L)
+#' rjmcmc:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
-Dk <- function(k, lambda, kMax) {
+Dk <- function(k, lambda, kMax = 30) {
     ifelse((k == 1 || k > kMax), 0,
-            0.5*min(1, dpois(k-1,lambda)/dpois(k, lambda)))
+            0.5*min(1, dpois(k - 1, lambda)/dpois(k, lambda)))
 }
 
 
 #' @title Birth Submove Probability
 #'
-#' @description Calculation of the birth submove
-#'      probability of adding a new nucleosome using a
-#'      truncated Poisson distribution.
+#' @description Calculation of the birth submove probability of adding a new
+#' nucleosome using a truncated Poisson distribution.
 #'
-#' @param k a positive \code{integer}, the number of
-#'      nucleosomes.
+#' @param k a positive \code{integer}, the number of nucleosomes.
 #'
-#' @param lambda a \code{numeric}, the theorical mean
-#'      of the Poisson distribution.
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
 #'
 #' @param kMax a positive \code{integer}, the maximum number of nucleosomes
-#'      authorized. When
-#'      \code{k} is equal or superior to \code{kMax}, the
-#'      returned value is \code{0}.
+#' authorized. When \code{k} is equal or superior to \code{kMax}, the
+#' returned value is \code{0}. Default: \code{30}.
 #'
-#' @return a \code{numeric} value. The value \code{0} when
-#'      \code{k} is equal or superior to \code{kMax} or
-#'      when \code{k} is equal to \code{1}.
+#' @return a \code{numeric} value. The value \code{0} when \code{k} is equal
+#' or superior to \code{kMax} or when \code{k} is equal to \code{1}.
+#'
 #' @examples
 #'
 #' ## Return the birth submove probability
-#' rjmcmc:::Bk(k = 14L, lambda = 2.4, kMax = 22L)
+#' rjmcmc:::Bk(k = 14L, lambda = 1L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Bk(k = 1L, lambda = 3.4, kMax = 20L)
+#' rjmcmc:::Bk(k = 1L, lambda = 3L, kMax = 30L)
 #'
-#' ## Zerio is returned when k is superior to kMax
-#' rjmcmc:::Bk(k = 31L, lambda = 4.4, kMax = 30L)
+#' ## Zero is returned when k is superior to kMax
+#' rjmcmc:::Bk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
 #' @keywords internal
-Bk <- function(k, lambda, kMax) {
+Bk <- function(k, lambda, kMax = 30) {
     ifelse((k == 1 || k > kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
 
-#' @title Truncated random deviate from a normal distribution
+#' @title Random deviate from a truncated normal distribution
 #'
-#' @description Generate a random deviate value from a normal
-#'    distribution. The returned value is included inside a
-#'    sp
-#'    ecified range ]minValue,maxValue[ specified by user. The mean and
-#'    variance of the normal distribution is also specified by
-#'    user.
+#' @description Generate a random deviate value from a normal distribution.
+#' The returned value is included inside a specified range ]minValue,maxValue[
+#' specified by user. The mean and variance of the normal distribution is
+#' also specified by user.
 #'
-#' @param mu a \code{numeric} mean of the normal distribution.
+#' @param mu a \code{numeric} value, the mean of the normal distribution.
 #'
-#' @param sigma a \code{numeric} variance of the normal distribution.
+#' @param sigma a non-negative \code{numeric}, the variance of the normal
+#' distribution.
 #'
-#' @param minValue a \code{numeric} inferior boundary of the range
-#'      in which the output value must be located. The
-#'      output value has to be superior to \code{minValue}.
+#' @param minValue a \code{numeric} value, the inferior boundary of the
+#' range in which the output value must be located. The output value has to be
+#' superior to \code{minValue}.
 #'
-#' @param maxValue a \code{numeric} superior boundary of the range
-#'      in which the output value must be located. The
-#'      output value has to be inferior to \code{maxValue}.
+#' @param maxValue a \code{numeric} value, the superior boundary of the range
+#' in which the output value must be located. The output value has to be
+#' inferior to \code{maxValue}.
 #'
-#' @return a \code{numeric} superior to \code{minValue} and inferior
-#'      to \code{maxValue}.
+#' @return a \code{numeric} which is superior to \code{minValue} and inferior
+#' to \code{maxValue}.
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
@@ -124,7 +118,8 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #'
 #' @param i a \code{vector} TODO
 #'
-#' @param k a \code{integer} number of nucleosomes in a region.
+#' @param k a positive \code{integer} value, the number of nucleosomes in a
+#' region.
 #'
 #' @param w a \code{vector} weight for the nucleosome occupancy.
 #'
@@ -160,11 +155,13 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 #'
 #' @param i a \code{vector} TODO
 #'
-#' @param k a \code{vector} TODO
+#' @param k a positive \code{integer} value, the number of nucleosomes in the
+#' analyzed region.
 #'
-#' @param w a \code{vector} TODO
+#' @param weight a \code{vector} TODO
 #'
-#' @param mu a \code{vector} TODO
+#' @param mu a \code{vector} of positive \code{integer} values, the positions
+#' of all the nucleosomes in the analyzed region.
 #'
 #' @param sigma a \code{vector} TODO
 #'
@@ -172,9 +169,9 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 #'
 #' @author Rawane Samb
 #' @keywords internal
-normal.mixture <- function(i, k, w, mu, sigma)
+normal.mixture <- function(i, k, weight, mu, sigma)
 {
-    v <- c(0, w)
+    v <- c(0, weight)
     u <- runif(1, 0, 1)
     for (j in 1:k) {
         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
@@ -189,48 +186,60 @@ normal.mixture <- function(i, k, w, mu, sigma)
 #' @title Prior density of \eqn{mu}
 #'
 #' @description Computes the prior density of \eqn{mu} conditionally to
-#'  the number of nucleosomes.
+#' the number of nucleosomes.
 #'
-#'  For more information on the calculation of the prior density of \eqn{mu},
-#'  see Proposotion 1 of the cited article.
+#' For more information on the calculation of the prior density of \eqn{mu},
+#' see Proposotion 1 and equation (11) of the cited article.
 #'
 #' @param mu a \code{vector} of positive \code{integer} containing the
-#'      positions of all nucleosomes.
+#' positions of all nucleosomes.
 #'
-#' @param reads a \code{vector} of \code{TODO} corresponding to the read
-#'      data, including forward and reverse strands.
+#' @param readPositions a \code{vector} of \code{integer} corresponding to the
+#' positions of all reads, including forward and reverse strands.
 #'
-#' @return  the exact prior density of \code{mu} given the
-#'      number of nucleosomes.
+#' @return  the exact prior density of \code{mu} given the number of
+#' nucleosomes.
 #'
 #' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
-#'      informative Multinomial-Dirichlet prior in a t-mixture with
-#'      reversible jump estimation of nucleosome positions for genome-wide
-#'      profiling. Submitted (2015).
+#' informative Multinomial-Dirichlet prior in a t-mixture with
+#' reversible jump estimation of nucleosome positions for genome-wide
+#' profiling. Submitted (2015).
+#' @examples
+#'
+#' ## Sorted vector of read positions, including forward and reverse
+#' readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
+#'              26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
+#'              44924L, 44931L, 44935L, 44942L, 44946L)
+#'
+#' ## Position of the group of nucleosomes
+#' mu <- c(10000L, 26700L, 45000L)
+#'
+#' ## Calculation of the exact prior density of mu
+#' density <- rjmcmc:::priorMuDensity(mu, readPositions)
+#'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priormu <- function(mu, reads)
+priorMuDensity <- function(mu, readPositions)
 {
+    ## Get the number of nucleosomes
     k <- length(mu)
     ## Create a matrix used in the calculation of the priors
     basicMatrix <- matrix(0L, nrow = k, ncol = k)
     for (i in 1:k) {
-        for (j in 1:k) {
-            if (j == i) {
-                basicMatrix[i, j] <- 1L
-            } else if (j == i - 1) {
-                basicMatrix[i, j] <- -1L
-            }
-        }
+        basicMatrix[i, i] <- 1L
+    }
+    for (i in 2:k) {
+        basicMatrix[i , i - 1] <- -1L
     }
     omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)
-    R <- max(reads) - min(reads)
+    R <- max(readPositions) - min(readPositions)
     # Calculating the mean (E)
-    E <- (max(reads) + min(reads))/2
+    E <- (max(readPositions) + min(readPositions))/2
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
+    ## Equation 11 in the cited article
     prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
     return(prior)
 }
@@ -240,17 +249,17 @@ priormu <- function(mu, reads)
 #' @title Element with the hightest number of occurences
 #'
 #' @description \code{mode} takes the integer-valued vector \code{sample} and
-#'      returned the \code{integer} with the highest number of occurences.
-#'      When more than one \code{integer} have the highest number of
-#'      occurences, \code{NA} is returned.
+#' returned the \code{integer} with the highest number of occurences.
+#' When more than one \code{integer} have the highest number of occurences,
+#' \code{NA} is returned.
 #'
 #' @param sample a \code{numeric} \code{vector} (of positive \code{integer}
-#'      values). If the elements of \code{sample} are \code{numeric} but not
-#'      \code{integer}, the elements are truncated by \code{as.integer}.
-
+#' values). If the elements of \code{sample} are \code{numeric} but not
+#' \code{integer}, the elements are truncated by \code{as.integer}.
+#'
 #' @return  a \code{integer} with the highest number of occurences or
-#'      \code{NA} when more than one \code{integer} have the highest number
-#'      of occurences.
+#' \code{NA} when more than one \code{integer} have the highest number
+#' of occurences.
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
@@ -265,11 +274,6 @@ priormu <- function(mu, reads)
 #'
 mode <- function(sample) {
     tabsample <- tabulate(sample)
-    #samplemode <- which(tabsample == max(tabsample))[1]
-    #if(sum(tabsample == max(tabsample)) > 1) {
-    #    samplemode <- NA
-    #}
-    ## CODE MODIFIER PAR ASTRID
     maxOccurence <- tabsample == max(tabsample)
     ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
 }

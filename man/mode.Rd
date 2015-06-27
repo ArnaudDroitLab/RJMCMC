@@ -13,14 +13,14 @@ values). If the elements of \code{sample} are \code{numeric} but not
 }
 \value{
 a \code{integer} with the highest number of occurences or
-     \code{NA} when more than one \code{integer} have the highest number
-     of occurences.
+\code{NA} when more than one \code{integer} have the highest number
+of occurences.
 }
 \description{
 \code{mode} takes the integer-valued vector \code{sample} and
-     returned the \code{integer} with the highest number of occurences.
-     When more than one \code{integer} have the highest number of
-     occurences, \code{NA} is returned.
+returned the \code{integer} with the highest number of occurences.
+When more than one \code{integer} have the highest number of occurences,
+\code{NA} is returned.
 }
 \examples{
 ## Return the element with the hightest number of occurence

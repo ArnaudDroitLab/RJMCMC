@@ -21,8 +21,7 @@ Author@R: c(person("Rawane", "Samb",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
     person("Arnaud", "Droit",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
-Depends: R (>= 3.2),
-    BiocGenerics
+Depends: R (>= 3.2), BiocGenerics
 Imports: MCMCpack,
     stats
 Suggests: knitr,
@@ -30,5 +29,5 @@ Suggests: knitr,
 License: Artistic-2.0 | file LICENSE
 VignetteBuilder: knitr
 NeedsCompilation: no
-biocViews: BiologicalQuestion, ChIPSeq
+biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning
 Maintainer: Rawane Samb <rawane.samb.1@ulaval.ca>

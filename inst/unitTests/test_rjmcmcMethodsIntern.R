@@ -119,17 +119,6 @@ test.tnormale_result_with_various_values_of_lambda <- function() {
     checkEqualsNumeric(obs, exp, msg = message)
 }
 
-test.priormu_results_with_various_values_of_mu <- function() {
-    set.seed(101)
-    obs <- mapply(c(9, 8, 6, 2, 24, 3, 1),
-                  FUN = function(x) {rjmcmc:::priormu(x, 1:10)})
-    exp <- c(0.0821972680, 0.0852986904, 0.0885171341, 0.0821972680,
-             0.0107197199, 0.0852986904, 0.0782367393)
-    message <- paste0(" priormu_result_with_various_values_of_mu() ",
-                      "- Not all tested data with various mu generated",
-                      " expected values.")
-    checkEqualsNumeric(obs, exp, msg = message)
-}
 
 test.mode_results_with_different_vectors <- function() {
     set.seed(101)
@@ -145,4 +134,41 @@ test.mode_results_with_different_vectors <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+test.priorMuDensity_with_1000_reads <- function() {
+    set.seed(101)
+    k <- 3L
+    nbrReads <- 500L
+    mu <- c(10000L, 26700L, 45000L)
+    sigma <- rep(400L, k)
+    delta  <- rep(147, k)
+    weight <- c(0.3, 0.2, 0.5)
 
+    readsForward <- sapply(1:nbrReads, rjmcmc:::normal.mixture, k = k,
+                        w = weight, mu = mu - delta/2, sigma = sigma)
+    readsReverse <- sapply(1:nbrReads, rjmcmc:::normal.mixture, k = k,
+                        w = weight, mu = mu - delta/2, sigma = sigma)
+
+    reads <- sort(c(readsForward, readsReverse))
+
+    obs <- rjmcmc:::priorMuDensity(mu, reads)
+
+    exp <- 8.0883349761e-15
+
+    message <- paste0(" priorMuDensity_with_1000_reads() ",
+                      "- The result is not the expected value.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}
+
+
+test.priorMuDensity_results_with_various_values_of_mu <- function() {
+    set.seed(101)
+    obs <- mapply(list(A=c(10200, 10300), B=c(10108, 10206, 10222),
+                    C=c(10333, 10455, 10899)),
+                    FUN = function(x) { rjmcmc:::priorMuDensity(x,
+                                                    10000:11000) })
+    exp <- c(6.0557145969e-7, 4.6807063829e-10, 4.5053092518e-10)
+    message <- paste0(" priorMuDensity_results_with_various_values_of_mu() ",
+                      "- Not all tested data with various mu generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}

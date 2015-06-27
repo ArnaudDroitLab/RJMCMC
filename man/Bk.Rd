@@ -4,39 +4,35 @@
 \alias{Bk}
 \title{Birth Submove Probability}
 \usage{
-Bk(k, lambda, kMax)
+Bk(k, lambda, kMax = 30)
 }
 \arguments{
-\item{k}{a positive \code{integer}, the number of
-     nucleosomes.}
+\item{k}{a positive \code{integer}, the number of nucleosomes.}
 
-\item{lambda}{a \code{numeric}, the theorical mean
-     of the Poisson distribution.}
+\item{lambda}{a positive \code{numeric}, the theorical mean
+of the Poisson distribution.}
 
 \item{kMax}{a positive \code{integer}, the maximum number of nucleosomes
-     authorized. When
-     \code{k} is equal or superior to \code{kMax}, the
-     returned value is \code{0}.}
+authorized. When \code{k} is equal or superior to \code{kMax}, the
+returned value is \code{0}. Default: \code{30}.}
 }
 \value{
-a \code{numeric} value. The value \code{0} when
-     \code{k} is equal or superior to \code{kMax} or
-     when \code{k} is equal to \code{1}.
+a \code{numeric} value. The value \code{0} when \code{k} is equal
+or superior to \code{kMax} or when \code{k} is equal to \code{1}.
 }
 \description{
-Calculation of the birth submove
-     probability of adding a new nucleosome using a
-     truncated Poisson distribution.
+Calculation of the birth submove probability of adding a new
+nucleosome using a truncated Poisson distribution.
 }
 \examples{
 ## Return the birth submove probability
-rjmcmc:::Bk(k = 14L, lambda = 2.4, kMax = 22L)
+rjmcmc:::Bk(k = 14L, lambda = 1L, kMax = 30L)
 
 ## Zero is returned when k = 1
-rjmcmc:::Bk(k = 1L, lambda = 3.4, kMax = 20L)
+rjmcmc:::Bk(k = 1L, lambda = 3L, kMax = 30L)
 
-## Zerio is returned when k is superior to kMax
-rjmcmc:::Bk(k = 31L, lambda = 4.4, kMax = 30L)
+## Zero is returned when k is superior to kMax
+rjmcmc:::Bk(k = 31L, lambda = 2L, kMax = 30L)
 }
 \author{
 Rawane Samb
