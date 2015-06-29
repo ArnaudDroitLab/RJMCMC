@@ -22,7 +22,8 @@ region.}
      of freedom.}
 }
 \value{
-\code{0} TODO
+a \code{numerical}, the value generated from a Student Mixture
+distribution.
 }
 \description{
 TODO

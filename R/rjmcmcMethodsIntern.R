@@ -130,7 +130,8 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #' @param dfr a \code{vector} of \code{numeric} containing the degree
 #'      of freedom.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical}, the value generated from a Student Mixture
+#' distribution.
 #'
 #' @author Rawane Samb
 #' @keywords internal
@@ -151,35 +152,57 @@ student.mixture <- function(i, k, w, mu, sigma, dfr)
 
 #' @title Normal Mixture Model
 #'
-#' @description TODO
+#' @description Generation a value from a Normal Mixture distribution.
 #'
-#' @param i a \code{vector} TODO
+#' @param i a \code{integer} a count parameter.
 #'
 #' @param k a positive \code{integer} value, the number of nucleosomes in the
 #' analyzed region.
 #'
-#' @param weight a \code{vector} TODO
+#' @param weight a \code{vector} of length \code{k}, the weight for each
+#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
+#' The length of \code{weight} must be equal to \code{k}.
 #'
-#' @param mu a \code{vector} of positive \code{integer} values, the positions
-#' of all the nucleosomes in the analyzed region.
+#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
+#' the positions of all the nucleosomes in the analyzed region. The length
+#' of \code{weight} must be equal to \code{k}.
 #'
-#' @param sigma a \code{vector} TODO
+#' @param sigma a \code{vector} of length \code{k}, the variance for each
+#' nucleosome.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical}, the value generated from a Normal Mixture
+#' distribution.
 #'
-#' @author Rawane Samb
+#' @examples
+#'
+#' ## Return a value generated from a normal mixture
+#' rjmcmc:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
+#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
+#'
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 normal.mixture <- function(i, k, weight, mu, sigma)
 {
-    v <- c(0, weight)
+    # Adding zero to the weight vector and calculating the cumulative sums
+    sumWeight <- cumsum(c(0, weight))
+
     u <- runif(1, 0, 1)
-    for (j in 1:k) {
-        if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
-        {
-            mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
-        }
-    }
-    return(mixte)
+
+    # Get the maximal position where the sum of weight is inferior to u
+    position <- max(which(sumWeight < u))
+
+    return(rnorm(1, mu[position], sd = sqrt(sigma[position])))
+
+#   ANCIEN CODE MOINS RAPIDE
+#   v <- c(0, weight)
+#   u <- runif(1, 0, 1)
+#     for (j in 1:k) {
+#         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
+#         {
+#             mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
+#         }
+#     }
+#     return(mixte)
 }
 
 
