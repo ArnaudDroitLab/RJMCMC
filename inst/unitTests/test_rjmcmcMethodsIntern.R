@@ -206,5 +206,25 @@ test.normal_mixture_results_with_various_values_of_mu <- function() {
                       " expected values.")
     checkEqualsNumeric(obs, exp, msg = message)
 }
+#########################################################
+## student.mixture() function
+#########################################################
 
-
+test.student_mixture_results_with_various_values_of_mu <- function() {
+    set.seed(101)
+    k <- 6
+    weight <- c(0.1, 0.15, 0.15, 0.2, 0.4)
+    sigma <- c(4,4,4,4,4,4)
+    dfr <- sigma
+    mu <- list(A=c(4,6,7,8,34,44), B=c(2,16,17,21,24,34),
+               C=c(102, 103, 106, 200, 201, 222))
+    obs <- mapply(mu,
+                  FUN = function(x) { rjmcmc:::student.mixture(k = k,
+                                        weight = weight, mu = x,
+                                        sigma = sigma, dfr = dfr)} )
+    exp <- c(3.61671572308, 17.43930668620, 201.78192965619)
+    message <- paste0(" student_mixture_results_with_various_values_of_mu() ",
+                      "- Not all tested data with various mu generated",
+                      " expected values.")
+    checkEqualsNumeric(obs, exp, msg = message)
+}

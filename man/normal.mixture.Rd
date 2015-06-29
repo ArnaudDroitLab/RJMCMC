@@ -7,7 +7,7 @@
 normal.mixture(i, k, weight, mu, sigma)
 }
 \arguments{
-\item{i}{a \code{integer} a count parameter.}
+\item{i}{a \code{integer},  a count parameter.}
 
 \item{k}{a positive \code{integer} value, the number of nucleosomes in the
 analyzed region.}
@@ -21,7 +21,7 @@ the positions of all the nucleosomes in the analyzed region. The length
 of \code{weight} must be equal to \code{k}.}
 
 \item{sigma}{a \code{vector} of length \code{k}, the variance for each
-nucleosome.}
+nucleosome. The length of \code{sigma} must be equal to \code{k}.}
 }
 \value{
 a \code{numerical}, the value generated from a Normal Mixture
