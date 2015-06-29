@@ -7,22 +7,27 @@
 RJMCMC(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 }
 \arguments{
-\item{yf}{a \code{GRanges} of forward reads.}
+\item{yf}{a \code{vector} of positive \code{integer}, the positions of all
+the forward reads.}
 
-\item{yr}{a \code{GRanges} of reverse reads.}
+\item{yr}{a \code{vector} of positive \code{integer}, the positions of all
+the reverse reads.}
 
 \item{niter}{a \code{numeric} number of iterations.}
 
-\item{kmax}{a \code{numeric} maximum number of nucleosomes per region.}
+\item{kmax}{a positive \code{integer}, the maximum number of nucleosomes
+per region.}
 
-\item{lambda}{a \code{numeric} parameter of the Poisson distribution.}
+\item{lambda}{}
 
-\item{ecartmin}{a \code{numeric} minimum distance between two nucleosomes.}
+\item{ecartmin}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
 
-\item{ecartmax}{a \code{numeric} maximum distance between two nucleosomes.}
+\item{ecartmax}{a \code{numeric}, the maximum distance between two
+nucleosomes.}
 
 \item{minReads}{a \code{numeric} minimum number of reads in a potential
-     canditate region.}
+canditate region.}
 }
 \value{
 \code{0} TODO

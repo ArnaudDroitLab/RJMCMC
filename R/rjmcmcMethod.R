@@ -4,22 +4,27 @@
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data).
 #'
-#' @param yf a \code{GRanges} of forward reads.
+#' @param yf a \code{vector} of positive \code{integer}, the positions of all
+#' the forward reads.
 #'
-#' @param yr a \code{GRanges} of reverse reads.
+#' @param yr a \code{vector} of positive \code{integer}, the positions of all
+#' the reverse reads.
 #'
 #' @param niter a \code{numeric} number of iterations.
 #'
-#' @param kmax a \code{numeric} maximum number of nucleosomes per region.
+#' @param kmax a positive \code{integer}, the maximum number of nucleosomes
+#' per region.
 #'
-#' @param lambda a \code{numeric} parameter of the Poisson distribution.
+#' @param lambda
 #'
-#' @param ecartmin a \code{numeric} minimum distance between two nucleosomes.
+#' @param ecartmin a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax a \code{numeric} maximum distance between two nucleosomes.
+#' @param ecartmax a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
 #' @param minReads a \code{numeric} minimum number of reads in a potential
-#'      canditate region.
+#' canditate region.
 #'
 #' @return \code{0} TODO
 #'
@@ -830,7 +835,8 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                          w=w[i,1:k[i]]
         )
 
-        liste <- merge(yf, yr, y, new.list, ecartmin, ecartmax, minReads)
+        liste <- mergeNucleosomes(yf, yr, y, new.list, ecartmin,
+                                        ecartmax, minReads)
 
         k[i]             <- liste$k
         mu[i,1:k[i]]     <- liste$mu

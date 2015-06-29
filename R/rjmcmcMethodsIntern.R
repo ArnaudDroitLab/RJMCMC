@@ -238,11 +238,13 @@ normal.mixture <- function(i, k, weight, mu, sigma)
 #' @param mu a \code{vector} of positive \code{integer} containing the
 #' positions of all nucleosomes.
 #'
-#' @param readPositions a \code{vector} of \code{integer} corresponding to the
-#' positions of all reads, including forward and reverse strands.
+#' @param readPositions a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all reads, including forward and reverse strands. The
+#' values insinde \code{readPositions} must be sorted.
 #'
-#' @return  the exact prior density of \code{mu} given the number of
-#' nucleosomes.
+#' @return  a \code{numeric}, the exact prior density of \code{mu} given the
+#' number of nucleosomes.
 #'
 #' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
 #' informative Multinomial-Dirichlet prior in a t-mixture with
@@ -283,11 +285,10 @@ priorMuDensity <- function(mu, readPositions)
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
+    ## The calculation of the prior
     ## Equation 11 in the cited article
-    prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
-    return(prior)
+    return(const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M))))
 }
-
 
 
 #' @title Element with the hightest number of occurences
@@ -327,9 +328,15 @@ mode <- function(sample) {
 #'
 #' @description TODO
 #'
-#' @param yf TODO
+#' @param yf a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all forward reads. The
+#' values insinde \code{yf} must be sorted.
 #'
-#' @param yr TODO
+#' @param yr a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all reverse reads. The
+#' values insinde \code{yf} must be sorted.
 #'
 #' @param y TODO
 #'
@@ -345,8 +352,9 @@ mode <- function(sample) {
 #'
 #' @author Rawane Samb
 #' @keywords internal
-merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+mergeNucleosomes <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
+    # Get the number of nucleosomes
     k <- length(liste$mu)
     if (k > 1) {
         ecart.min <- min(sapply(1:(k-1),
@@ -394,7 +402,8 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
         else {
             liste <- liste
         }
-        liste <- split(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+        liste <- splitNucleosome(yf, yr, y, liste, ecartmin,
+                                    ecartmax, minReads)
     } ### condition else if (k > 1)
     return(liste)
 }
@@ -422,7 +431,7 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 #'
 #' @author Rawane Samb
 #' @keywords internal
-split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+splitNucleosome <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
     ## Astrid : on devrait changer le nom car porte a confusion avec
     ## les fonctions split() existantes
