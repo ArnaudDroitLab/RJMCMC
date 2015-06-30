@@ -4,7 +4,7 @@
 \alias{splitNucleosome}
 \title{Spliting a nucleosomal region into two regions}
 \usage{
-splitNucleosome(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+splitNucleosome(yf, yr, y, liste, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{TODO}
@@ -15,11 +15,14 @@ splitNucleosome(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 
 \item{liste}{TODO}
 
-\item{ecartmin}{TODO}
+\item{maxInterval}{a \code{numeric}, the maximum distance between two
+nucleosomes.}
 
-\item{ecartmax}{TODO}
+\item{minReads}{a positive \code{integer}, the minimum
+number of reads in a potential canditate region.}
 
-\item{minReads}{TODO}
+\item{minInteval}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
 }
 \value{
 \code{0} TODO

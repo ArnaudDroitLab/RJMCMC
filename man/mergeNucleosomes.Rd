@@ -4,7 +4,7 @@
 \alias{mergeNucleosomes}
 \title{Merging two nucleosomal regions}
 \usage{
-mergeNucleosomes(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+mergeNucleosomes(yf, yr, y, liste, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{integer}
@@ -21,11 +21,14 @@ values insinde \code{yf} must be sorted.}
 
 \item{liste}{TODO}
 
-\item{ecartmin}{TODO}
+\item{maxInterval}{a \code{numeric}, the maximum distance between two
+nucleosomes.}
 
-\item{ecartmax}{TODO}
+\item{minReads}{a positive \code{integer}, the minimum
+number of reads in a potential canditate region.}
 
-\item{minReads}{TODO}
+\item{minInteval}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
 }
 \value{
 \code{0} TODO

@@ -10,21 +10,27 @@
 #' @param yr a \code{vector} of positive \code{integer}, the positions of all
 #' the reverse reads.
 #'
-#' @param niter a \code{numeric} number of iterations.
+#' @param niter a positive \code{integer} or \code{numeric}, the number of
+#' iterations. Non-integer values
+#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' zero.
 #'
-#' @param kmax a positive \code{integer}, the maximum number of nucleosomes
-#' per region.
+#' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
 #'
 #' @param lambda
 #'
-#' @param ecartmin a \code{numeric}, the minimum distance between two
+#' @param minInteval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
 #'
-#' @param ecartmax a \code{numeric}, the maximum distance between two
+#' @param maxInterval a \code{numeric}, the maximum distance between two
 #' nucleosomes.
 #'
-#' @param minReads a \code{numeric} minimum number of reads in a potential
-#' canditate region.
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero.
 #'
 #' @return \code{0} TODO
 #'
@@ -33,11 +39,22 @@
 #' @import BiocGenerics
 #' @author Rawane Samb
 #' @export
-RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
+RJMCMC <- function(yf, yr, niter, kmax, lambda,
+                    minInteval, maxInterval, minReads)
 {
-    ## ASTRID : voir si kmax, niter, ecartmin, ecartmax, lambda, minReads
+    ## ASTRID : voir si kmax, niter, minInteval, maxInterval, lambda, minReads
     ## ne pourraient pas etre des integers
     ## ASTRID : il faudrait aussi penser au nom des variables
+
+    # Parameters validation
+    validateParameter(yf, yr, niter, kmax, lambda, minInteval,
+                                    maxInterval, minReads)
+
+    # Casting specific inputs as integer
+    minReads <- as.integer(minReads)
+    niter <- as.integer(niter)
+    kmax <- as.integer(kmax)
+
     y <- sort(c(yf,yr))
     n <- length(y)
     size <- n
@@ -835,8 +852,8 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                          w=w[i,1:k[i]]
         )
 
-        liste <- mergeNucleosomes(yf, yr, y, new.list, ecartmin,
-                                        ecartmax, minReads)
+        liste <- mergeNucleosomes(yf, yr, y, new.list, minInteval,
+                                        maxInterval, minReads)
 
         k[i]             <- liste$k
         mu[i,1:k[i]]     <- liste$mu

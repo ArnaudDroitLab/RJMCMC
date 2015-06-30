@@ -342,24 +342,27 @@ mode <- function(sample) {
 #'
 #' @param liste TODO
 #'
-#' @param ecartmin TODO
+#' @param minInteval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax TODO
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @param minReads TODO
+#' @param minReads a positive \code{integer}, the minimum
+#' number of reads in a potential canditate region.
 #'
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
 #' @keywords internal
-mergeNucleosomes <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minReads)
 {
     # Get the number of nucleosomes
     k <- length(liste$mu)
     if (k > 1) {
         ecart.min <- min(sapply(1:(k-1),
                             function(j){liste$mu[j+1] - liste$mu[j]}))
-        if (ecart.min < ecartmin)
+        if (ecart.min < minInterval)
         {
             repeat
             {
@@ -389,7 +392,7 @@ mergeNucleosomes <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                 if (k > 1) {
                     ecart.min <- min(sapply(1:(k-1),
                                     function(i){liste$mu[i+1]-liste$mu[i]}))}
-                if (k == 1 || ecart.min > ecartmin) break()
+                if (k == 1 || ecart.min > minInterval) break()
             } ### end of boucle repeat
             liste <- list(k = k,
                             mu = liste$mu,
@@ -398,12 +401,12 @@ mergeNucleosomes <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                             delta = liste$delta,
                             dl = liste$dl,
                             w = liste$w)
-        } ### end of condition if (ecart.min < ecartmin)
+        } ### end of condition if (ecart.min < minInterval)
         else {
             liste <- liste
         }
-        liste <- splitNucleosome(yf, yr, y, liste, ecartmin,
-                                    ecartmax, minReads)
+        liste <- splitNucleosome(yf, yr, y, liste, minInterval,
+                                    maxInterval, minReads)
     } ### condition else if (k > 1)
     return(liste)
 }
@@ -421,17 +424,21 @@ mergeNucleosomes <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 #'
 #' @param liste TODO
 #'
-#' @param ecartmin TODO
+#' @param minInteval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax TODO
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @param minReads TODO
+#' @param minReads a positive \code{integer}, the minimum
+#' number of reads in a potential canditate region.
 #'
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
 #' @keywords internal
-splitNucleosome <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
+                                    minReads)
 {
     ## Astrid : on devrait changer le nom car porte a confusion avec
     ## les fonctions split() existantes
@@ -439,7 +446,7 @@ splitNucleosome <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
     if (k>1) {
         ecart.max <- max(sapply(1:(k-1),
                                 function(j){liste$mu[j+1]-liste$mu[j]}))
-        if (ecart.max > ecartmax) {
+        if (ecart.max > maxInterval) {
             j <- 1
             repeat {
                 p <- which(sapply(1:(k-1),
@@ -493,9 +500,105 @@ splitNucleosome <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                                     }))[k - 1 - j]
                     j <- j + 1
                 }
-                if ( j == (k - 1) || ecart.max <= ecartmax) break()
+                if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
-        } ### end of condition if (ecart.max > ecartmax)
+        } ### end of condition if (ecart.max > maxInterval)
     } ### end of condition if (k>1)
     return(liste)
 }
+
+#' @title Parameters validation for the \code{\link{RJMCMC}}
+#' function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{RJMCMC}} function.
+#'
+#' @param yf a \code{vector} of positive \code{integer}, the positions of all
+#' the forward reads.
+#'
+#' @param yr a \code{vector} of positive \code{integer}, the positions of all
+#' the reverse reads.
+#'
+#' @param niter a positive \code{integer} or \code{numeric}, the number of
+#' iterations. Non-integer values
+#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda TODO
+#'
+#' @param minInteval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @author Astrid Louise Deschenes
+#' @keywords internal
+validateParameters <- function(yf, yr, niter, kmax,
+                                lambda, minInterval, maxInterval, minReads)
+{
+    ## Validate the niter parameter
+    if (!isInteger(niter) || as.integer(niter) < 1) {
+        stop("niter must be a positive integer or numerical")
+    }
+
+    ## Validate the kmax parameter
+    if (!isInteger(kmax) || as.integer(kmax) < 1) {
+        stop("kmax must be a positive integer or numerical")
+    }
+
+    ## Validate the minReads parameter
+    if (!isInteger(minReads) || as.integer(minReads) < 1) {
+        stop("minReads must be a positive integer or numerical")
+    }
+
+    return(0)
+}
+
+
+#' @title Validate if a value is an integer
+#'
+#' @description Validate if the value passed to the function can be casted
+#' into a \code{integer} or
+#' not. To be considered as castable into a \code{integer}, the value must
+#' have a length
+#' of 1. The type of value can be a \code{integer} or \code{numerical}.
+#'
+#' @param value an object to validate.
+#'
+#' @return \code{TRUE} is the parameter is a integer; otherwise \code{FALSE}
+#'
+#' @examples
+#'
+#' ## Return TRUE because the input is an integer of length 1
+#' rjmcmc:::isInteger(33L)
+#'
+#' ## Return FALSE because the length of the input is not 1
+#' rjmcmc:::isInteger(c(21L, 33L))
+#'
+#' ## Return TRUE because the input is a numericalof length 1
+#' rjmcmc:::isInteger(323.21)
+#'
+#' ## Return FALSE because the length of the input is not 1
+#' rjmcmc:::isInteger(c(444.2, 442.1))
+#'
+#' @author Astrid Louise Deschenes
+#' @keywords internal
+#'
+isInteger <- function(value) {
+    return((is.integer(value) && length(value) == 1) || (is.numeric(value) &&
+        length(value) == 1))
+}
+
