@@ -274,8 +274,10 @@ priorMuDensity <- function(mu, readPositions)
     for (i in 1:k) {
         basicMatrix[i, i] <- 1L
     }
+    if (k > 1) {
     for (i in 2:k) {
         basicMatrix[i , i - 1] <- -1L
+    }
     }
     omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)

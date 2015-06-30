@@ -33,7 +33,14 @@
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @return \code{0} TODO
+#' @return an \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+#' \itemize{
+#' \item \code{call} the matched call.
+#' \item \code{K} TODO
+#' \item \code{k} a \code{integer}, the number of nucleosomes.
+#' \item \code{mu} a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#' }
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois
@@ -46,6 +53,9 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
     ## ASTRID : voir si minInterval, maxInterval
     ## ne pourraient pas etre des integers
     ## ASTRID : il faudrait aussi penser au nom des variables
+
+    # Get call information
+    cl <- match.call()
 
     # Parameters validation
     validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
@@ -899,22 +909,26 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
         qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
     }
 
-    liste <- list(
-        K=k,
-        k=km,
-        mu=mu_hat,
-        sigmaf=sigmaf_hat,
-        sigmar=sigmar_hat,
-        delta=delta_hat,
-        dl=dl_hat,
-        w=w_hat,
-        qmu=qmu,
-        qsigmaf=qsigmaf,
-        qsigmar=qsigmar,
-        qdelta=qdelta,
-        qdl=qdl,
-        qw=qw
+    result <- list(
+        call = cl,
+        K = k,
+        k = km,
+        mu = mu_hat,
+        sigmaf = sigmaf_hat,
+        sigmar = sigmar_hat,
+        delta = delta_hat,
+        dl = dl_hat,
+        w = w_hat,
+        qmu = qmu,
+        qsigmaf = qsigmaf,
+        qsigmar = qsigmar,
+        qdelta = qdelta,
+        qdl = qdl,
+        qw = qw
     )
-    return(liste)
+
+    class(result)<-"rjmcmcNucleosomes"
+
+    return(result)
 
 }

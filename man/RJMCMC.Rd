@@ -37,7 +37,14 @@ of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
 }
 \value{
-\code{0} TODO
+an \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+\itemize{
+\item \code{call} the matched call.
+\item \code{K} TODO
+\item \code{k} a \code{integer}, the number of nucleosomes.
+\item \code{mu} a \code{vector} of \code{numeric}, the positions of
+the nucleosomes.
+}
 }
 \description{
 Use of a fully Bayesian hierarchical model for genome-wide
