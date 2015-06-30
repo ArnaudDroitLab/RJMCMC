@@ -15,8 +15,7 @@ isInteger(value)
 \description{
 Validate if the value passed to the function can be casted
 into a \code{integer} or
-not. To be considered as castable into a \code{integer}, the value must
-have a length
+not. The value must have a length
 of 1. The type of value can be a \code{integer} or \code{numerical}.
 }
 \examples{

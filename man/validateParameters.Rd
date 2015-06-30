@@ -5,8 +5,8 @@
 \title{Parameters validation for the \code{\link{RJMCMC}}
 function}
 \usage{
-validateParameters(yf, yr, niter, kmax, lambda, minInterval, maxInterval,
-  minReads)
+validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
+  maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{integer}, the positions of all
@@ -15,16 +15,20 @@ the forward reads.}
 \item{yr}{a \code{vector} of positive \code{integer}, the positions of all
 the reverse reads.}
 
-\item{niter}{a positive \code{integer} or \code{numeric}, the number of
-iterations. Non-integer values
-of \code{niter} will be casted to \code{integer} and truncated towards
-zero.}
+\item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
+number of iterations. Non-integer values of
+\code{nbrIterations} will be casted to \code{integer} and truncated towards
+zero. The maximum value of \code{nbrIterations} is \code{100000}.}
 
 \item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
 of \code{kmax} will be casted to \code{integer} and truncated towards zero.}
 
-\item{lambda}{TODO}
+\item{lambda}{a positive \code{numeric}, the theorical mean
+of the Poisson distribution.}
+
+\item{minInterval}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
 
 \item{maxInterval}{a \code{numeric}, the maximum distance between two
 nucleosomes.}
@@ -33,9 +37,6 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{niter} will be casted to \code{integer} and truncated towards
 zero.}
-
-\item{minInteval}{a \code{numeric}, the minimum distance between two
-nucleosomes.}
 }
 \value{
 \code{0} indicating that all parameters validations have been

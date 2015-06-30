@@ -4,7 +4,7 @@
 \alias{RJMCMC}
 \title{Nucleosome positioning mapping}
 \usage{
-RJMCMC(yf, yr, niter, kmax, lambda, minInteval, maxInterval, minReads)
+RJMCMC(yf, yr, nbrIterations, kmax, lambda, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{integer}, the positions of all
@@ -13,18 +13,19 @@ the forward reads.}
 \item{yr}{a \code{vector} of positive \code{integer}, the positions of all
 the reverse reads.}
 
-\item{niter}{a positive \code{integer} or \code{numeric}, the number of
-iterations. Non-integer values
-of \code{niter} will be casted to \code{integer} and truncated towards
+\item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
+number of iterations. Non-integer values of
+\code{nbrIterations} will be casted to \code{integer} and truncated towards
 zero.}
 
 \item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
 of \code{kmax} will be casted to \code{integer} and truncated towards zero.}
 
-\item{lambda}{}
+\item{lambda}{a positive \code{numeric}, the theorical mean
+of the Poisson distribution.}
 
-\item{minInteval}{a \code{numeric}, the minimum distance between two
+\item{minInterval}{a \code{numeric}, the minimum distance between two
 nucleosomes.}
 
 \item{maxInterval}{a \code{numeric}, the maximum distance between two

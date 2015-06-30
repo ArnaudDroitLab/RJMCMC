@@ -10,18 +10,19 @@
 #' @param yr a \code{vector} of positive \code{integer}, the positions of all
 #' the reverse reads.
 #'
-#' @param niter a positive \code{integer} or \code{numeric}, the number of
-#' iterations. Non-integer values
-#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
 #' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
 #' of nucleosomes per region. Non-integer values
 #' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
 #'
-#' @param lambda
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
 #'
-#' @param minInteval a \code{numeric}, the minimum distance between two
+#' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
 #'
 #' @param maxInterval a \code{numeric}, the maximum distance between two
@@ -39,20 +40,20 @@
 #' @import BiocGenerics
 #' @author Rawane Samb
 #' @export
-RJMCMC <- function(yf, yr, niter, kmax, lambda,
-                    minInteval, maxInterval, minReads)
+RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
+                    minInterval, maxInterval, minReads)
 {
-    ## ASTRID : voir si kmax, niter, minInteval, maxInterval, lambda, minReads
+    ## ASTRID : voir si minInterval, maxInterval
     ## ne pourraient pas etre des integers
     ## ASTRID : il faudrait aussi penser au nom des variables
 
     # Parameters validation
-    validateParameter(yf, yr, niter, kmax, lambda, minInteval,
+    validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
                                     maxInterval, minReads)
 
     # Casting specific inputs as integer
     minReads <- as.integer(minReads)
-    niter <- as.integer(niter)
+    nbrIterations <- as.integer(nbrIterations)
     kmax <- as.integer(kmax)
 
     y <- sort(c(yf,yr))
@@ -70,24 +71,24 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda,
     #### Initialisation des parametres############################
     ##############################################################
 
-    k <- rep(0, niter)
-    ktilde <- rep(0, niter)
-    mu <- matrix(0, nrow = niter, ncol = kmax)
-    mutilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmaftilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmaf <- matrix(0, nrow = niter, ncol = kmax)
-    sigmartilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmar <- matrix(0, nrow = niter, ncol = kmax)
-    deltatilde <- matrix(0, nrow = niter, ncol = kmax)
-    delta <- matrix(0, nrow = niter, ncol = kmax)
-    wtilde <- matrix(0, nrow = niter, ncol = kmax)
-    w <- matrix(0, nrow = niter, ncol = kmax)
-    a <- matrix(0, nrow = niter, ncol = kmax + 1)
-    atilde <- matrix(0, nrow = niter, ncol = kmax + 1)
-    dimtilde <- matrix(0, nrow = niter, ncol = kmax)
-    dim <- matrix(0, nrow = niter, ncol = kmax)
-    dl <- matrix(0, nrow = niter, ncol = kmax)
-    dltilde <- matrix(3, nrow = niter,ncol=kmax)
+    k <- rep(0, nbrIterations)
+    ktilde <- rep(0, nbrIterations)
+    mu <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    mutilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmaftilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmaf <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmartilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmar <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    deltatilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    delta <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    wtilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    w <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    a <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
+    atilde <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
+    dimtilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dim <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dl <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dltilde <- matrix(3, nrow = nbrIterations,ncol=kmax)
 
     k[1] <- 1
 
@@ -103,15 +104,15 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda,
 
     dim[1,1] <- length(y[a[1,1] <= y & y <= max(y)])
 
-    rhob <- rep(0, niter)
-    rhod <- rep(0, niter)
-    rhomh <- rep(0, niter)
-    Kn1 <- rep(0, niter)
-    Kn2 <- rep(0, niter)
-    Kn <-  rep(0, niter)
-    Ln1 <- rep(0, niter)
-    Ln2 <- rep(0, niter)
-    Ln <-  rep(0, niter)
+    rhob <- rep(0, nbrIterations)
+    rhod <- rep(0, nbrIterations)
+    rhomh <- rep(0, nbrIterations)
+    Kn1 <- rep(0, nbrIterations)
+    Kn2 <- rep(0, nbrIterations)
+    Kn <-  rep(0, nbrIterations)
+    Ln1 <- rep(0, nbrIterations)
+    Ln2 <- rep(0, nbrIterations)
+    Ln <-  rep(0, nbrIterations)
 
     Kaf <- matrix(0, nrow = nf, ncol = kmax)
     Kbf <- matrix(0, nrow = nf, ncol = kmax)
@@ -123,9 +124,9 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda,
     Y1r <- rep(0, nr)
     Y2r <- rep(0, nr)
 
-    niter <-  ifelse((nf+nr) <= 10, 1000, niter)
+    nbrIterations <-  ifelse((nf+nr) <= 10, 1000, nbrIterations)
 
-    for (i in 2:niter) {
+    for (i in 2:nbrIterations) {
 
         if (k[i-1] == 1) {
 
@@ -841,7 +842,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda,
         } ###end of moves in case k>=2
     } ###end of boucle RJMCMC
 
-    for (i in 1:niter)
+    for (i in 1:nbrIterations)
     {
         new.list <- list(k=k[i],
                          mu=mu[i, 1:k[i]],
@@ -852,7 +853,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda,
                          w=w[i,1:k[i]]
         )
 
-        liste <- mergeNucleosomes(yf, yr, y, new.list, minInteval,
+        liste <- mergeNucleosomes(yf, yr, y, new.list, minInterval,
                                         maxInterval, minReads)
 
         k[i]             <- liste$k

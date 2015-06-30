@@ -15,20 +15,21 @@ splitNucleosome(yf, yr, y, liste, minInterval, maxInterval, minReads)
 
 \item{liste}{TODO}
 
+\item{minInterval}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
+
 \item{maxInterval}{a \code{numeric}, the maximum distance between two
 nucleosomes.}
 
 \item{minReads}{a positive \code{integer}, the minimum
 number of reads in a potential canditate region.}
-
-\item{minInteval}{a \code{numeric}, the minimum distance between two
-nucleosomes.}
 }
 \value{
 \code{0} TODO
 }
 \description{
-TODO
+Split a nucleosomal region into two regions with respect of
+the minimal and maximal intervals allowed.
 }
 \author{
 Rawane Samb

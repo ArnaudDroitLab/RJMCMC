@@ -21,14 +21,14 @@ values insinde \code{yf} must be sorted.}
 
 \item{liste}{TODO}
 
+\item{minInterval}{a \code{numeric}, the minimum distance between two
+nucleosomes.}
+
 \item{maxInterval}{a \code{numeric}, the maximum distance between two
 nucleosomes.}
 
 \item{minReads}{a positive \code{integer}, the minimum
 number of reads in a potential canditate region.}
-
-\item{minInteval}{a \code{numeric}, the minimum distance between two
-nucleosomes.}
 }
 \value{
 \code{0} TODO

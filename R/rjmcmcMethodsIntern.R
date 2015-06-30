@@ -342,7 +342,7 @@ mode <- function(sample) {
 #'
 #' @param liste TODO
 #'
-#' @param minInteval a \code{numeric}, the minimum distance between two
+#' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
 #'
 #' @param maxInterval a \code{numeric}, the maximum distance between two
@@ -414,7 +414,8 @@ mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minRead
 
 #' @title Spliting a nucleosomal region into two regions
 #'
-#' @description TODO
+#' @description Split a nucleosomal region into two regions with respect of
+#' the minimal and maximal intervals allowed.
 #'
 #' @param yf TODO
 #'
@@ -424,7 +425,7 @@ mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minRead
 #'
 #' @param liste TODO
 #'
-#' @param minInteval a \code{numeric}, the minimum distance between two
+#' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
 #'
 #' @param maxInterval a \code{numeric}, the maximum distance between two
@@ -440,8 +441,6 @@ mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minRead
 splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     minReads)
 {
-    ## Astrid : on devrait changer le nom car porte a confusion avec
-    ## les fonctions split() existantes
     k <- length(liste$mu)
     if (k>1) {
         ecart.max <- max(sapply(1:(k-1),
@@ -519,18 +518,19 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @param yr a \code{vector} of positive \code{integer}, the positions of all
 #' the reverse reads.
 #'
-#' @param niter a positive \code{integer} or \code{numeric}, the number of
-#' iterations. Non-integer values
-#' of \code{niter} will be casted to \code{integer} and truncated towards
-#' zero.
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero. The maximum value of \code{nbrIterations} is \code{100000}.
 #'
 #' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
 #' of nucleosomes per region. Non-integer values
 #' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
 #'
-#' @param lambda TODO
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
 #'
-#' @param minInteval a \code{numeric}, the minimum distance between two
+#' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
 #'
 #' @param maxInterval a \code{numeric}, the maximum distance between two
@@ -546,22 +546,27 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #'
 #' @author Astrid Louise Deschenes
 #' @keywords internal
-validateParameters <- function(yf, yr, niter, kmax,
+validateParameters <- function(yf, yr, nbrIterations, kmax,
                                 lambda, minInterval, maxInterval, minReads)
 {
-    ## Validate the niter parameter
-    if (!isInteger(niter) || as.integer(niter) < 1) {
-        stop("niter must be a positive integer or numerical")
+    ## Validate the nbrIterations parameter
+    if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
+        stop("nbrIterations must be a positive integer or numeric")
     }
 
     ## Validate the kmax parameter
     if (!isInteger(kmax) || as.integer(kmax) < 1) {
-        stop("kmax must be a positive integer or numerical")
+        stop("kmax must be a positive integer or numeric")
     }
 
     ## Validate the minReads parameter
     if (!isInteger(minReads) || as.integer(minReads) < 1) {
-        stop("minReads must be a positive integer or numerical")
+        stop("minReads must be a positive integer or numeric")
+    }
+
+    ## Validate the lambda parameter
+    if (!isInteger(lambda) || lambda <= 0) {
+        stop("lambda must be a positive numeric")
     }
 
     return(0)
@@ -572,8 +577,7 @@ validateParameters <- function(yf, yr, niter, kmax,
 #'
 #' @description Validate if the value passed to the function can be casted
 #' into a \code{integer} or
-#' not. To be considered as castable into a \code{integer}, the value must
-#' have a length
+#' not. The value must have a length
 #' of 1. The type of value can be a \code{integer} or \code{numerical}.
 #'
 #' @param value an object to validate.
