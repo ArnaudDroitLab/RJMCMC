@@ -2,7 +2,7 @@
 #'
 #' This package does nucleosome positioning using informative
 #' Multinomial-Dirichlet prior in a t-mixture with reversible jump
-#' estimation of nucleosome positions for genome-wide.
+#' estimation of nucleosome positions for genome-wide profiling.
 #'
 #' @docType package
 #'
