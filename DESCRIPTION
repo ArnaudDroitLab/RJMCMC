@@ -29,5 +29,6 @@ Suggests: knitr,
 License: Artistic-2.0 | file LICENSE
 VignetteBuilder: knitr
 NeedsCompilation: no
-biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning
+biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
+    Software, StatisticalMethod
 Maintainer: Rawane Samb <rawane.samb.1@ulaval.ca>
