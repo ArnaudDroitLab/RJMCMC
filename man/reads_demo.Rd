@@ -6,29 +6,29 @@
 \title{Forward reads and reverse reads (for demo purpose).}
 \format{A \code{list} containing:
 \itemize{
-    \item \code{yf} a \code{vector} of \code{numeric}, the positions of the
-forward reads.
-    \item \code{yr} a \code{vector} of \code{numeric}, the positions of the
-reverse reads.
+    \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
+    the start positions of the forward reads.
+    \item \code{readsReverse} a \code{vector} of non-negative
+    \code{numeric}, the start
+    positions of the reverse reads. Beware that the start position of
+    a reverse read is always higher that the end positition.
 }}
-\source{
-The Encyclopedia of DNA Elements (ENCODE) (DCC accession:
-ENCFF002CFN)
-}
 \usage{
 data(reads_demo)
 }
 \description{
-Forward reads and reverse reads (for demo purpose).
+A group of froward and reverse reads that can be used to test the
+\code{RJMCMC} function.
 }
 \examples{
 ## Loading dataset
 data(reads_demo)
 
 ## Nucleosome positioning
-RJMCMC(yf = reads_demo$readsForward, yr = reads_demo$readsReverse,
-     nbrIterations = 100, lambda = 3, kmax = 30,
-     minInterval = 146, maxInterval = 292, minReads = 5)
+RJMCMC(startPosForwardReads = reads_demo$readsForward,
+         startPosReverseReads = reads_demo$readsReverse,
+         nbrIterations = 100, lambda = 3, kmax = 30,
+         minInterval = 146, maxInterval = 292, minReads = 5)
 }
 \seealso{
 \itemize{

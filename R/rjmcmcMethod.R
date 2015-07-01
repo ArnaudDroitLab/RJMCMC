@@ -4,12 +4,12 @@
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data).
 #'
-#' @param yf a \code{vector} of positive \code{integer}, the start position of
-#' all the forward reads.
+#' @param startPosForwardReads a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
 #'
-#' @param yr a \code{vector} of positive \code{integer}, the start position of
-#' all the reverse reads. Beware that the start position of a reverse read is
-#' always higher that the end positition.
+#' @param startPosReverseReads a \code{vector} of positive \code{integer}, the
+#' start position of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -54,12 +54,30 @@
 #' \item \code{qw} TODO
 #' }
 #'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(reads_demo)
+#'
+#' ## Nucleosome positioning
+#' result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse,
+#'          nbrIterations = 1000, lambda = 2, kmax = 30,
+#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'
+#' ## Print the number of nucleosomes
+#' result$k
+#'
+#' ## Print the position of nucleosomes
+#' result$mu
+#'
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois
 #' @import BiocGenerics
 #' @author Rawane Samb
 #' @export
-RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
+RJMCMC <- function(startPosForwardReads, startPosReverseReads,
+                    nbrIterations, kmax, lambda,
                     minInterval, maxInterval, minReads)
 {
     ## ASTRID : voir si minInterval, maxInterval
@@ -70,28 +88,31 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
     cl <- match.call()
 
     # Parameters validation
-    validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
-                                    maxInterval, minReads)
+    validateParameters(startPosForwardReads, startPosReverseReads,
+                            nbrIterations, kmax, lambda, minInterval,
+                            maxInterval, minReads)
 
     # Casting specific inputs as integer
     minReads <- as.integer(minReads)
     nbrIterations <- as.integer(nbrIterations)
     kmax <- as.integer(kmax)
 
-    y <- sort(c(yf,yr))
+    ##############################################################
+    #### Parameter Initialization                             ####
+    ##############################################################
+
+    y <- sort(c(startPosForwardReads, startPosReverseReads))
     n <- length(y)
     size <- n
-    nf <- length(yf)
-    nr <- length(yr)
-    d <- sapply(1:size, function(m){ifelse(min(abs(yr-y[m])) == 0,-1,1)})
+    nf <- length(startPosForwardReads)
+    nr <- length(startPosReverseReads)
+    d <- sapply(1:size, function(m) {
+                    ifelse(min(abs(startPosReverseReads - y[m])) == 0, -1, 1)})
+
     ## ASTRID : voir si zeta, detamin, deltamax devraient etre des integer
     zeta <- 147
     deltamin <- 142
     deltamax <- 152
-
-    ##############################################################
-    #### Initialisation des parametres############################
-    ##############################################################
 
     k <- rep(0, nbrIterations)
     ktilde <- rep(0, nbrIterations)
@@ -215,20 +236,20 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     #Rapport de vraisemblance
 
                     for (m in 1:k[i-1]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt((yf-mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt((yf-mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt((startPosForwardReads-mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt((startPosForwardReads-mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
-                    Kaf[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( yf -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kaf[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nf) {
                         Y1f[s] <- log(sum(Kaf[s,1:ktilde[i]]))
                         Y2f[s] <- log(sum(Kbf[s,1:k[i-1]]))
                     }
 
                     for (m in 1:k[i-1]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((yr-mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((yr-mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads-mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads-mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
-                    Kar[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( yr -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kar[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nr) {
                         Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
                         Y2r[s] <- log(sum(Kbr[s,1:k[i-1]]))
@@ -352,8 +373,8 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     ### calcul du rapport de vraisemblance de M-H move
 
                     for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( yf -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( yf -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nf) {
                         Y1f[s] <-log(sum(Kaf[s,1:ktilde[i]]))
@@ -361,8 +382,8 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     }
 
                     for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((yr -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((yr -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nr) {
                         Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
@@ -492,10 +513,10 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     ### Rapport de vraisemblance ###
 
                     for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( yf -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( yf -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
-                    Kbf[,k[i-1]] <- (w[i-1,k[i-1]]*(1/sqrt(sigmaf[i-1,k[i-1]]))*dt(( yf -mu[i-1,k[i-1]]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,k[i-1]]),dltilde[i,m]))
+                    Kbf[,k[i-1]] <- (w[i-1,k[i-1]]*(1/sqrt(sigmaf[i-1,k[i-1]]))*dt(( startPosForwardReads -mu[i-1,k[i-1]]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,k[i-1]]),dltilde[i,m]))
 
                     for (s in 1:nf) {
                         Y1f[s] <- log(sum(Kaf[s,1:ktilde[i]]))
@@ -503,10 +524,10 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     }
 
                     for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( yr -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( yr -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
-                    Kbr[,k[i-1]] <- (w[i-1,k[i-1]]*(1/sqrt(sigmar[i-1,k[i-1]]))*dt(( yr -mu[i-1,k[i-1]]-delta[i-1,m]/2)/sqrt(sigmar[i-1,k[i-1]]),dl[i-1,m]))
+                    Kbr[,k[i-1]] <- (w[i-1,k[i-1]]*(1/sqrt(sigmar[i-1,k[i-1]]))*dt(( startPosReverseReads -mu[i-1,k[i-1]]-delta[i-1,m]/2)/sqrt(sigmar[i-1,k[i-1]]),dl[i-1,m]))
 
                     for (s in 1:nr) {
                         Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
@@ -647,20 +668,20 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     ### Rapport de vraisemblance ###
 
                     for (m in 1:k[i-1]) {
-                        Kaf[,m]<- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( yf -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m]<- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( yf -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m]<- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m]<- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
-                    Kaf[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( yf -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kaf[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nf) {
                         Y1f[s] <-log(sum(Kaf[s,1:ktilde[i]]))
                         Y2f[s] <-log(sum(Kbf[s,1:k[i-1]]))
                     }
 
                     for (m in 1:k[i-1]) {
-                        Kar[,m]<- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( yr -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m]<- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( yr -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m]<- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m]<- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
-                    Kar[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( yr -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kar[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nr) {
                         Y1r[s] <-log(sum(Kar[s,1:ktilde[i]]))
                         Y2r[s] <-log(sum(Kbr[s,1:k[i-1]]))
@@ -793,8 +814,8 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     ###calcul du rapport de vraisemblance de M-H move
 
                     for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( yf -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( yf -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nf) {
                         Y1f[s] <- log(sum(Kaf[s,1:ktilde[i]]))
@@ -802,8 +823,8 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                     }
 
                     for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( yr -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( yr -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nr) {
                         Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
@@ -875,7 +896,7 @@ RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
                          w=w[i,1:k[i]]
         )
 
-        liste <- mergeNucleosomes(yf, yr, y, new.list, minInterval,
+        liste <- mergeNucleosomes(startPosForwardReads, startPosReverseReads, y, new.list, minInterval,
                                         maxInterval, minReads)
 
         k[i]             <- liste$k

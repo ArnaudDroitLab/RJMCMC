@@ -4,15 +4,16 @@
 \alias{RJMCMC}
 \title{Nucleosome positioning mapping}
 \usage{
-RJMCMC(yf, yr, nbrIterations, kmax, lambda, minInterval, maxInterval, minReads)
+RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
+  minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{yf}{a \code{vector} of positive \code{integer}, the start position of
-all the forward reads.}
+\item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
+start position of all the forward reads.}
 
-\item{yr}{a \code{vector} of positive \code{integer}, the start position of
-all the reverse reads. Beware that the start position of a reverse read is
-always higher that the end positition.}
+\item{startPosReverseReads}{a \code{vector} of positive \code{integer}, the
+start position of all the reverse reads. Beware that the start position of
+a reverse read is always higher that the end positition.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
@@ -62,6 +63,22 @@ the nucleosomes.
 Use of a fully Bayesian hierarchical model for genome-wide
 profiling of nucleosome positions based on high-throughput short-read
 data (MNase-Seq data).
+}
+\examples{
+## Loading dataset
+data(reads_demo)
+
+## Nucleosome positioning
+result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+         startPosReverseReads = reads_demo$readsReverse,
+         nbrIterations = 1000, lambda = 2, kmax = 30,
+         minInterval = 146, maxInterval = 292, minReads = 5)
+
+## Print the number of nucleosomes
+result$k
+
+## Print the position of nucleosomes
+result$mu
 }
 \author{
 Rawane Samb

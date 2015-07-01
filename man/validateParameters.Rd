@@ -5,15 +5,16 @@
 \title{Parameters validation for the \code{\link{RJMCMC}}
 function}
 \usage{
-validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
-  maxInterval, minReads)
+validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
+  kmax, lambda, minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{yf}{a \code{vector} of positive \code{integer}, the positions of all
-the forward reads.}
+\item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
+start position of all the forward reads.}
 
-\item{yr}{a \code{vector} of positive \code{integer}, the positions of all
-the reverse reads.}
+\item{startPosReverseReads}{a \code{vector} of positive \code{integer}, the
+positions of all the reverse reads. Beware that the start position of
+a reverse read is always higher that the end positition.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
