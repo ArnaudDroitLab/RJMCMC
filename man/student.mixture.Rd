@@ -4,31 +4,45 @@
 \alias{student.mixture}
 \title{Student Mixture Model}
 \usage{
-student.mixture(i, k, w, mu, sigma, dfr)
+student.mixture(i, k, weight, mu, sigma, dfr)
 }
 \arguments{
-\item{i}{a \code{vector} TODO}
+\item{i}{a \code{integer}, a count parameter.}
 
-\item{k}{a positive \code{integer} value, the number of nucleosomes in a
-region.}
+\item{k}{a positive \code{integer} value, the number of nucleosomes in the
+analyzed region.}
 
-\item{w}{a \code{vector} weight for the nucleosome occupancy.}
+\item{weight}{a \code{vector} of positive \code{numerical} of length
+\code{k}, the weight for each
+nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
+The length of \code{weight} must be equal to \code{k}.}
 
-\item{mu}{a \code{vector} mean of the Student-t distribution.}
+\item{mu}{a \code{vector} of positive \code{integer} of length \code{k},
+the positions of all the nucleosomes in the analyzed region. The length
+of \code{weight} must be equal to \code{k}.}
 
-\item{sigma}{a \code{vector} TODO}
+\item{sigma}{a \code{vector} of \code{numeric} of length \code{k}, the
+variance for each nucleosome. The length of \code{sigma} must be equal
+to \code{k}.}
 
-\item{dfr}{a \code{vector} of \code{numeric} containing the degree
-     of freedom.}
+\item{dfr}{a \code{vector} of \code{numeric} of length \code{k}, the degree
+of freedom for each nucleosome. The length of \code{dfr} must be equal
+to \code{k}.}
 }
 \value{
-\code{0} TODO
+a \code{numerical}, the value generated from a Student Mixture
+distribution.
 }
 \description{
-TODO
+Generation a value from a Student Mixture distribution.
+}
+\examples{
+## Return a value generated from a student mixture
+rjmcmc:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
+mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 

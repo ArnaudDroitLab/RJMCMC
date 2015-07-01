@@ -114,72 +114,116 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 
 #' @title Student Mixture Model
 #'
-#' @description TODO
+#' @description Generation a value from a Student Mixture distribution.
 #'
-#' @param i a \code{vector} TODO
+#' @param i a \code{integer}, a count parameter.
 #'
-#' @param k a positive \code{integer} value, the number of nucleosomes in a
-#' region.
+#' @param k a positive \code{integer} value, the number of nucleosomes in the
+#' analyzed region.
 #'
-#' @param w a \code{vector} weight for the nucleosome occupancy.
+#' @param weight a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each
+#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
+#' The length of \code{weight} must be equal to \code{k}.
 #'
-#' @param mu a \code{vector} mean of the Student-t distribution.
+#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
+#' the positions of all the nucleosomes in the analyzed region. The length
+#' of \code{weight} must be equal to \code{k}.
 #'
-#' @param sigma a \code{vector} TODO
+#' @param sigma a \code{vector} of \code{numeric} of length \code{k}, the
+#' variance for each nucleosome. The length of \code{sigma} must be equal
+#' to \code{k}.
 #'
-#' @param dfr a \code{vector} of \code{numeric} containing the degree
-#'      of freedom.
+#' @param dfr a \code{vector} of \code{numeric} of length \code{k}, the degree
+#' of freedom for each nucleosome. The length of \code{dfr} must be equal
+#' to \code{k}.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical}, the value generated from a Student Mixture
+#' distribution.
 #'
-#' @author Rawane Samb
+#' @examples
+#'
+#' ## Return a value generated from a student mixture
+#' rjmcmc:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
+#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
+#'
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-student.mixture <- function(i, k, w, mu, sigma, dfr)
+student.mixture <- function(i, k, weight, mu, sigma, dfr)
 {
-    ## TODO : valider si k doit petre un entier
-    ## TODO : i n'est pas utilisé
-    v <- c(0, w)
+    # Adding zero to the weight vector and calculating the cumulative sums
+    sumWeight <- cumsum(c(0, weight))
+
     u <- runif(1, 0, 1)
-    for (j in 1:k) {
-        if(sum(v[1:j]) < u & u <= sum(v[1:(j+1)])) {
-            mixte <- mu[j] + sqrt(sigma[j]) * rt(1, dfr[j])
-        }
-    }
-    return(mixte)
+
+    # Get the maximal position where the sum of weight is inferior to u
+    position <- max(which(sumWeight < u))
+
+    return(mu[position] + sqrt(sigma[position]) * rt(1, dfr[position]))
+#     v <- c(0, weight)
+#     u <- runif(1, 0, 1)
+#     for (j in 1:k) {
+#         if(sum(v[1:j]) < u & u <= sum(v[1:(j+1)])) {
+#             mixte <- mu[j] + sqrt(sigma[j]) * rt(1, dfr[j])
+#         }
+#     }
+#     return(mixte)
 }
 
 
 #' @title Normal Mixture Model
 #'
-#' @description TODO
+#' @description Generation a value from a Normal Mixture distribution.
 #'
-#' @param i a \code{vector} TODO
+#' @param i a \code{integer},  a count parameter.
 #'
 #' @param k a positive \code{integer} value, the number of nucleosomes in the
 #' analyzed region.
 #'
-#' @param weight a \code{vector} TODO
+#' @param weight a \code{vector} of length \code{k}, the weight for each
+#' nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
+#' The length of \code{weight} must be equal to \code{k}.
 #'
-#' @param mu a \code{vector} of positive \code{integer} values, the positions
-#' of all the nucleosomes in the analyzed region.
+#' @param mu a \code{vector} of positive \code{integer} of length \code{k},
+#' the positions of all the nucleosomes in the analyzed region. The length
+#' of \code{weight} must be equal to \code{k}.
 #'
-#' @param sigma a \code{vector} TODO
+#' @param sigma a \code{vector} of length \code{k}, the variance for each
+#' nucleosome. The length of \code{sigma} must be equal to \code{k}.
 #'
-#' @return \code{0} TODO
+#' @return a \code{numerical}, the value generated from a Normal Mixture
+#' distribution.
 #'
-#' @author Rawane Samb
+#' @examples
+#'
+#' ## Return a value generated from a normal mixture
+#' rjmcmc:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
+#' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
+#'
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 normal.mixture <- function(i, k, weight, mu, sigma)
 {
-    v <- c(0, weight)
+    # Adding zero to the weight vector and calculating the cumulative sums
+    sumWeight <- cumsum(c(0, weight))
+
     u <- runif(1, 0, 1)
-    for (j in 1:k) {
-        if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
-        {
-            mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
-        }
-    }
-    return(mixte)
+
+    # Get the maximal position where the sum of weight is inferior to u
+    position <- max(which(sumWeight < u))
+
+    return(rnorm(1, mu[position], sd = sqrt(sigma[position])))
+
+#   ANCIEN CODE MOINS RAPIDE
+#   v <- c(0, weight)
+#   u <- runif(1, 0, 1)
+#     for (j in 1:k) {
+#         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
+#         {
+#             mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
+#         }
+#     }
+#     return(mixte)
 }
 
 
@@ -194,11 +238,13 @@ normal.mixture <- function(i, k, weight, mu, sigma)
 #' @param mu a \code{vector} of positive \code{integer} containing the
 #' positions of all nucleosomes.
 #'
-#' @param readPositions a \code{vector} of \code{integer} corresponding to the
-#' positions of all reads, including forward and reverse strands.
+#' @param readPositions a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all reads, including forward and reverse strands. The
+#' values insinde \code{readPositions} must be sorted.
 #'
-#' @return  the exact prior density of \code{mu} given the number of
-#' nucleosomes.
+#' @return  a \code{numeric}, the exact prior density of \code{mu} given the
+#' number of nucleosomes.
 #'
 #' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
 #' informative Multinomial-Dirichlet prior in a t-mixture with
@@ -228,8 +274,10 @@ priorMuDensity <- function(mu, readPositions)
     for (i in 1:k) {
         basicMatrix[i, i] <- 1L
     }
+    if (k > 1) {
     for (i in 2:k) {
         basicMatrix[i , i - 1] <- -1L
+    }
     }
     omega <- t(basicMatrix) %*% basicMatrix
     # Calculating the range (R)
@@ -239,11 +287,10 @@ priorMuDensity <- function(mu, readPositions)
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
+    ## The calculation of the prior
     ## Equation 11 in the cited article
-    prior <- const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M)))
-    return(prior)
+    return(const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M))))
 }
-
 
 
 #' @title Element with the hightest number of occurences
@@ -283,31 +330,41 @@ mode <- function(sample) {
 #'
 #' @description TODO
 #'
-#' @param yf TODO
+#' @param yf a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all forward reads. The
+#' values insinde \code{yf} must be sorted.
 #'
-#' @param yr TODO
+#' @param yr a \code{vector} of positive \code{integer}
+#' corresponding to the
+#' positions of all reverse reads. The
+#' values insinde \code{yf} must be sorted.
 #'
 #' @param y TODO
 #'
 #' @param liste TODO
 #'
-#' @param ecartmin TODO
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax TODO
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @param minReads TODO
+#' @param minReads a positive \code{integer}, the minimum
+#' number of reads in a potential canditate region.
 #'
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
 #' @keywords internal
-merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minReads)
 {
+    # Get the number of nucleosomes
     k <- length(liste$mu)
     if (k > 1) {
         ecart.min <- min(sapply(1:(k-1),
                             function(j){liste$mu[j+1] - liste$mu[j]}))
-        if (ecart.min < ecartmin)
+        if (ecart.min < minInterval)
         {
             repeat
             {
@@ -337,7 +394,7 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                 if (k > 1) {
                     ecart.min <- min(sapply(1:(k-1),
                                     function(i){liste$mu[i+1]-liste$mu[i]}))}
-                if (k == 1 || ecart.min > ecartmin) break()
+                if (k == 1 || ecart.min > minInterval) break()
             } ### end of boucle repeat
             liste <- list(k = k,
                             mu = liste$mu,
@@ -346,11 +403,12 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                             delta = liste$delta,
                             dl = liste$dl,
                             w = liste$w)
-        } ### end of condition if (ecart.min < ecartmin)
+        } ### end of condition if (ecart.min < minInterval)
         else {
             liste <- liste
         }
-        liste <- split(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+        liste <- splitNucleosome(yf, yr, y, liste, minInterval,
+                                    maxInterval, minReads)
     } ### condition else if (k > 1)
     return(liste)
 }
@@ -358,7 +416,8 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 
 #' @title Spliting a nucleosomal region into two regions
 #'
-#' @description TODO
+#' @description Split a nucleosomal region into two regions with respect of
+#' the minimal and maximal intervals allowed.
 #'
 #' @param yf TODO
 #'
@@ -368,25 +427,27 @@ merge <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 #'
 #' @param liste TODO
 #'
-#' @param ecartmin TODO
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax TODO
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @param minReads TODO
+#' @param minReads a positive \code{integer}, the minimum
+#' number of reads in a potential canditate region.
 #'
 #' @return \code{0} TODO
 #'
 #' @author Rawane Samb
 #' @keywords internal
-split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
+splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
+                                    minReads)
 {
-    ## Astrid : on devrait changer le nom car porte a confusion avec
-    ## les fonctions split() existantes
     k <- length(liste$mu)
     if (k>1) {
         ecart.max <- max(sapply(1:(k-1),
                                 function(j){liste$mu[j+1]-liste$mu[j]}))
-        if (ecart.max > ecartmax) {
+        if (ecart.max > maxInterval) {
             j <- 1
             repeat {
                 p <- which(sapply(1:(k-1),
@@ -440,9 +501,110 @@ split <- function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                                     }))[k - 1 - j]
                     j <- j + 1
                 }
-                if ( j == (k - 1) || ecart.max <= ecartmax) break()
+                if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
-        } ### end of condition if (ecart.max > ecartmax)
+        } ### end of condition if (ecart.max > maxInterval)
     } ### end of condition if (k>1)
     return(liste)
 }
+
+#' @title Parameters validation for the \code{\link{RJMCMC}}
+#' function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{RJMCMC}} function.
+#'
+#' @param yf a \code{vector} of positive \code{integer}, the positions of all
+#' the forward reads.
+#'
+#' @param yr a \code{vector} of positive \code{integer}, the positions of all
+#' the reverse reads.
+#'
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero. The maximum value of \code{nbrIterations} is \code{100000}.
+#'
+#' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
+#'
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
+#'
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
+#'
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
+#'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' zero.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @author Astrid Louise Deschenes
+#' @keywords internal
+validateParameters <- function(yf, yr, nbrIterations, kmax,
+                                lambda, minInterval, maxInterval, minReads)
+{
+    ## Validate the nbrIterations parameter
+    if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
+        stop("nbrIterations must be a positive integer or numeric")
+    }
+
+    ## Validate the kmax parameter
+    if (!isInteger(kmax) || as.integer(kmax) < 1) {
+        stop("kmax must be a positive integer or numeric")
+    }
+
+    ## Validate the minReads parameter
+    if (!isInteger(minReads) || as.integer(minReads) < 1) {
+        stop("minReads must be a positive integer or numeric")
+    }
+
+    ## Validate the lambda parameter
+    if (!isInteger(lambda) || lambda <= 0) {
+        stop("lambda must be a positive numeric")
+    }
+
+    return(0)
+}
+
+
+#' @title Validate if a value is an integer
+#'
+#' @description Validate if the value passed to the function can be casted
+#' into a \code{integer} or
+#' not. The value must have a length
+#' of 1. The type of value can be a \code{integer} or \code{numerical}.
+#'
+#' @param value an object to validate.
+#'
+#' @return \code{TRUE} is the parameter is a integer; otherwise \code{FALSE}
+#'
+#' @examples
+#'
+#' ## Return TRUE because the input is an integer of length 1
+#' rjmcmc:::isInteger(33L)
+#'
+#' ## Return FALSE because the length of the input is not 1
+#' rjmcmc:::isInteger(c(21L, 33L))
+#'
+#' ## Return TRUE because the input is a numericalof length 1
+#' rjmcmc:::isInteger(323.21)
+#'
+#' ## Return FALSE because the length of the input is not 1
+#' rjmcmc:::isInteger(c(444.2, 442.1))
+#'
+#' @author Astrid Louise Deschenes
+#' @keywords internal
+#'
+isInteger <- function(value) {
+    return((is.integer(value) && length(value) == 1) || (is.numeric(value) &&
+        length(value) == 1))
+}
+

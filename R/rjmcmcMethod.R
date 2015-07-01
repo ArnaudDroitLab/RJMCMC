@@ -4,35 +4,68 @@
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data).
 #'
-#' @param yf a \code{GRanges} of forward reads.
+#' @param yf a \code{vector} of positive \code{integer}, the positions of all
+#' the forward reads.
 #'
-#' @param yr a \code{GRanges} of reverse reads.
+#' @param yr a \code{vector} of positive \code{integer}, the positions of all
+#' the reverse reads.
 #'
-#' @param niter a \code{numeric} number of iterations.
+#' @param nbrIterations a positive \code{integer} or \code{numeric}, the
+#' number of iterations. Non-integer values of
+#' \code{nbrIterations} will be casted to \code{integer} and truncated towards
+#' zero.
 #'
-#' @param kmax a \code{numeric} maximum number of nucleosomes per region.
+#' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
+#' of nucleosomes per region. Non-integer values
+#' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
 #'
-#' @param lambda a \code{numeric} parameter of the Poisson distribution.
+#' @param lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
 #'
-#' @param ecartmin a \code{numeric} minimum distance between two nucleosomes.
+#' @param minInterval a \code{numeric}, the minimum distance between two
+#' nucleosomes.
 #'
-#' @param ecartmax a \code{numeric} maximum distance between two nucleosomes.
+#' @param maxInterval a \code{numeric}, the maximum distance between two
+#' nucleosomes.
 #'
-#' @param minReads a \code{numeric} minimum number of reads in a potential
-#'      canditate region.
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero.
 #'
-#' @return \code{0} TODO
+#' @return an \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+#' \itemize{
+#' \item \code{call} the matched call.
+#' \item \code{K} TODO
+#' \item \code{k} a \code{integer}, the number of nucleosomes.
+#' \item \code{mu} a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#' }
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois
 #' @import BiocGenerics
 #' @author Rawane Samb
 #' @export
-RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
+RJMCMC <- function(yf, yr, nbrIterations, kmax, lambda,
+                    minInterval, maxInterval, minReads)
 {
-    ## ASTRID : voir si kmax, niter, ecartmin, ecartmax, lambda, minReads
+    ## ASTRID : voir si minInterval, maxInterval
     ## ne pourraient pas etre des integers
     ## ASTRID : il faudrait aussi penser au nom des variables
+
+    # Get call information
+    cl <- match.call()
+
+    # Parameters validation
+    validateParameters(yf, yr, nbrIterations, kmax, lambda, minInterval,
+                                    maxInterval, minReads)
+
+    # Casting specific inputs as integer
+    minReads <- as.integer(minReads)
+    nbrIterations <- as.integer(nbrIterations)
+    kmax <- as.integer(kmax)
+
     y <- sort(c(yf,yr))
     n <- length(y)
     size <- n
@@ -48,24 +81,24 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
     #### Initialisation des parametres############################
     ##############################################################
 
-    k <- rep(0, niter)
-    ktilde <- rep(0, niter)
-    mu <- matrix(0, nrow = niter, ncol = kmax)
-    mutilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmaftilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmaf <- matrix(0, nrow = niter, ncol = kmax)
-    sigmartilde <- matrix(0, nrow = niter, ncol = kmax)
-    sigmar <- matrix(0, nrow = niter, ncol = kmax)
-    deltatilde <- matrix(0, nrow = niter, ncol = kmax)
-    delta <- matrix(0, nrow = niter, ncol = kmax)
-    wtilde <- matrix(0, nrow = niter, ncol = kmax)
-    w <- matrix(0, nrow = niter, ncol = kmax)
-    a <- matrix(0, nrow = niter, ncol = kmax + 1)
-    atilde <- matrix(0, nrow = niter, ncol = kmax + 1)
-    dimtilde <- matrix(0, nrow = niter, ncol = kmax)
-    dim <- matrix(0, nrow = niter, ncol = kmax)
-    dl <- matrix(0, nrow = niter, ncol = kmax)
-    dltilde <- matrix(3, nrow = niter,ncol=kmax)
+    k <- rep(0, nbrIterations)
+    ktilde <- rep(0, nbrIterations)
+    mu <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    mutilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmaftilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmaf <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmartilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    sigmar <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    deltatilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    delta <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    wtilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    w <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    a <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
+    atilde <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
+    dimtilde <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dim <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dl <- matrix(0, nrow = nbrIterations, ncol = kmax)
+    dltilde <- matrix(3, nrow = nbrIterations,ncol=kmax)
 
     k[1] <- 1
 
@@ -81,15 +114,15 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
     dim[1,1] <- length(y[a[1,1] <= y & y <= max(y)])
 
-    rhob <- rep(0, niter)
-    rhod <- rep(0, niter)
-    rhomh <- rep(0, niter)
-    Kn1 <- rep(0, niter)
-    Kn2 <- rep(0, niter)
-    Kn <-  rep(0, niter)
-    Ln1 <- rep(0, niter)
-    Ln2 <- rep(0, niter)
-    Ln <-  rep(0, niter)
+    rhob <- rep(0, nbrIterations)
+    rhod <- rep(0, nbrIterations)
+    rhomh <- rep(0, nbrIterations)
+    Kn1 <- rep(0, nbrIterations)
+    Kn2 <- rep(0, nbrIterations)
+    Kn <-  rep(0, nbrIterations)
+    Ln1 <- rep(0, nbrIterations)
+    Ln2 <- rep(0, nbrIterations)
+    Ln <-  rep(0, nbrIterations)
 
     Kaf <- matrix(0, nrow = nf, ncol = kmax)
     Kbf <- matrix(0, nrow = nf, ncol = kmax)
@@ -101,9 +134,9 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
     Y1r <- rep(0, nr)
     Y2r <- rep(0, nr)
 
-    niter <-  ifelse((nf+nr) <= 10, 1000, niter)
+    nbrIterations <-  ifelse((nf+nr) <= 10, 1000, nbrIterations)
 
-    for (i in 2:niter) {
+    for (i in 2:nbrIterations) {
 
         if (k[i-1] == 1) {
 
@@ -819,7 +852,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
         } ###end of moves in case k>=2
     } ###end of boucle RJMCMC
 
-    for (i in 1:niter)
+    for (i in 1:nbrIterations)
     {
         new.list <- list(k=k[i],
                          mu=mu[i, 1:k[i]],
@@ -830,7 +863,8 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
                          w=w[i,1:k[i]]
         )
 
-        liste <- merge(yf, yr, y, new.list, ecartmin, ecartmax, minReads)
+        liste <- mergeNucleosomes(yf, yr, y, new.list, minInterval,
+                                        maxInterval, minReads)
 
         k[i]             <- liste$k
         mu[i,1:k[i]]     <- liste$mu
@@ -875,22 +909,26 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
         qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
     }
 
-    liste <- list(
-        K=k,
-        k=km,
-        mu=mu_hat,
-        sigmaf=sigmaf_hat,
-        sigmar=sigmar_hat,
-        delta=delta_hat,
-        dl=dl_hat,
-        w=w_hat,
-        qmu=qmu,
-        qsigmaf=qsigmaf,
-        qsigmar=qsigmar,
-        qdelta=qdelta,
-        qdl=qdl,
-        qw=qw
+    result <- list(
+        call = cl,
+        K = k,
+        k = km,
+        mu = mu_hat,
+        sigmaf = sigmaf_hat,
+        sigmar = sigmar_hat,
+        delta = delta_hat,
+        dl = dl_hat,
+        w = w_hat,
+        qmu = qmu,
+        qsigmaf = qsigmaf,
+        qsigmar = qsigmar,
+        qdelta = qdelta,
+        qdl = qdl,
+        qw = qw
     )
-    return(liste)
+
+    class(result)<-"rjmcmcNucleosomes"
+
+    return(result)
 
 }

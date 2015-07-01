@@ -7,26 +7,36 @@
 normal.mixture(i, k, weight, mu, sigma)
 }
 \arguments{
-\item{i}{a \code{vector} TODO}
+\item{i}{a \code{integer},  a count parameter.}
 
 \item{k}{a positive \code{integer} value, the number of nucleosomes in the
 analyzed region.}
 
-\item{weight}{a \code{vector} TODO}
+\item{weight}{a \code{vector} of length \code{k}, the weight for each
+nucleosome. The sum of all \code{weight} values must be equal to \code{1}.
+The length of \code{weight} must be equal to \code{k}.}
 
-\item{mu}{a \code{vector} of positive \code{integer} values, the positions
-of all the nucleosomes in the analyzed region.}
+\item{mu}{a \code{vector} of positive \code{integer} of length \code{k},
+the positions of all the nucleosomes in the analyzed region. The length
+of \code{weight} must be equal to \code{k}.}
 
-\item{sigma}{a \code{vector} TODO}
+\item{sigma}{a \code{vector} of length \code{k}, the variance for each
+nucleosome. The length of \code{sigma} must be equal to \code{k}.}
 }
 \value{
-\code{0} TODO
+a \code{numerical}, the value generated from a Normal Mixture
+distribution.
 }
 \description{
-TODO
+Generation a value from a Normal Mixture distribution.
+}
+\examples{
+## Return a value generated from a normal mixture
+rjmcmc:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
+mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 

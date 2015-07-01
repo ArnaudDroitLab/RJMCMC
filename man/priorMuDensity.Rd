@@ -10,12 +10,14 @@ priorMuDensity(mu, readPositions)
 \item{mu}{a \code{vector} of positive \code{integer} containing the
 positions of all nucleosomes.}
 
-\item{readPositions}{a \code{vector} of \code{integer} corresponding to the
-positions of all reads, including forward and reverse strands.}
+\item{readPositions}{a \code{vector} of positive \code{integer}
+corresponding to the
+positions of all reads, including forward and reverse strands. The
+values insinde \code{readPositions} must be sorted.}
 }
 \value{
-the exact prior density of \code{mu} given the number of
-nucleosomes.
+a \code{numeric}, the exact prior density of \code{mu} given the
+number of nucleosomes.
 }
 \description{
 Computes the prior density of \eqn{mu} conditionally to

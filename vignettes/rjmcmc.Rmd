@@ -16,9 +16,17 @@ this software.
 
 ## Introduction
 
+Global gene expression patterns are established and maintained by the 
+concerted actions of Transcription Factors (TFs) and the proteins that 
+constitute chromatin. The key structural element of chromatin is the 
+nucleosome, which consists of an octameric histone core wrapped by 146 bps 
+of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
+DNA (reference TODO).
 
 ## Loading the RJMCMC package
 
 ```{r loadingPackage} 
 suppressMessages(library(rjmcmc))
 ```
+
+## References
