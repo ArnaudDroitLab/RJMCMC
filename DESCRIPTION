@@ -4,7 +4,7 @@ Date: 2015-05-01
 Title: Nucleosome Positioning
 Description: This package does nucleosome positioning using informative
     Multinomial-Dirichlet prior in a t-mixture with reversible jump
-    estimation of nucleosome positions for genome-wide.
+    estimation of nucleosome positions for genome-wide profiling.
 Author: Rawane Samb [cre, aut], Astrid Louise Deschenes [aut],
     Khader Khadraoui [aut], Lajmi Lakhal [aut],
     Pascal Belleau [aut], Arnaud Droit [aut]
@@ -24,7 +24,9 @@ Author@R: c(person("Rawane", "Samb",
 Depends: R (>= 3.0), BiocGenerics
 Imports: MCMCpack,
     stats
-Suggests: knitr,
+Suggests: BiocStyle,
+    knitr,
+    rmarkdown,
     RUnit
 License: Artistic-2.0 | file LICENSE
 VignetteBuilder: knitr
