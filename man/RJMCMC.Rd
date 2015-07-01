@@ -7,11 +7,12 @@
 RJMCMC(yf, yr, nbrIterations, kmax, lambda, minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{yf}{a \code{vector} of positive \code{integer}, the positions of all
-the forward reads.}
+\item{yf}{a \code{vector} of positive \code{integer}, the start position of
+all the forward reads.}
 
-\item{yr}{a \code{vector} of positive \code{integer}, the positions of all
-the reverse reads.}
+\item{yr}{a \code{vector} of positive \code{integer}, the start position of
+all the reverse reads. Beware that the start position of a reverse read is
+always higher that the end positition.}
 
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
