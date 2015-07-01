@@ -4,11 +4,12 @@
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data).
 #'
-#' @param yf a \code{vector} of positive \code{integer}, the positions of all
-#' the forward reads.
+#' @param yf a \code{vector} of positive \code{integer}, the start position of
+#' all the forward reads.
 #'
-#' @param yr a \code{vector} of positive \code{integer}, the positions of all
-#' the reverse reads.
+#' @param yr a \code{vector} of positive \code{integer}, the start position of
+#' all the reverse reads. Beware that the start position of a reverse read is
+#' always higher that the end positition.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
