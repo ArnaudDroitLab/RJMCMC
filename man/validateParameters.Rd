@@ -35,7 +35,7 @@ nucleosomes.}
 
 \item{minReads}{a positive \code{integer} or \code{numeric}, the minimum
 number of reads in a potential canditate region. Non-integer values
-of \code{niter} will be casted to \code{integer} and truncated towards
+of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
 }
 \value{
