@@ -40,6 +40,17 @@
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
+#' \item \code{sigmaf} TODO
+#' \item \code{sigmar} TODO
+#' \item \code{delta} TODO
+#' \item \code{dl} TODO
+#' \item \code{w} TODO
+#' \item \code{qmu} TODO
+#' \item \code{qsigmaf} TODO
+#' \item \code{qsigmar} TODO
+#' \item \code{qdelta} TODO
+#' \item \code{qdl} TODO
+#' \item \code{qw} TODO
 #' }
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
