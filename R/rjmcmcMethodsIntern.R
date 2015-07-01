@@ -357,7 +357,8 @@ mode <- function(sample) {
 #'
 #' @author Rawane Samb
 #' @keywords internal
-mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minReads)
+mergeNucleosomes <- function(yf, yr, y, liste,
+                                minInterval, maxInterval, minReads)
 {
     # Get the number of nucleosomes
     k <- length(liste$mu)
