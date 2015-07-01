@@ -15,8 +15,9 @@ output:
 BiocStyle::markdown()
 ```
 
-Rawane Samb, Astrid Louise Deschenes, Khader Khadraoui, Lajmi Lakhal-Chaieb, 
-Pascal Belleau and Arnaud Droit.
+Author: Rawane Samb, Astrid Louise Deschenes, Khader Khadraoui, Lajmi Lakhal-Chaieb, 
+Pascal Belleau and Arnaud Droit<br />
+Compilation date: `r Sys.Date()`
 
 ## 1. Licensing and citing
 
@@ -65,6 +66,6 @@ result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
 result
 ```
 
-## References
+## 5. References
 
 TODO
