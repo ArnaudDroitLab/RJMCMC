@@ -3,17 +3,17 @@ title: "RJMCMC: Nucleosome Positioning"
 output:
   BiocStyle::html_document:
     toc: true
+vignette: >
+  %\VignetteIndexEntry{Detection of consensus peak regions inside a group of experiences using narrowPeak files}
+  %\VignettePackage{consensusSeekeR}
+  %\VignetteEngine{knitr::rmarkdown}
 ---
-
-<!--
-%\VignetteEngine{knitr::rmarkdown}
-%\VignettePackage{rjmcmc}
-%\VignetteIndexEntry{rjmcmc: nucleosome positioning}
--->
 
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown()
 ```
+
+</br>
 
 Author: Rawane Samb, Astrid Louise Deschenes, Khader Khadraoui, Lajmi Lakhal-Chaieb, 
 Pascal Belleau and Arnaud Droit<br />
@@ -46,8 +46,8 @@ DNA (reference TODO).
 As with any R package, the **RJMCMC** package should first be loaded with 
 the following command:
 
-```{r loadingPackage} 
-suppressMessages(library(rjmcmc))
+```{r loadingPackage, warning=FALSE, message=FALSE} 
+library(rjmcmc)
 ```
 
 ## 4. RJMCMC analysis
