@@ -357,7 +357,8 @@ mode <- function(sample) {
 #'
 #' @author Rawane Samb
 #' @keywords internal
-mergeNucleosomes <- function(yf, yr, y, liste, minInterval, maxInterval, minReads)
+mergeNucleosomes <- function(yf, yr, y, liste,
+                                minInterval, maxInterval, minReads)
 {
     # Get the number of nucleosomes
     k <- length(liste$mu)
@@ -514,11 +515,12 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @description Validation of all parameters needed by the public
 #' \code{\link{RJMCMC}} function.
 #'
-#' @param yf a \code{vector} of positive \code{integer}, the positions of all
-#' the forward reads.
+#' @param startPosForwardReads a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
 #'
-#' @param yr a \code{vector} of positive \code{integer}, the positions of all
-#' the reverse reads.
+#' @param startPosReverseReads a \code{vector} of positive \code{integer}, the
+#' positions of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
 #'
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
@@ -540,7 +542,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #'
 #' @param minReads a positive \code{integer} or \code{numeric}, the minimum
 #' number of reads in a potential canditate region. Non-integer values
-#' of \code{niter} will be casted to \code{integer} and truncated towards
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
 #' @return \code{0} indicating that all parameters validations have been
@@ -548,8 +550,9 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #'
 #' @author Astrid Louise Deschenes
 #' @keywords internal
-validateParameters <- function(yf, yr, nbrIterations, kmax,
-                                lambda, minInterval, maxInterval, minReads)
+validateParameters <- function(startPosForwardReads, startPosReverseReads,
+                                    nbrIterations, kmax, lambda,
+                                    minInterval, maxInterval, minReads)
 {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
@@ -569,6 +572,24 @@ validateParameters <- function(yf, yr, nbrIterations, kmax,
     ## Validate the lambda parameter
     if (!isInteger(lambda) || lambda <= 0) {
         stop("lambda must be a positive numeric")
+    }
+
+    ## Validate that the startPosForwardReads has at least one read
+    ## and that the values are integer
+    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
+        || length(startPosForwardReads) < 1 || !all(startPosForwardReads > 0))
+    {
+        stop(paste0("startPosForwardReads must be a non-empty vector of ",
+                    "non-negative numeric values."))
+    }
+
+    ## Validate that the startPosReverseReads has at least one read
+    ## and that the values are integer
+    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
+        || length(startPosReverseReads) < 1 || !all(startPosReverseReads > 0))
+    {
+        stop(paste0("startPosReverseReads must be a non-empty vector of ",
+                    "non-negative numeric values."))
     }
 
     return(0)
