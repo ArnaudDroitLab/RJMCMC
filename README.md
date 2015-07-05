@@ -1,12 +1,13 @@
 rjmcmc : nucleosome positioning
 ==============================================================
 
-This package uses informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide.
+This package uses informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling.
 
 ## Authors ##
 
 [Rawane Samb](https://ca.linkedin.com/in/rawanesamb "Rawane Samb"), 
 [Astrid Louise Deschenes](http://ca.linkedin.com/in/astriddeschenes "Astrid Louise Deschenes"),
+[Frederic Fournier](https://ca.linkedin.com/pub/frederic-fournier/29/625/41a "Frederic Fournier")
 [Khader Khadraoui](http://archimede.mat.ulaval.ca/pages/khaderk/ "Khader Khadraoui"), 
 [Lajmi Lakhal-Chaieb](https://www.researchgate.net/profile/Lajmi_Lakhal-Chaieb "Lajmi Lakhal-Chaieb"), 
 [Pascal Belleau](http://ca.linkedin.com/in/pascalbelleau "Pascal Belleau") 
