@@ -717,36 +717,33 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 }
 
                 v <- runif(1)      # Acceptation/rejet du Birth move
-                rhob[i] <- ifelse ( is.na(rhob[i])==FALSE, rhob[i], 0)
+#                 rhob[i] <- ifelse ( is.na(rhob[i])==FALSE, rhob[i], 0)
+                rhob[i] <- ifelse(is.na(rhob[i]), 0, rhob[i])
 
-                if (rhob[i] >= v  ) {
-                    k[i] <- ktilde[i]
-                    mu[i,1:k[i]] <- mutilde[i,1:k[i]]
-                    sigmaf[i,1:k[i]] <- sigmaftilde[i,1:k[i]]
-                    sigmar[i,1:k[i]] <- sigmartilde[i,1:k[i]]
-                    delta[i,1:k[i]] <- deltatilde[i,1:k[i]]
-                    dl[i,1:(k[i])] <- dltilde[i,1:k[i]]
-                    w[i,1:k[i]] <- wtilde[i,1:k[i]]
-                    dim[i,1:k[i]] <- dimtilde[i,1:k[i]]
-                    a[i,1:(k[i]+1)] <- atilde[i,1:(k[i]+1)]
-
+                if (rhob[i] >= v) {
+                    k[i]                    <- ktilde[i]
+                    maxValue                <- k[i]
+                    mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
+                    sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
+                    sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
+                    delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
+                    dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
+                    w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
+                    dim[i, 1:maxValue]      <- dimtilde[i, 1:maxValue]
+                    a[i, 1:(maxValue + 1)]  <- atilde[i, 1:(maxValue + 1)]
+                } else {
+                    k[i]                    <- k[i-1]
+                    maxValue                <- k[i]
+                    mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
+                    sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
+                    sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
+                    delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
+                    dl[i, 1:maxValue]       <- dl[i-1, 1:maxValue]
+                    w[i, 1:maxValue]        <- w[i-1, 1:maxValue]
+                    dim[i,1:maxValue]       <- dim[i-1,1:maxValue]
+                    a[i,1:(maxValue + 1)]   <- a[i-1, 1:(maxValue + 1)]
                 }
-
-                else {
-                    k[i]<-k[i-1]
-                    mu[i,1:k[i]]<- mu[i-1,1:k[i]]
-                    sigmaf[i,1:k[i]]<- sigmaf[i-1,1:k[i]]
-                    sigmar[i,1:k[i]]<- sigmar[i-1,1:k[i]]
-                    delta[i,1:k[i]]<- delta[i-1,1:k[i]]
-                    dl[i,1:(k[i])] <- dl[i-1,1:k[i]]
-                    w[i,1:k[i]]<- w[i-1,1:k[i]]
-                    dim[i,1:k[i]]<- dim[i-1,1:k[i]]
-                    a[i,1:(k[i]+1)]<- a[i-1,1:(k[i]+1)]
-
-                }
-
             }
-
             else {
 
                 ### Metropolis-Hastings move
