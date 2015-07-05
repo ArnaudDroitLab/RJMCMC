@@ -910,7 +910,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     km <- mode(k)
-    K <- which(k==km)
+    K  <- which(k==km)
 
     mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
     sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[K,j])})
@@ -919,29 +919,44 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     delta_hat  <- sapply(1:km,function(j){mean(delta[K,j])})
     dl_hat     <- round(sapply(1:km,function(j){mean(dl[K,j])}))
 
-    qmu <- matrix(0,nrow=km,ncol=2)
-    colnames(qmu) <- c("2.5%", "97.5%")
-    qsigmaf <- matrix(0,nrow=km,ncol=2)
-    colnames(qsigmaf) <- c("2.5%", "97.5%")
-    qsigmar <- matrix(0,nrow=km,ncol=2)
-    colnames(qsigmar) <- c("2.5%", "97.5%")
-    qdelta <- matrix(0,nrow=km,ncol=2)
-    colnames(qdelta) <- c("2.5%", "97.5%")
-    qdl <- matrix(0,nrow=km,ncol=2)
-    colnames(qdl) <- c("2.5%", "97.5%")
-    qw <- matrix(0,nrow=km,ncol=2)
-    colnames(qw) <- c("2.5%", "97.5%")
+#     qmu <- matrix(0,nrow=km,ncol=2)
+#     colnames(qmu) <- c("2.5%", "97.5%")
+#     qsigmaf <- matrix(0,nrow=km,ncol=2)
+#     colnames(qsigmaf) <- c("2.5%", "97.5%")
+#     qsigmar <- matrix(0,nrow=km,ncol=2)
+#     colnames(qsigmar) <- c("2.5%", "97.5%")
+#     qdelta <- matrix(0,nrow=km,ncol=2)
+#     colnames(qdelta) <- c("2.5%", "97.5%")
+#     qdl <- matrix(0,nrow=km,ncol=2)
+#     colnames(qdl) <- c("2.5%", "97.5%")
+#     qw <- matrix(0,nrow=km,ncol=2)
+#     colnames(qw) <- c("2.5%", "97.5%")
+#
+#     for (j in 1:km)
+#     {
+#         qmu[j,] <- quantile(mu[,j], probs=c(0.025,0.975), names=FALSE)
+#         qsigmaf[j,] <- quantile(sigmaf[,j], probs=c(0.025,0.975),names=FALSE)
+#         qsigmar[j,] <- quantile(sigmar[,j], probs=c(0.025,0.975),names=FALSE)
+#         qdelta[j,] <- quantile(delta[,j], probs=c(0.025,0.975), names=FALSE)
+#         qdl[j,] <- quantile(dl[,j], probs=c(0.025,0.975), names=FALSE)
+#         qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
+#     }
 
-    for (j in 1:km)
-    {
-        qmu[j,] <- quantile(mu[,j], probs=c(0.025,0.975), names=FALSE)
-        qsigmaf[j,] <- quantile(sigmaf[,j], probs=c(0.025,0.975), names=FALSE)
-        qsigmar[j,] <- quantile(sigmar[,j], probs=c(0.025,0.975), names=FALSE)
-        qdelta[j,] <- quantile(delta[,j], probs=c(0.025,0.975), names=FALSE)
-        qdl[j,] <- quantile(dl[,j], probs=c(0.025,0.975), names=FALSE)
-        qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
-    }
+    # Getting 2.5% and 97.5% quantiles for each important data type
+    qmu     <- t(apply(mu[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
+    qsigmaf <- t(apply(sigmaf[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
+    qsigmar <- t(apply(sigmar[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
+    qdelta  <- t(apply(delta[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
+    qdl     <- t(apply(dl[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
+    qw      <- t(apply(w[,1:km], MARGIN=2, FUN=quantile,
+                        probs=c(0.025, 0.975)))
 
+    # Create the final list
     result <- list(
         call = cl,
         K = k,
