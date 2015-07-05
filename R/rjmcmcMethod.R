@@ -115,10 +115,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     deltamin        <- 142
     deltamax        <- 152
 
-    k               <- rep(0, nbrIterations)
-    ktilde          <- rep(0, nbrIterations)
+    # Vector of the number of nucleosomes (integer values)
+    k               <- rep(0L, nbrIterations)
+    ktilde          <- rep(0L, nbrIterations)
+
+    # Vector of the position of the nucleosomes
     mu              <- matrix(0, nrow = nbrIterations, ncol = kmax)
     mutilde         <- matrix(0, nrow = nbrIterations, ncol = kmax)
+
     sigmaftilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
     sigmaf          <- matrix(0, nrow = nbrIterations, ncol = kmax)
     sigmartilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
@@ -127,14 +131,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     delta           <- matrix(0, nrow = nbrIterations, ncol = kmax)
     wtilde          <- matrix(0, nrow = nbrIterations, ncol = kmax)
     w               <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    a               <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
-    atilde          <- matrix(0, nrow = nbrIterations, ncol = kmax + 1)
+    a               <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
+    atilde          <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
     dimtilde        <- matrix(0, nrow = nbrIterations, ncol = kmax)
     dim             <- matrix(0, nrow = nbrIterations, ncol = kmax)
     dl              <- matrix(0, nrow = nbrIterations, ncol = kmax)
     dltilde         <- matrix(3, nrow = nbrIterations, ncol = kmax)
 
-    k[1]            <- 1
+    k[1]            <- 1L
 
     mu[1, 1]        <- runif(1,min(y),max(y)) #runif(1, min(y), (min(y) + 200))
     sigmaf[1, 1]    <- 1
@@ -178,8 +182,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
             if (u <= 0.5) {
 
-                ktilde[i] <- k[i-1] + 1
-                compteur <- 1
+                ktilde[i] <- k[i-1] + 1L
+                count  <- 1L
                 repeat {
                     j <- sample(1:k[i-1],1)
                     mutilde[i,j] <- runif(1,min(y),mu[i-1,j])
@@ -203,13 +207,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
-                    compteur <- compteur + 1
+                    count <- count + 1L
 
-                    if ((Pr > 1 & Lf > 1 & Lr > 1)  || compteur == 1000) break()
+                    if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
+                                            count == 1000L) break()
 
                 }
 
-                if (compteur == 1000) {
+                if (count == 1000L) {
                     rhob[i] <- 0
                 }
 
@@ -286,7 +291,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 v <- runif(1)      #Acceptation/rejet du Birth move
 
                 if (rhob[i] >= v) {
-                    k[i]                    <-  ktilde[i]
+                    k[i]                    <- ktilde[i]
                     maxValue                <- as.integer(k[i])
                     mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
                     sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
@@ -315,7 +320,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 ###Metropolis-Hastings move
 
                 ktilde[i] <- k[i-1]
-                compteur<-1
+                count     <- 1L
                 repeat {
                     j <- sample(1:k[i-1],1)
                     mutilde[i,j] <- runif(1,mu[i-1,j],max(y))
@@ -337,16 +342,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
-                    compteur <- compteur + 1
+                    count <- count + 1L
 
-                    if ( (Pr > 1 & Lf > 1 & Lr > 1)  || compteur == 1000) break()
-
+                    if ( (Pr > 1 & Lf > 1 & Lr > 1)  ||
+                                    count == 1000L) break()
                 }
 
-                if (compteur == 1000) {
-
+                if (count == 1000L) {
                     rhomh[i] <- 0
-
                 } else {
 
                     sigmaftilde[i,1:ktilde[i]] <- sigmaf[i-1,1:k[i-1]]
@@ -448,8 +451,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 ### Death move
 
-                ktilde[i] <- k[i-1]-1
-                compteur <- 1
+                ktilde[i] <- k[i-1] - 1L
+                count  <- 1L
                 repeat {
 
                     j <- sample(1:k[i-1],1)
@@ -487,13 +490,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
-                    compteur <- compteur + 1
+                    count <- count + 1L
 
-                    if ( (Pr>1 & Lf>1 & Lr>1)  || compteur==1000) break()
+                    if ( (Pr>1 & Lf>1 & Lr>1)  ||
+                                count == 1000L) break()
 
                 }
 
-                if (compteur == 1000) {
+                if (count == 1000L) {
                     rhod[i] <- 0
                 } else {
                     alpha <- rep(1, k[i-1])
@@ -594,8 +598,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 #Birth move
 
-                ktilde[i] <- k[i-1] + 1
-                compteur <- 1
+                ktilde[i] <- k[i-1] + 1L
+                count <- 1L
                 repeat {
                     j <- sample(1:k[i-1],1)
                     if (j == 1) {mutilde[i,j] <- runif(1,min(y),mu[i-1,j])}
@@ -627,12 +631,13 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
-                    compteur = compteur+1
-                    if ( (Pr>1 & Lf>1 & Lr>1)  || compteur==1000) break()
+                    count <- count + 1L
+                    if ( (Pr>1 & Lf>1 & Lr>1)  ||
+                                    count == 1000L) break()
 
                 }
 
-                if (compteur == 1000) {
+                if (count == 1000L) {
                     rhob[i] <- 0
                 } else {
                     dltilde[i,j] <- sample(3:30,1)
@@ -748,7 +753,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 ### Metropolis-Hastings move
 
                 ktilde[i] <- k[i-1]
-                compteur <- 1
+                count  <- 1L
                 repeat {
                     j <- sample(2:k[i-1],1)
                     mutilde[i,1:ktilde[i]] <- mu[i-1,1:k[i-1]]
@@ -785,15 +790,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
-                    compteur <- compteur + 1
-                    if ( (Pr > 1 & Lf > 1 & Lr > 1)  || compteur == 1000) break()
+                    count <- count + 1L
+                    if ( (Pr > 1 & Lf > 1 & Lr > 1)
+                                    || count == 1000L) break()
                 }
 
-                if (compteur == 1000) {
+                if (count == 1000L) {
                     rhomh[i] <- 0
-                }
-
-                else {
+                } else {
 
                     sigmaftilde[i,1:ktilde[i]] <- sigmaf[i-1,1:k[i-1]]
                     sigmartilde[i,1:ktilde[i]] <- sigmar[i-1,1:k[i-1]]
