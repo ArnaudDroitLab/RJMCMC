@@ -93,20 +93,19 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                             maxInterval, minReads)
 
     # Casting specific inputs as integer
-    minReads <- as.integer(minReads)
-    nbrIterations <- as.integer(nbrIterations)
-    kmax <- as.integer(kmax)
+    minReads        <- as.integer(minReads)
+    nbrIterations   <- as.integer(nbrIterations)
+    kmax            <- as.integer(kmax)
 
     ##############################################################
     #### Parameter Initialization                             ####
     ##############################################################
 
     y               <- sort(c(startPosForwardReads, startPosReverseReads))
-    n               <- length(y)
-    size            <- n
     nf              <- length(startPosForwardReads)
     nr              <- length(startPosReverseReads)
-    d               <- sapply(1:size, function(m) {
+    nbrReads        <- nf + nr
+    d               <- sapply(1:nbrReads, function(m) {
                             ifelse(min(abs(startPosReverseReads - y[m])) == 0,
                                     -1, 1)})
 
@@ -172,7 +171,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     Y1r             <- rep(0, nr)
     Y2r             <- rep(0, nr)
 
-    nbrIterations   <- ifelse((nf + nr) <= 10, 1000, nbrIterations)
+    nbrIterations   <- ifelse(nbrReads <= 10, 1000, nbrIterations)
 
     for (i in 2:nbrIterations) {
 
@@ -237,7 +236,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     alphaprop <- rep(1,k[i-1])
                     wtilde[i,1:ktilde[i]] <- rdirichlet(1,alphaproptilde)
                     ennetilde <- dimtilde[i,1:ktilde[i]]
-                    enne <- rmultinom(1,n,w[i-1,1:k[i-1]])
+                    enne <- rmultinom(1, nbrReads, w[i-1,1:k[i-1]])
 
                     #Rapport de vraisemblance
 
@@ -274,7 +273,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
+                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
                     rap.propmu <- (1/(qalloc))
                     rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
@@ -401,7 +400,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
+                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- 1
                     rap.propmu <- 1
                     rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
@@ -505,7 +504,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     alphaproptilde <- rep(1, ktilde[i])
                     alphaprop <- rep(1, k[i-1])
                     ennetilde <- dimtilde[i,1:ktilde[i]]
-                    enne <- rmultinom(1, n, w[i-1,1:k[i-1]])
+                    enne <- rmultinom(1, nbrReads, w[i-1,1:k[i-1]])
                     wtilde[i,1:ktilde[i]] <- rdirichlet(1, alphaproptilde)
 
                     ### Rapport de vraisemblance ###
@@ -553,7 +552,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
+                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
                     rap.propmu <- (qalloc)
                     rap.propw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde)/ddirichlet(w[i-1,1:k[i-1]],alphaprop))
@@ -664,7 +663,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     alphaproptilde <- rep(1, ktilde[i])
                     alphaprop <- rep(1, k[i-1])
                     ennetilde <- dimtilde[i, 1:ktilde[i]]
-                    enne <- rmultinom(1, n, w[i-1, 1:k[i-1]])
+                    enne <- rmultinom(1, nbrReads, w[i-1, 1:k[i-1]])
                     wtilde[i,1:ktilde[i]] <- rdirichlet(1, alphaproptilde)
 
                     ### Rapport de vraisemblance ###
@@ -707,7 +706,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde,n,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
+                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
                     rap.propmu <- (1/(qalloc))
                     rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
@@ -847,7 +846,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]], alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha))
-                    rap.priorenne <- dmultinom(ennetilde, n, wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]],n,w[i-1,1:k[i-1]])
+                    rap.priorenne <- dmultinom(ennetilde, nbrReads, wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- (1)
                     rap.propmu <- (1)
                     rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
