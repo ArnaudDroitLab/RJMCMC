@@ -411,7 +411,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 }
 
-                rhomh[i] <- ifelse( is.na(rhomh[i]) == FALSE, rhomh[i], 0)
+#                 rhomh[i] <- ifelse( is.na(rhomh[i]) == FALSE, rhomh[i], 0)
+                rhomh[i] <- ifelse(is.na(rhomh[i]), 0, rhomh[i])
 
                 v = runif(1)
 
@@ -425,10 +426,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     w[i,1:k[i]] <- wtilde[i,1:k[i]]
                     dim[i,1:k[i]] <- dimtilde[i,1:k[i]]
                     a[i,1:(k[i]+1)] <- atilde[i,1:(k[i]+1)]
-
-                }
-
-                else {
+                } else {
                     k[i] <- k[i-1]
                     mu[i,1:k[i]] <- mu[i-1,1:k[i]]
                     sigmaf[i,1:k[i]] <- sigmaf[i-1,1:k[i]]
@@ -438,7 +436,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     w[i,1:k[i]] <- w[i-1,1:k[i]]
                     dim[i,1:k[i]] <- dim[i-1,1:k[i]]
                     a[i,1:(k[i]+1)] <- a[i-1,1:(k[i]+1)]
-
                 }
 
             }    ### end of M-H move in case k=1
@@ -498,10 +495,9 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 }
 
-                if (compteur == 1000) {rhod[i] <- 0}
-
-                else {
-
+                if (compteur == 1000) {
+                    rhod[i] <- 0
+                } else {
                     alpha <- rep(1, k[i-1])
                     alphatilde <- rep(1, ktilde[i])
                     alphaproptilde <- rep(1, ktilde[i])
@@ -542,9 +538,16 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.vrais <- rap.q
 
-                    if (j==1) {qalloc <- 1/(mu[i-1,j+1]-min(y))}  #densit? de mutilde[i,j]
-                    else { if (j==k[i-1]) { qalloc <- 1/(max(y)-mu[i-1,j-1])}
-                           else { qalloc <- 1/(mu[i-1,j+1]-mu[i-1,j-1]) }}
+                    # Density of mutilde[i,j]
+                    if (j == 1) {
+                        qalloc <- 1/(mu[i-1,j+1] - min(y))
+                    } else {
+                        if (j == k[i-1]) {
+                            qalloc <- 1/(max(y) - mu[i-1, j-1])
+                        } else {
+                            qalloc <- 1/(mu[i-1, j+1] - mu[i-1, j-1])
+                        }
+                    }
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
@@ -560,36 +563,33 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 }
 
-                rhod[i] <-  ifelse ( is.na(rhod[i])==FALSE, rhod[i], 0)
+                rhod[i] <-  ifelse( is.na(rhod[i]) == FALSE, rhod[i], 0)
 
                 v <- runif(1)      #Acceptation/rejet du Death move
 
-                if (rhod[i] >= v  ) {
-                    k[i] <- ktilde[i]
-                    mu[i,1:k[i]] <- mutilde[i,1:k[i]]
-                    sigmaf[i,1:k[i]] <- sigmaftilde[i,1:k[i]]
-                    sigmar[i,1:k[i]] <- sigmartilde[i,1:k[i]]
-                    delta[i,1:k[i]] <- deltatilde[i,1:k[i]]
-                    dl[i,1:k[i]] <- dltilde[i,1:k[i]]
-                    w[i,1:k[i]] <- wtilde[i,1:k[i]]
-                    dim[i,1:k[i]] <- dimtilde[i,1:k[i]]
-                    a[i,1:(k[i]+1)] <- atilde[i,1:(k[i]+1)]
-
+                if (rhod[i] >= v) {
+                    k[i]                <- ktilde[i]
+                    maxVal              <- as.integer(k[i])
+                    mu[i, 1:maxVal]     <- mutilde[i, 1:maxVal]
+                    sigmaf[i, 1:maxVal] <- sigmaftilde[i, 1:maxVal]
+                    sigmar[i, 1:maxVal] <- sigmartilde[i, 1:maxVal]
+                    delta[i, 1:maxVal]  <- deltatilde[i, 1:maxVal]
+                    dl[i, 1:maxVal]     <- dltilde[i, 1:maxVal]
+                    w[i, 1:maxVal]      <- wtilde[i, 1:maxVal]
+                    dim[i, 1:maxVal]    <- dimtilde[i, 1:maxVal]
+                    a[i, 1:(maxVal+1)]  <- atilde[i, 1:(maxVal+1)]
+                } else {
+                    k[i]                <- k[i-1]
+                    maxVal              <- as.integer(k[i])
+                    mu[i,1:maxVal]      <- mu[i-1, 1:maxVal]
+                    sigmaf[i,1:maxVal]  <- sigmaf[i-1, 1:maxVal]
+                    sigmar[i,1:maxVal]  <- sigmar[i-1, 1:maxVal]
+                    delta[i,1:maxVal]   <- delta[i-1, 1:maxVal]
+                    dl[i,1:maxVal]      <- dl[i-1, 1:maxVal]
+                    w[i,1:maxVal]       <- w[i-1, 1:maxVal]
+                    dim[i,1:maxVal]     <- dim[i-1, 1:maxVal]
+                    a[i,1:(maxVal+1)]   <- a[i-1, 1:(maxVal+1)]
                 }
-
-                else {
-                    k[i] <- k[i-1]
-                    mu[i,1:k[i]] <- mu[i-1,1:k[i]]
-                    sigmaf[i,1:k[i]] <- sigmaf[i-1,1:k[i]]
-                    sigmar[i,1:k[i]] <- sigmar[i-1,1:k[i]]
-                    delta[i,1:k[i]] <- delta[i-1,1:k[i]]
-                    dl[i,1:k[i]] <- dl[i-1,1:k[i]]
-                    w[i,1:k[i]] <- w[i-1,1:k[i]]
-                    dim[i,1:k[i]] <- dim[i-1,1:k[i]]
-                    a[i,1:(k[i]+1)] <- a[i-1,1:(k[i]+1)]
-
-                }
-
             }
 
             else {  if (u <= (Dk(k[i-1], lambda, kmax) + Bk(k[i-1], lambda, kmax))) {
@@ -695,8 +695,13 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.vrais <- rap.q
 
-                    if (j==1) { qalloc=1/(mu[i-1,j]-min(y)) }       #densit? de mutilde[i,j]
-                    else { qalloc<-1/(mu[i-1,j]-mu[i-1,j-1]) }
+                    #Density of
+                    mutilde[i,j]
+                    if (j==1) {
+                        qalloc <- 1/(mu[i-1, j] - min(y))
+                    } else {
+                        qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
+                    }
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
@@ -896,7 +901,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                          w=w[i,1:k[i]]
         )
 
-        liste <- mergeNucleosomes(startPosForwardReads, startPosReverseReads, y, new.list, minInterval,
+        liste <- mergeNucleosomes(startPosForwardReads, startPosReverseReads,
+                                        y, new.list, minInterval,
                                         maxInterval, minReads)
 
         k[i]             <- liste$k
