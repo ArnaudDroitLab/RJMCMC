@@ -125,6 +125,10 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     k               <- rep(0L, nbrIterations)
     ktilde          <- rep(0L, nbrIterations)
 
+    # Max and min read positions
+    minReadPos <- min(y)
+    maxReadPos <- max(y)
+
     # Vector of the position of the nucleosomes
     mu              <- matrix(0, nrow = nbrIterations, ncol = kmax)
     mutilde         <- matrix(0, nrow = nbrIterations, ncol = kmax)
@@ -146,17 +150,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     k[1]            <- 1L
 
-    mu[1, 1]        <- runif(1, min(y), max(y)) #runif(1, min(y), (min(y)+200))
+    mu[1, 1]        <- runif(1, minReadPos, maxReadPos) #runif(1, min(y), (min(y)+200))
     sigmaf[1, 1]    <- 1
     sigmar[1, 1]    <- 1
-    delta[1, 1]     <- runif(1, 0, 2*(mu[1,1] - min(y)))
+    delta[1, 1]     <- runif(1, 0, 2*(mu[1,1] - minReadPos))
     w[1, 1]         <- 1
     dl[1, 1]        <- 3
 
-    a[1, 1]         <- min(y)
-    a[1, k[1] + 1]  <- max(y)
+    a[1, 1]         <- minReadPos
+    a[1, k[1] + 1]  <- maxReadPos
 
-    dim[1,1]        <- length(y[a[1, 1] <= y & y <= max(y)])
+    dim[1,1]        <- length(y[a[1, 1] <= y & y <= maxReadPos])
 
     rhob            <- rep(0, nbrIterations)
     rhod            <- rep(0, nbrIterations)
@@ -931,7 +935,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     km <- mode(k)
-    K  <- which(k==km)
+    K  <- which(k == km)
 
     mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
     sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[K,j])})
