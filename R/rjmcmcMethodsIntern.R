@@ -295,8 +295,8 @@ priorMuDensity <- function(mu, readPositions)
 
 #' @title Element with the hightest number of occurences
 #'
-#' @description \code{mode} takes the integer-valued vector \code{sample} and
-#' returned the \code{integer} with the highest number of occurences.
+#' @description Returned the \code{integer} with the highest number of
+#' occurences in a \code{vector}.
 #' When more than one \code{integer} have the highest number of occurences,
 #' \code{NA} is returned.
 #'
@@ -314,12 +314,12 @@ priorMuDensity <- function(mu, readPositions)
 #'
 #' ## Return the element with the hightest number of occurence
 #' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' rjmcmc:::mode(data01)
+#' rjmcmc:::elementWithHighestMode(data01)
 #'
 #' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' rjmcmc:::mode(data02)
+#' rjmcmc:::elementWithHighestMode(data02)
 #'
-mode <- function(sample) {
+elementWithHighestMode <- function(sample) {
     tabsample <- tabulate(sample)
     maxOccurence <- tabsample == max(tabsample)
     ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)

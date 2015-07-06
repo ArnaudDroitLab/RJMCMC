@@ -107,7 +107,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     nr              <- length(startPosReverseReads)
     nbrReads        <- nf + nr
 #     d               <- sapply(1:nbrReads, function(m) {
-#                             ifelse(min(abs(startPosReverseReads - y[m])) == 0,
+#                           ifelse(min(abs(startPosReverseReads - y[m])) == 0,
 #                                     -1, 1)})
 
     # Order reads an mark reverse reads as -1 in a new vector
@@ -944,7 +944,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
-    km <- mode(k)
+    km <- elementWithHighestMode(k)
     K  <- which(k == km)
 
     mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
