@@ -160,7 +160,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     a[1, 1]         <- minReadPos
     a[1, k[1] + 1]  <- maxReadPos
 
-    dim[1,1]        <- length(y[a[1, 1] <= y & y <= maxReadPos])
+#     dim[1,1]        <- length(y[a[1, 1] <= y & y <= maxReadPos])
+    dim[1,1]        <- nbrReads
 
     rhob            <- rep(0, nbrIterations)
     rhod            <- rep(0, nbrIterations)
@@ -186,34 +187,37 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     for (i in 2:nbrIterations) {
 
-        if (k[i-1] == 1) {
+        ## Current number of nucleosomes
+        kValue <- k[i-1]
+
+        if (kValue == 1L) {
             ## CASE : Number of nucleosomes equal to 1
             u<-runif(1)
 
             if (u <= 0.5) {
-                kValue <- k[i-1]
                 ktilde[i] <- kValue + 1L
                 count  <- 1L
                 repeat {
                     j <- sample(1:kValue, 1)
-                    mutilde[i, j] <- runif(1,min(y),mu[i-1,j])
+                    mutilde[i, j] <- runif(1, minReadPos, mu[i-1, j])
                     mutilde[i, 1:ktilde[i]] <- sort(c(mu[i-1, 1:kValue],
                                                         mutilde[i, j]))
 
                     atilde[i, j+1] <- runif(1, mutilde[i, j], mutilde[i, j+1])
-                    atilde[i, 1:(ktilde[i]+1)] <- sort(c(a[i-1,1: ktilde[i]],
+                    atilde[i, 1:(ktilde[i]+1)] <- sort(c(a[i-1, 1:ktilde[i]],
                                                             atilde[i, j+1]))
-                    atilde[i, 1] <- min(y)
+                    atilde[i, 1] <- minReadPos
                     atilde[i, (ktilde[i]+1)] <- max(y)
 
-                    dimtilde[i, 1] <- length(y[atilde[i,1] <= y &
+                    dimtilde[i, 1] <- length(y[atilde[i, 1] <= y &
                                                     y < atilde[i, 2]])
-                    dimtilde[i, ktilde[i]] <- length(y[atilde[i,
-                                                ktilde[i]] <= y & y <= max(y)])
+                    dimtilde[i, ktilde[i]] <- length(y[atilde[i, ktilde[i]]
+                                                        <= y & y <= max(y)])
                     if (ktilde[i] > 2) {
                         for (m in 2:(ktilde[i]-1)) {
                             dimtilde[i,m] <- length(y[(atilde[i, m] <= y &
-                                                    y < atilde[i, m+1])]) }}
+                                                    y < atilde[i, m+1])]) }
+                    }
                     Pr <- min(dimtilde[i, 1:ktilde[i]])
 
                     ybar <- mean(y[atilde[i, j] <= y & y <= atilde[i, j+1]])
@@ -222,6 +226,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
+
+
                     count <- count + 1L
 
                     if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
@@ -290,20 +296,23 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.vrais <- rap.q
 
-                    if (j==1) {qalloc <- 1/(mu[i-1,j]-min(y))}       #densit? de mutilde[i,j]
-                    else {qalloc <- 1/(mu[i-1,j]-mu[i-1,j-1])}
+                    if (j == 1) {
+                        qalloc <- 1/(mu[i-1, j] - minReadPos) # Density of mutilde[i,j]
+                    } else {
+                        qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
+                    }
 
                     rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
                     rap.propmu <- (1/(qalloc))
-                    rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
+                    rap.propw <- (ddirichlet(w[i-1, 1:k[i-1]], alphaprop)/ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde))
 
                     rap.prior <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
                     rap.prop <-  rap.propmu  * rap.propw
 
-                    rhob[i] <- min(1,(rap.vrais) * (rap.prior)  *  (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(k[i-1],lambda,kmax)))
+                    rhob[i] <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(k[i-1],lambda,kmax)))
 
                 }
 
@@ -348,7 +357,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     mutilde[i,j] <- runif(1,mu[i-1,j],max(y))
                     mutilde[i,1:ktilde[i]] <- sort(c(mutilde[i,1:ktilde[i]]))
 
-                    atilde[i,j] <-  min(y)
+                    atilde[i,j]   <-  minReadPos
                     atilde[i,j+1] <- max(y)
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y< atilde[i,2]])
@@ -469,11 +478,11 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
             u<-runif(1)
 
-            if (u <= Dk(k[i-1], lambda, kmax)) {
+            if (u <= Dk(kValue, lambda, kmax)) {
 
                 ### Death move
 
-                ktilde[i] <- k[i-1] - 1L
+                ktilde[i] <- kValue - 1L
                 count  <- 1L
                 repeat {
 
@@ -496,7 +505,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     Z <- a[i-1,1:(k[i-1]+1)]
                     if (j==k[i-1]) {atilde[i,1:(ktilde[i]+1)] <- Z[-j]}
                     else { atilde[i,1:(ktilde[i]+1)] <- Z[-(j+1)] }
-                    atilde[i,1] <- min(y)
+                    atilde[i,1] <- minReadPos
                     atilde[i,ktilde[i]+1] <- max(y)
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
@@ -564,7 +573,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     # Density of mutilde[i,j]
                     if (j == 1) {
-                        qalloc <- 1/(mu[i-1,j+1] - min(y))
+                        qalloc <- 1/(mu[i-1,j+1] - minReadPos)
                     } else {
                         if (j == k[i-1]) {
                             qalloc <- 1/(max(y) - mu[i-1, j-1])
@@ -624,7 +633,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 count <- 1L
                 repeat {
                     j <- sample(1:k[i-1],1)
-                    if (j == 1) {mutilde[i,j] <- runif(1,min(y),mu[i-1,j])}
+                    if (j == 1) {mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j])}
                     else {
                         mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j])}
                     mutilde[i,1:ktilde[i]] <- sort(c(mu[i-1,1:k[i-1]],mutilde[i,j]))
@@ -632,10 +641,10 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     atilde[i,j+1] <- ifelse(j<ktilde[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],max(y)))
                     atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:ktilde[i]],atilde[i,j+1]))
                     if (j == 1){
-                        atilde[i,j] <- min(y)}
+                        atilde[i,j] <- minReadPos}
                     else {
                         atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])}
-                    atilde[i,1] <- min(y)
+                    atilde[i,1] <- minReadPos
                     atilde[i,ktilde[i]+1] <- max(y)
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
@@ -722,7 +731,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     #Density of
                     mutilde[i,j]
                     if (j==1) {
-                        qalloc <- 1/(mu[i-1, j] - min(y))
+                        qalloc <- 1/(mu[i-1, j] - minReadPos)
                     } else {
                         qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
                     }
@@ -777,7 +786,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     j <- sample(2:k[i-1],1)
                     mutilde[i,1:ktilde[i]] <- mu[i-1,1:k[i-1]]
                     if (j==1) {
-                        mutilde[i,j] <- runif(1,min(y),mu[i-1,j+1])}
+                        mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j+1])}
                     else {if (j==ktilde[i]) {
                         mutilde[i,j] <- runif(1,mu[i-1,j-1],max(y))}
                         else { mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j+1]) }}
@@ -788,12 +797,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         atilde[i,j] <- runif(1,mutilde[i,j],max(y))
                         atilde[i,j+1] <- max(y) }
                     else { if (j==1) {
-                        atilde[i,j] <- min(y)
+                        atilde[i,j] <- minReadPos
                         atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])}
                         else {
                             atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])
                             atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])  }}
-                    atilde[i,1] <- min(y)
+                    atilde[i,1] <- minReadPos
                     atilde[i,ktilde[i]+1] <- max(y)
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
