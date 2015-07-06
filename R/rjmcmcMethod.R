@@ -115,6 +115,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     yOrder <- order(y)
     y <- y[yOrder]
     d <- d[yOrder]
+    rm(yOrder)
 
     ## ASTRID : voir si zeta, detamin, deltamax devraient etre des integer
     zeta            <- 147
@@ -206,13 +207,13 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     atilde[i, j+1] <- runif(1, mutilde[i, j], mutilde[i, j+1])
                     atilde[i, 1:(ktilde[i]+1)] <- sort(c(a[i-1, 1:ktilde[i]],
                                                             atilde[i, j+1]))
-                    atilde[i, 1] <- minReadPos
-                    atilde[i, (ktilde[i]+1)] <- max(y)
+                    atilde[i, 1]                <- minReadPos
+                    atilde[i, (ktilde[i]+1)]    <- maxReadPos
 
                     dimtilde[i, 1] <- length(y[atilde[i, 1] <= y &
                                                     y < atilde[i, 2]])
                     dimtilde[i, ktilde[i]] <- length(y[atilde[i, ktilde[i]]
-                                                        <= y & y <= max(y)])
+                                                        <= y & y <= maxReadPos])
                     if (ktilde[i] > 2) {
                         for (m in 2:(ktilde[i]-1)) {
                             dimtilde[i,m] <- length(y[(atilde[i, m] <= y &
@@ -353,15 +354,15 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 ktilde[i] <- k[i-1]
                 count     <- 1L
                 repeat {
-                    j <- sample(1:k[i-1],1)
-                    mutilde[i,j] <- runif(1,mu[i-1,j],max(y))
+                    j <- sample(1:k[i-1], 1)
+                    mutilde[i,j] <- runif(1, mu[i-1,j], maxReadPos)
                     mutilde[i,1:ktilde[i]] <- sort(c(mutilde[i,1:ktilde[i]]))
 
-                    atilde[i,j]   <-  minReadPos
-                    atilde[i,j+1] <- max(y)
+                    atilde[i,j]   <- minReadPos
+                    atilde[i,j+1] <- maxReadPos
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y< atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=max(y)])
+                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]] <= y & y <= maxReadPos])
                     if (ktilde[i]>2) {
                         for (m in 2: (ktilde[i]-1)) {
                             dimtilde[i,m] <-length(y[(atilde[i,m]<=y & y<atilde[i,m+1])])}}
@@ -505,11 +506,11 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     Z <- a[i-1,1:(k[i-1]+1)]
                     if (j==k[i-1]) {atilde[i,1:(ktilde[i]+1)] <- Z[-j]}
                     else { atilde[i,1:(ktilde[i]+1)] <- Z[-(j+1)] }
-                    atilde[i,1] <- minReadPos
-                    atilde[i,ktilde[i]+1] <- max(y)
+                    atilde[i,1]             <- minReadPos
+                    atilde[i,ktilde[i]+1]   <- maxReadPos
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=max(y)])
+                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<= maxReadPos])
                     if (ktilde[i]>2) {
                         for (m in 2: (ktilde[i]-1)) {
                             dimtilde[i,m] <- length(y[atilde[i,m]<=y & y<atilde[i,m+1]]) }}
@@ -576,7 +577,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         qalloc <- 1/(mu[i-1,j+1] - minReadPos)
                     } else {
                         if (j == k[i-1]) {
-                            qalloc <- 1/(max(y) - mu[i-1, j-1])
+                            qalloc <- 1/(maxReadPos - mu[i-1, j-1])
                         } else {
                             qalloc <- 1/(mu[i-1, j+1] - mu[i-1, j-1])
                         }
@@ -638,17 +639,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j])}
                     mutilde[i,1:ktilde[i]] <- sort(c(mu[i-1,1:k[i-1]],mutilde[i,j]))
 
-                    atilde[i,j+1] <- ifelse(j<ktilde[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],max(y)))
+                    atilde[i,j+1] <- ifelse(j<ktilde[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],maxReadPos))
                     atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:ktilde[i]],atilde[i,j+1]))
                     if (j == 1){
                         atilde[i,j] <- minReadPos}
                     else {
                         atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])}
-                    atilde[i,1] <- minReadPos
-                    atilde[i,ktilde[i]+1] <- max(y)
+                    atilde[i,1]             <- minReadPos
+                    atilde[i,ktilde[i]+1]   <- maxReadPos
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=max(y)])
+                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=maxReadPos])
                     if (ktilde[i] > 2) {
                         for (m in 2: (ktilde[i]-1)) {
                             dimtilde[i,m] <- length(y[atilde[i,m]<=y & y<atilde[i,m+1]])
@@ -788,14 +789,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     if (j==1) {
                         mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j+1])}
                     else {if (j==ktilde[i]) {
-                        mutilde[i,j] <- runif(1,mu[i-1,j-1],max(y))}
+                        mutilde[i,j] <- runif(1,mu[i-1,j-1],maxReadPos)}
                         else { mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j+1]) }}
                     mutilde[i,1:ktilde[i]] <- sort(c(mutilde[i,1:ktilde[i]]))
 
                     atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:(k[i-1]+1)]))
                     if (j==ktilde[i]) {
-                        atilde[i,j] <- runif(1,mutilde[i,j],max(y))
-                        atilde[i,j+1] <- max(y) }
+                        atilde[i,j] <- runif(1,mutilde[i,j],maxReadPos)
+                        atilde[i,j+1] <- maxReadPos }
                     else { if (j==1) {
                         atilde[i,j] <- minReadPos
                         atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])}
@@ -803,10 +804,10 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                             atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])
                             atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])  }}
                     atilde[i,1] <- minReadPos
-                    atilde[i,ktilde[i]+1] <- max(y)
+                    atilde[i,ktilde[i]+1] <- maxReadPos
 
                     dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=max(y)])
+                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=maxReadPos])
                     if (ktilde[i]>2) {
                         for (m in 2: (ktilde[i]-1)) {
                             dimtilde[i,m]<-length(y[atilde[i,m]<=y & y<atilde[i,m+1]]) }}
