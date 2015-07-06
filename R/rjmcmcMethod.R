@@ -101,13 +101,20 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     #### Parameter Initialization                             ####
     ##############################################################
 
-    y               <- sort(c(startPosForwardReads, startPosReverseReads))
+#     y               <- sort(c(startPosForwardReads, startPosReverseReads))
+    y               <- c(startPosForwardReads, startPosReverseReads)
     nf              <- length(startPosForwardReads)
     nr              <- length(startPosReverseReads)
     nbrReads        <- nf + nr
-    d               <- sapply(1:nbrReads, function(m) {
-                            ifelse(min(abs(startPosReverseReads - y[m])) == 0,
-                                    -1, 1)})
+#     d               <- sapply(1:nbrReads, function(m) {
+#                             ifelse(min(abs(startPosReverseReads - y[m])) == 0,
+#                                     -1, 1)})
+
+    # Order reads an mark reverse reads as -1 in a new vector
+    d <- c(rep(1, nf), rep(-1, nr))
+    yOrder <- order(y)
+    y <- y[yOrder]
+    d <- d[yOrder]
 
     ## ASTRID : voir si zeta, detamin, deltamax devraient etre des integer
     zeta            <- 147
