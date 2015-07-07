@@ -99,8 +99,7 @@ Bk <- function(k, lambda, kMax = 30) {
 #' @author Rawane Samb
 #' @importFrom stats rnorm
 #' @keywords internal
-tnormale <- function(mu, sigma, minValue, maxValue)
-{
+tnormale <- function(mu, sigma, minValue, maxValue) {
     ## TODO : voir si on ne peut pas optimiser en créant un vecteur de valeurs
     ## Astrid : Est-ce qu'on doit ajouter une contrainte sur le nombre de
     ## boucles maximum
@@ -149,8 +148,7 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-student.mixture <- function(i, k, weight, mu, sigma, dfr)
-{
+student.mixture <- function(i, k, weight, mu, sigma, dfr) {
     # Adding zero to the weight vector and calculating the cumulative sums
     sumWeight <- cumsum(c(0, weight))
 
@@ -202,8 +200,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-normal.mixture <- function(i, k, weight, mu, sigma)
-{
+normal.mixture <- function(i, k, weight, mu, sigma) {
     # Adding zero to the weight vector and calculating the cumulative sums
     sumWeight <- cumsum(c(0, weight))
 
@@ -265,8 +262,7 @@ normal.mixture <- function(i, k, weight, mu, sigma)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priorMuDensity <- function(mu, readPositions)
-{
+priorMuDensity <- function(mu, readPositions) {
     ## Get the number of nucleosomes
     k <- length(mu)
     ## Create a matrix used in the calculation of the priors
@@ -382,8 +378,7 @@ elementWithHighestMode <- function(sample) {
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 mergeNucleosomes <- function(yf, yr, y, liste,
-                                minInterval, maxInterval, minReads)
-{
+                                minInterval, maxInterval, minReads) {
     ## Get the number of nucleosomes
     k <- liste$k
 
@@ -397,7 +392,7 @@ mergeNucleosomes <- function(yf, yr, y, liste,
         ecart <- diff(liste$mu)
         ecart.min <- min(ecart)
 
-        ## The distance between 2 nucleosome is inferior to minimum distance
+        ## The distance between 2 nucleosomes is inferior to minimum distance
         ## allowed
         if (ecart.min < minInterval) {
             ## Merging nucleosomes with distance inferior to minimum distance
@@ -520,12 +515,18 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' @author Rawane Samb
 #' @keywords internal
 splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
-                                    minReads)
-{
-    k <- length(liste$mu)
-    if (k>1) {
-        ecart.max <- max(sapply(1:(k-1),
-                                function(j){liste$mu[j+1]-liste$mu[j]}))
+                                    minReads) {
+    ## Get the number of nucleosomes
+    k <- liste$k
+
+    if (k > 1) {
+#         ecart.max <- max(sapply(1:(k-1),
+#                                 function(j){liste$mu[j+1]-liste$mu[j]}))
+
+        ## Find the largest distance between 2 nucleosomes
+        ecart <- diff(liste$mu)
+        ecart.max <- max(ecart)
+
         if (ecart.max > maxInterval) {
             j <- 1
             repeat {
@@ -533,7 +534,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                 function(j){
                                     liste$mu[j+1]-liste$mu[j]
                                 }) == ecart.max)
-
+    print(p)
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
@@ -583,7 +584,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                 if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > maxInterval)
-    } ### end of condition if (k>1)
+    } ### end of condition if (k > 1)
     return(liste)
 }
 
@@ -630,8 +631,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kmax, lambda,
-                                    minInterval, maxInterval, minReads)
-{
+                                    minInterval, maxInterval, minReads) {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
         stop("nbrIterations must be a positive integer or numeric")
