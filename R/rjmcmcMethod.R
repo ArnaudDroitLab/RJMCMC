@@ -920,27 +920,29 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     for (i in 1:nbrIterations)
     {
+        kVal <- k[i]
         new.list <- list(
-                        k      = k[i],
-                        mu     = mu[i, 1:k[i]],
-                        sigmaf = sigmaf[i, 1:k[i]],
-                        sigmar = sigmar[i, 1:k[i]],
-                        delta  = delta[i, 1:k[i]],
-                        dl     = dl[i, 1:k[i]],
-                        w      = w[i, 1:k[i]]
+                        k      = kVal,
+                        mu     = mu[i, 1:kVal],
+                        sigmaf = sigmaf[i, 1:kVal],
+                        sigmar = sigmar[i, 1:kVal],
+                        delta  = delta[i, 1:kVal],
+                        dl     = dl[i, 1:kVal],
+                        w      = w[i, 1:kVal]
         )
 
         liste <- mergeNucleosomes(startPosForwardReads, startPosReverseReads,
                                         y, new.list, minInterval,
                                         maxInterval, minReads)
 
-        k[i]             <- liste$k
-        mu[i,1:k[i]]     <- liste$mu
-        sigmaf[i,1:k[i]] <- liste$sigmaf
-        sigmar[i,1:k[i]] <- liste$sigmar
-        delta[i,1:k[i]]  <- liste$delta
-        dl[i,1:k[i]]     <- liste$dl
-        w[i,1:k[i]]      <- liste$w
+        newKVal              <- liste$k
+        k[i]                 <- newKVal
+        mu[i, 1:newKVal]     <- liste$mu
+        sigmaf[i, 1:newKVal] <- liste$sigmaf
+        sigmar[i, 1:newKVal] <- liste$sigmar
+        delta[i, 1:newKVal]  <- liste$delta
+        dl[i, 1:newKVal]     <- liste$dl
+        w[i, 1:newKVal]      <- liste$w
     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
