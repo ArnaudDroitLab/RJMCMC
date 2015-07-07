@@ -946,15 +946,23 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
+    ## Getting the number of nucleosomes with the highest frequency
     km <- elementWithHighestMode(k)
-    K  <- which(k == km)
+    kPositions  <- which(k == km)
 
-    mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
-    sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[K,j])})
-    sigmar_hat <- sapply(1:km,function(j){mean(sigmar[K,j])})
-    w_hat      <- sapply(1:km,function(j){mean(w[K,j])})
-    delta_hat  <- sapply(1:km,function(j){mean(delta[K,j])})
-    dl_hat     <- round(sapply(1:km,function(j){mean(dl[K,j])}))
+#     mu_hat     <- sapply(1:km,function(j){mean(mu[kPositions,j])})
+#     sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[kPositions,j])})
+#     sigmar_hat <- sapply(1:km,function(j){mean(sigmar[kPositions,j])})
+#     w_hat      <- sapply(1:km,function(j){mean(w[kPositions,j])})
+#     delta_hat  <- sapply(1:km,function(j){mean(delta[kPositions,j])})
+#     dl_hat     <- round(sapply(1:km,function(j){mean(dl[kPositions,j])}))
+
+    mu_hat     <- colMeans(mu[kPositions, 1:km])
+    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km])
+    sigmar_hat <- colMeans(sigmar[kPositions, 1:km])
+    w_hat      <- colMeans(w[kPositions, 1:km])
+    delta_hat  <- colMeans(delta[kPositions, 1:km])
+    dl_hat     <- round(colMeans(dl[kPositions, 1:km]))
 
 #     qmu <- matrix(0,nrow=km,ncol=2)
 #     colnames(qmu) <- c("2.5%", "97.5%")
