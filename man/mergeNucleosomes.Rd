@@ -61,7 +61,7 @@ Merging two nucleosomal regions into one region with respect of
 the minimal and maximal intervals allowed.
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 

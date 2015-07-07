@@ -379,7 +379,7 @@ elementWithHighestMode <- function(sample) {
 #'     \item w TODO
 #' }
 #'
-#' @author Rawane Samb
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 mergeNucleosomes <- function(yf, yr, y, liste,
                                 minInterval, maxInterval, minReads)
@@ -470,18 +470,31 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' @description Split a nucleosomal region into two regions with respect of
 #' the minimal and maximal intervals allowed.
 #'
-#' @param yf a \code{vector} of positive \code{integer}
+#' @param yf a \code{vector} of positive \code{numeric}
 #' corresponding to the
 #' positions of all forward reads. The
 #' values inside \code{yf} must be sorted.
 #'
-#' @param yr a \code{vector} of positive \code{integer}
+#' @param yr a \code{vector} of positive \code{numeric}
 #' corresponding to the positions of all reverse reads. The
 #' values inside \code{yr} must be sorted.
 #'
-#' @param y TODO
+#' @param y a \code{vector} of positive \code{numeric}
+#' corresponding to the
+#' positions of all forward and reverse reads. The
+#' values inside \code{y} must be sorted.
 #'
-#' @param liste TODO
+#' @param liste a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
 #' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
@@ -492,7 +505,17 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' @param minReads a positive \code{integer}, the minimum
 #' number of reads in a potential canditate region.
 #'
-#' @return \code{0} TODO
+#' @return a \code{list} containing the updated values:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
 #' @author Rawane Samb
 #' @keywords internal
