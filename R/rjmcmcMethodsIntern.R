@@ -408,8 +408,8 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #                             function(j){liste$mu[j+1] - liste$mu[j]}) ==
 #                             ecart.min)[1]
 
-                ## Find all positions with minimum gap
-                p <- which(ecart == ecart.min)
+                ## Find the first position with minimum gap
+                p <- which.min(ecart)
 
                 classes  <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
                 classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
