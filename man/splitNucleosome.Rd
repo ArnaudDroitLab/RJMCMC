@@ -7,9 +7,14 @@
 splitNucleosome(yf, yr, y, liste, minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{yf}{TODO}
+\item{yf}{a \code{vector} of positive \code{integer}
+corresponding to the
+positions of all forward reads. The
+values inside \code{yf} must be sorted.}
 
-\item{yr}{TODO}
+\item{yr}{a \code{vector} of positive \code{integer}
+corresponding to the positions of all reverse reads. The
+values inside \code{yr} must be sorted.}
 
 \item{y}{TODO}
 

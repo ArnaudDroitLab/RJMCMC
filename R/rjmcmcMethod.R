@@ -37,7 +37,8 @@
 #' @return an \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 #' \itemize{
 #' \item \code{call} the matched call.
-#' \item \code{K} TODO
+#' \item \code{K} a \code{vector} of \code{integer}, the number of
+#' the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
