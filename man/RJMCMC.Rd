@@ -8,10 +8,10 @@ RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
   minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
+\item{startPosForwardReads}{a \code{vector} of positive \code{numeric}, the
 start position of all the forward reads.}
 
-\item{startPosReverseReads}{a \code{vector} of positive \code{integer}, the
+\item{startPosReverseReads}{a \code{vector} of positive \code{numeric}, the
 start position of all the reverse reads. Beware that the start position of
 a reverse read is always higher that the end positition.}
 
@@ -39,7 +39,7 @@ of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
 }
 \value{
-an \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 \itemize{
 \item \code{call} the matched call.
 \item \code{K} a \code{vector} of \code{integer}, the number of
