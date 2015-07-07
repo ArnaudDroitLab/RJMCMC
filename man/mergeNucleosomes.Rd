@@ -10,12 +10,12 @@ mergeNucleosomes(yf, yr, y, liste, minInterval, maxInterval, minReads)
 \item{yf}{a \code{vector} of positive \code{integer}
 corresponding to the
 positions of all forward reads. The
-values insinde \code{yf} must be sorted.}
+values inside \code{yf} must be sorted.}
 
 \item{yr}{a \code{vector} of positive \code{integer}
 corresponding to the
 positions of all reverse reads. The
-values insinde \code{yf} must be sorted.}
+values inside \code{yf} must be sorted.}
 
 \item{y}{TODO}
 

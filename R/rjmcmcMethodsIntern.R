@@ -333,12 +333,12 @@ elementWithHighestMode <- function(sample) {
 #' @param yf a \code{vector} of positive \code{integer}
 #' corresponding to the
 #' positions of all forward reads. The
-#' values insinde \code{yf} must be sorted.
+#' values inside \code{yf} must be sorted.
 #'
 #' @param yr a \code{vector} of positive \code{integer}
 #' corresponding to the
 #' positions of all reverse reads. The
-#' values insinde \code{yf} must be sorted.
+#' values inside \code{yf} must be sorted.
 #'
 #' @param y TODO
 #'
@@ -360,20 +360,34 @@ elementWithHighestMode <- function(sample) {
 mergeNucleosomes <- function(yf, yr, y, liste,
                                 minInterval, maxInterval, minReads)
 {
-    # Get the number of nucleosomes
-    k <- length(liste$mu)
+    ## Get the number of nucleosomes
+    k <- liste$k
+
+    ## Nucleosome can only be merged when there is more than one
     if (k > 1) {
-        ecart.min <- min(sapply(1:(k-1),
-                            function(j){liste$mu[j+1] - liste$mu[j]}))
-        if (ecart.min < minInterval)
-        {
+
+#         ecart.min <- min(sapply(1:(k-1),
+#                             function(j){liste$mu[j+1] - liste$mu[j]}))
+
+        ## Find the smallest distance between 2 nucleosomes
+        ecart <- diff(liste$mu)
+        ecart.min <- min(ecart)
+
+        ## The distance between 2 nucleosome is inferior to minimum distance
+        ## allowed
+        if (ecart.min < minInterval) {
+            ## Merging nucleosomes with distance inferior to minimum distance
+            ## up to the moment there is no nucleosome with inferior distance
             repeat
             {
-                p <- which(sapply(1:(k-1),
-                            function(j){liste$mu[j+1] - liste$mu[j]}) ==
-                            ecart.min)[1]
+#                 p <- which(sapply(1:(k-1),
+#                             function(j){liste$mu[j+1] - liste$mu[j]}) ==
+#                             ecart.min)[1]
 
-                classes <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
+                ## Find all positions with minimum gap
+                p <- which(ecart == ecart.min)
+
+                classes  <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
                 classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
                 classesr <- yr[yr >= liste$mu[p] & yr < liste$mu[p+1]]
 
@@ -383,34 +397,46 @@ mergeNucleosomes <- function(yf, yr, y, liste,
                     mu <- mean(c(liste$mu[p], liste$mu[p+1]))
                 }
 
-                liste$mu <- sort(liste$mu[-p])
-                liste$mu[p] <- mu
-                liste$mu <- sort(liste$mu)
-                liste$sigmaf <- liste$sigmaf[-p]
-                liste$sigmar <- liste$sigmar[-p]
-                liste$delta <- liste$delta[-p]
-                liste$dl <- liste$dl[-p]
-                liste$w <- liste$w[-p]/sum(liste$w[-p])
-                k <- k-1
+                liste$mu        <- sort(liste$mu[-p])
+                liste$mu[p]     <- mu
+                liste$mu        <- sort(liste$mu)
+                liste$sigmaf    <- liste$sigmaf[-p]
+                liste$sigmar    <- liste$sigmar[-p]
+                liste$delta     <- liste$delta[-p]
+                liste$dl        <- liste$dl[-p]
+                liste$w         <- liste$w[-p]/sum(liste$w[-p])
+
+                # Downgrade the number of nucleosome
+                k <- k - 1
+
+                # Update the smallest distance between 2 nucleosomes
                 if (k > 1) {
-                    ecart.min <- min(sapply(1:(k-1),
-                                    function(i){liste$mu[i+1]-liste$mu[i]}))}
+#                     ecart.min <- min(sapply(1:(k-1),
+#                                     function(i){liste$mu[i+1]-liste$mu[i]}))
+                    ecart <- diff(liste$mu)
+                    ecart.min <- min(ecart)
+                }
                 if (k == 1 || ecart.min > minInterval) break()
             } ### end of boucle repeat
-            liste <- list(k = k,
-                            mu = liste$mu,
+
+            ## Updating resulting list
+            liste <- list(  k      = k,
+                            mu     = liste$mu,
                             sigmaf = liste$sigmaf,
                             sigmar = liste$sigmar,
-                            delta = liste$delta,
-                            dl = liste$dl,
-                            w = liste$w)
+                            delta  = liste$delta,
+                            dl     = liste$dl,
+                            w      = liste$w)
         } ### end of condition if (ecart.min < minInterval)
-        else {
-            liste <- liste
-        }
+#         else {
+#             liste <- liste
+#         }
+
+        ## Trying to split resulting nucleosomes
         liste <- splitNucleosome(yf, yr, y, liste, minInterval,
                                     maxInterval, minReads)
-    } ### condition else if (k > 1)
+    } ### end of condition if (k > 1)
+
     return(liste)
 }
 
