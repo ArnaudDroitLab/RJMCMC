@@ -534,7 +534,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                 function(j){
                                     liste$mu[j+1]-liste$mu[j]
                                 }) == ecart.max)
-    print(p)
+
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]

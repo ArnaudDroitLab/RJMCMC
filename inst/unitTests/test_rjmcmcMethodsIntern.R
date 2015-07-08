@@ -64,7 +64,7 @@ test.Bk_result_with_various_values_of_k <- function() {
     obs <- mapply(c(9, 8, 6, 5, 4, 3, 1, 0),
                     FUN = function(x) {rjmcmc:::Bk(x, 8, 10)})
     exp <- c(0.4000000, 0.444444444444444, 0.5000000, 0.5000000, 0.5000000,
-                    0.5000000, 0.0000000, 0.5000000)
+                    0.5000000, 0.5000000, 0.5000000)
     message <- paste0(" Bk_result_with_various_values_of_k() ",
                     "- Not all tested data generated expected values.")
     checkEqualsNumeric(obs, exp, msg = message)

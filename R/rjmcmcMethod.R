@@ -958,12 +958,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 #     delta_hat  <- sapply(1:km,function(j){mean(delta[kPositions,j])})
 #     dl_hat     <- round(sapply(1:km,function(j){mean(dl[kPositions,j])}))
 
-    mu_hat     <- colMeans(mu[kPositions, 1:km])
-    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km])
-    sigmar_hat <- colMeans(sigmar[kPositions, 1:km])
-    w_hat      <- colMeans(w[kPositions, 1:km])
-    delta_hat  <- colMeans(delta[kPositions, 1:km])
-    dl_hat     <- round(colMeans(dl[kPositions, 1:km]))
+    mu_hat     <- colMeans(mu[kPositions, 1:km, drop=FALSE])
+    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop=FALSE])
+    sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop=FALSE])
+    w_hat      <- colMeans(w[kPositions, 1:km, drop=FALSE])
+    delta_hat  <- colMeans(delta[kPositions, 1:km, drop=FALSE])
+    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop=FALSE]))
 
 #     qmu <- matrix(0,nrow=km,ncol=2)
 #     colnames(qmu) <- c("2.5%", "97.5%")
@@ -989,17 +989,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 #     }
 
     # Getting 2.5% and 97.5% quantiles for each important data type
-    qmu     <- t(apply(mu[,1:km], MARGIN=2, FUN=quantile,
+    qmu     <- t(apply(mu[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
-    qsigmaf <- t(apply(sigmaf[,1:km], MARGIN=2, FUN=quantile,
+    qsigmaf <- t(apply(sigmaf[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
-    qsigmar <- t(apply(sigmar[,1:km], MARGIN=2, FUN=quantile,
+    qsigmar <- t(apply(sigmar[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
-    qdelta  <- t(apply(delta[,1:km], MARGIN=2, FUN=quantile,
+    qdelta  <- t(apply(delta[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
-    qdl     <- t(apply(dl[,1:km], MARGIN=2, FUN=quantile,
+    qdl     <- t(apply(dl[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
-    qw      <- t(apply(w[,1:km], MARGIN=2, FUN=quantile,
+    qw      <- t(apply(w[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975)))
 
     # Create the final list
