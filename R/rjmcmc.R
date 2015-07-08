@@ -28,7 +28,7 @@
 #' @keywords package
 NULL
 
-#' Forward reads and reverse reads (for demo purpose).
+#' Forward reads and reverse reads in \code{numeric} format (for demo purpose).
 #'
 #' A group of froward and reverse reads that can be used to test the
 #' \code{RJMCMC} function.
@@ -71,7 +71,7 @@ NULL
 #'
 NULL
 
-#' Forward reads and reverse reads following a Normal distribution
+#' Forward reads and reverse reads in \code{integer} format
 #' (for demo purpose).
 #'
 #' A group of froward and reverse reads that can be used to test the

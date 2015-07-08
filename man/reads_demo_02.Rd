@@ -3,7 +3,7 @@
 \docType{data}
 \name{reads_demo_02}
 \alias{reads_demo_02}
-\title{Forward reads and reverse reads following a Normal distribution
+\title{Forward reads and reverse reads in \code{integer} format
 (for demo purpose).}
 \format{A \code{list} containing:
 \itemize{

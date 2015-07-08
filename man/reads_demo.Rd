@@ -3,7 +3,7 @@
 \docType{data}
 \name{reads_demo}
 \alias{reads_demo}
-\title{Forward reads and reverse reads (for demo purpose).}
+\title{Forward reads and reverse reads in \code{numeric} format (for demo purpose).}
 \format{A \code{list} containing:
 \itemize{
     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
