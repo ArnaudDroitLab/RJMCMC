@@ -68,7 +68,7 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kMax = 30) {
-    ifelse((k == 1 || k > kMax), 0,
+    ifelse((k >= kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
