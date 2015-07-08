@@ -71,3 +71,46 @@ NULL
 #'
 NULL
 
+#' Forward reads and reverse reads following a Normal distribution
+#' (for demo purpose).
+#'
+#' A group of froward and reverse reads that can be used to test the
+#' \code{RJMCMC} function.
+#'
+#' @name reads_demo_02
+#'
+#' @docType data
+#'
+#' @aliases reads_demo_02
+#'
+#' @format A \code{list} containing:
+#' \itemize{
+#'     \item \code{readsFoward} a \code{vector} of non-negative \code{numeric},
+#'     the start positions of the forward reads.
+#'     \item \code{readsReverse} a \code{vector} of non-negative
+#'     \code{numeric}, the start
+#'     positions of the reverse reads. Beware that the start position of
+#'     a reverse read is always higher that the end positition.
+#' }
+#'
+#' @seealso
+#' \itemize{
+#'     \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+#' }
+#'
+#' @usage data(reads_demo_02)
+#'
+#' @keywords datasets
+#'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(reads_demo_02)
+#'
+#' ## Nucleosome positioning
+#' RJMCMC(startPosForwardReads = reads_demo_02$readsForward,
+#'          startPosReverseReads = reads_demo_02$readsReverse,
+#'          nbrIterations = 150, lambda = 3, kmax = 30,
+#'          minInterval = 144, maxInterval = 290, minReads = 6)
+#'
+NULL
