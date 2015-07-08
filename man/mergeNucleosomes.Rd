@@ -7,19 +7,32 @@
 mergeNucleosomes(yf, yr, y, liste, minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{yf}{a \code{vector} of positive \code{integer}
+\item{yf}{a \code{vector} of positive \code{numeric}
 corresponding to the
 positions of all forward reads. The
-values insinde \code{yf} must be sorted.}
+values inside \code{yf} must be sorted.}
 
-\item{yr}{a \code{vector} of positive \code{integer}
+\item{yr}{a \code{vector} of positive \code{numeric}
 corresponding to the
 positions of all reverse reads. The
-values insinde \code{yf} must be sorted.}
+values inside \code{yr} must be sorted.}
 
-\item{y}{TODO}
+\item{y}{a \code{vector} of positive \code{numeric}
+corresponding to the
+positions of all forward and reverse reads. The
+values inside \code{y} must be sorted.}
 
-\item{liste}{TODO}
+\item{liste}{a \code{list} containing:
+\itemize{
+    \item k a \code{integer}, the number of nucleosomes.
+    \item mu a \code{vector} of \code{numeric}, the positions of
+the nucleosomes.
+    \item sigmaf TODO
+    \item sigmar TODO
+    \item delta TODO
+    \item dl TODO
+    \item w TODO
+}}
 
 \item{minInterval}{a \code{numeric}, the minimum distance between two
 nucleosomes.}
@@ -31,13 +44,24 @@ nucleosomes.}
 number of reads in a potential canditate region.}
 }
 \value{
-\code{0} TODO
+a \code{list} containing the updated values:
+\itemize{
+    \item k a \code{integer}, the number of nucleosomes.
+    \item mu a \code{vector} of \code{numeric}, the positions of
+the nucleosomes.
+    \item sigmaf TODO
+    \item sigmar TODO
+    \item delta TODO
+    \item dl TODO
+    \item w TODO
+}
 }
 \description{
-TODO
+Merging two nucleosomal regions into one region with respect of
+the minimal and maximal intervals allowed.
 }
 \author{
-Rawane Samb
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 

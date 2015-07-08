@@ -68,7 +68,7 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @importFrom stats dpois
 #' @keywords internal
 Bk <- function(k, lambda, kMax = 30) {
-    ifelse((k == 1 || k > kMax), 0,
+    ifelse((k >= kMax), 0,
            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
@@ -99,8 +99,7 @@ Bk <- function(k, lambda, kMax = 30) {
 #' @author Rawane Samb
 #' @importFrom stats rnorm
 #' @keywords internal
-tnormale <- function(mu, sigma, minValue, maxValue)
-{
+tnormale <- function(mu, sigma, minValue, maxValue) {
     ## TODO : voir si on ne peut pas optimiser en créant un vecteur de valeurs
     ## Astrid : Est-ce qu'on doit ajouter une contrainte sur le nombre de
     ## boucles maximum
@@ -149,8 +148,7 @@ tnormale <- function(mu, sigma, minValue, maxValue)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-student.mixture <- function(i, k, weight, mu, sigma, dfr)
-{
+student.mixture <- function(i, k, weight, mu, sigma, dfr) {
     # Adding zero to the weight vector and calculating the cumulative sums
     sumWeight <- cumsum(c(0, weight))
 
@@ -202,8 +200,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-normal.mixture <- function(i, k, weight, mu, sigma)
-{
+normal.mixture <- function(i, k, weight, mu, sigma) {
     # Adding zero to the weight vector and calculating the cumulative sums
     sumWeight <- cumsum(c(0, weight))
 
@@ -265,8 +262,7 @@ normal.mixture <- function(i, k, weight, mu, sigma)
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
-priorMuDensity <- function(mu, readPositions)
-{
+priorMuDensity <- function(mu, readPositions) {
     ## Get the number of nucleosomes
     k <- length(mu)
     ## Create a matrix used in the calculation of the priors
@@ -275,14 +271,14 @@ priorMuDensity <- function(mu, readPositions)
         basicMatrix[i, i] <- 1L
     }
     if (k > 1) {
-    for (i in 2:k) {
-        basicMatrix[i , i - 1] <- -1L
-    }
+        for (i in 2:k) {
+            basicMatrix[i , i - 1] <- -1L
+        }
     }
     omega <- t(basicMatrix) %*% basicMatrix
-    # Calculating the range (R)
+    ## Calculating the range (R)
     R <- max(readPositions) - min(readPositions)
-    # Calculating the mean (E)
+    ## Calculating the mean (E)
     E <- (max(readPositions) + min(readPositions))/2
     tau <- 1/R^2
     M <- rep(E, k)
@@ -295,8 +291,8 @@ priorMuDensity <- function(mu, readPositions)
 
 #' @title Element with the hightest number of occurences
 #'
-#' @description \code{mode} takes the integer-valued vector \code{sample} and
-#' returned the \code{integer} with the highest number of occurences.
+#' @description Returned the \code{integer} with the highest number of
+#' occurences in a \code{vector}.
 #' When more than one \code{integer} have the highest number of occurences,
 #' \code{NA} is returned.
 #'
@@ -314,12 +310,12 @@ priorMuDensity <- function(mu, readPositions)
 #'
 #' ## Return the element with the hightest number of occurence
 #' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' rjmcmc:::mode(data01)
+#' rjmcmc:::elementWithHighestMode(data01)
 #'
 #' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' rjmcmc:::mode(data02)
+#' rjmcmc:::elementWithHighestMode(data02)
 #'
-mode <- function(sample) {
+elementWithHighestMode <- function(sample) {
     tabsample <- tabulate(sample)
     maxOccurence <- tabsample == max(tabsample)
     ifelse(sum(maxOccurence) == 1, which(maxOccurence), NA)
@@ -328,21 +324,35 @@ mode <- function(sample) {
 
 #' @title Merging two nucleosomal regions
 #'
-#' @description TODO
+#' @description Merging two nucleosomal regions into one region with respect of
+#' the minimal and maximal intervals allowed.
 #'
-#' @param yf a \code{vector} of positive \code{integer}
+#' @param yf a \code{vector} of positive \code{numeric}
 #' corresponding to the
 #' positions of all forward reads. The
-#' values insinde \code{yf} must be sorted.
+#' values inside \code{yf} must be sorted.
 #'
-#' @param yr a \code{vector} of positive \code{integer}
+#' @param yr a \code{vector} of positive \code{numeric}
 #' corresponding to the
 #' positions of all reverse reads. The
-#' values insinde \code{yf} must be sorted.
+#' values inside \code{yr} must be sorted.
 #'
-#' @param y TODO
+#' @param y a \code{vector} of positive \code{numeric}
+#' corresponding to the
+#' positions of all forward and reverse reads. The
+#' values inside \code{y} must be sorted.
 #'
-#' @param liste TODO
+#' @param liste a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
 #' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
@@ -353,27 +363,50 @@ mode <- function(sample) {
 #' @param minReads a positive \code{integer}, the minimum
 #' number of reads in a potential canditate region.
 #'
-#' @return \code{0} TODO
+#' @return a \code{list} containing the updated values:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
-#' @author Rawane Samb
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 mergeNucleosomes <- function(yf, yr, y, liste,
-                                minInterval, maxInterval, minReads)
-{
-    # Get the number of nucleosomes
-    k <- length(liste$mu)
+                                minInterval, maxInterval, minReads) {
+    ## Get the number of nucleosomes
+    k <- liste$k
+
+    ## Nucleosome can only be merged when there is more than one
     if (k > 1) {
-        ecart.min <- min(sapply(1:(k-1),
-                            function(j){liste$mu[j+1] - liste$mu[j]}))
-        if (ecart.min < minInterval)
-        {
+
+#         ecart.min <- min(sapply(1:(k-1),
+#                             function(j){liste$mu[j+1] - liste$mu[j]}))
+
+        ## Find the smallest distance between 2 nucleosomes
+        ecart <- diff(liste$mu)
+        ecart.min <- min(ecart)
+
+        ## The distance between 2 nucleosomes is inferior to minimum distance
+        ## allowed
+        if (ecart.min < minInterval) {
+            ## Merging nucleosomes with distance inferior to minimum distance
+            ## up to the moment there is no nucleosome with inferior distance
             repeat
             {
-                p <- which(sapply(1:(k-1),
-                            function(j){liste$mu[j+1] - liste$mu[j]}) ==
-                            ecart.min)[1]
+#                 p <- which(sapply(1:(k-1),
+#                             function(j){liste$mu[j+1] - liste$mu[j]}) ==
+#                             ecart.min)[1]
 
-                classes <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
+                ## Find the first position with minimum gap
+                p <- which.min(ecart)
+
+                classes  <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
                 classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
                 classesr <- yr[yr >= liste$mu[p] & yr < liste$mu[p+1]]
 
@@ -383,34 +416,46 @@ mergeNucleosomes <- function(yf, yr, y, liste,
                     mu <- mean(c(liste$mu[p], liste$mu[p+1]))
                 }
 
-                liste$mu <- sort(liste$mu[-p])
-                liste$mu[p] <- mu
-                liste$mu <- sort(liste$mu)
-                liste$sigmaf <- liste$sigmaf[-p]
-                liste$sigmar <- liste$sigmar[-p]
-                liste$delta <- liste$delta[-p]
-                liste$dl <- liste$dl[-p]
-                liste$w <- liste$w[-p]/sum(liste$w[-p])
-                k <- k-1
+                liste$mu        <- sort(liste$mu[-p])
+                liste$mu[p]     <- mu
+                liste$mu        <- sort(liste$mu)
+                liste$sigmaf    <- liste$sigmaf[-p]
+                liste$sigmar    <- liste$sigmar[-p]
+                liste$delta     <- liste$delta[-p]
+                liste$dl        <- liste$dl[-p]
+                liste$w         <- liste$w[-p]/sum(liste$w[-p])
+
+                # Downgrade the number of nucleosome
+                k <- k - 1
+
+                # Update the smallest distance between 2 nucleosomes
                 if (k > 1) {
-                    ecart.min <- min(sapply(1:(k-1),
-                                    function(i){liste$mu[i+1]-liste$mu[i]}))}
+#                     ecart.min <- min(sapply(1:(k-1),
+#                                     function(i){liste$mu[i+1]-liste$mu[i]}))
+                    ecart <- diff(liste$mu)
+                    ecart.min <- min(ecart)
+                }
                 if (k == 1 || ecart.min > minInterval) break()
             } ### end of boucle repeat
-            liste <- list(k = k,
-                            mu = liste$mu,
+
+            ## Updating resulting list
+            liste <- list(  k      = k,
+                            mu     = liste$mu,
                             sigmaf = liste$sigmaf,
                             sigmar = liste$sigmar,
-                            delta = liste$delta,
-                            dl = liste$dl,
-                            w = liste$w)
+                            delta  = liste$delta,
+                            dl     = liste$dl,
+                            w      = liste$w)
         } ### end of condition if (ecart.min < minInterval)
-        else {
-            liste <- liste
-        }
+#         else {
+#             liste <- liste
+#         }
+
+        ## Trying to split resulting nucleosomes
         liste <- splitNucleosome(yf, yr, y, liste, minInterval,
                                     maxInterval, minReads)
-    } ### condition else if (k > 1)
+    } ### end of condition if (k > 1)
+
     return(liste)
 }
 
@@ -420,13 +465,31 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' @description Split a nucleosomal region into two regions with respect of
 #' the minimal and maximal intervals allowed.
 #'
-#' @param yf TODO
+#' @param yf a \code{vector} of positive \code{numeric}
+#' corresponding to the
+#' positions of all forward reads. The
+#' values inside \code{yf} must be sorted.
 #'
-#' @param yr TODO
+#' @param yr a \code{vector} of positive \code{numeric}
+#' corresponding to the positions of all reverse reads. The
+#' values inside \code{yr} must be sorted.
 #'
-#' @param y TODO
+#' @param y a \code{vector} of positive \code{numeric}
+#' corresponding to the
+#' positions of all forward and reverse reads. The
+#' values inside \code{y} must be sorted.
 #'
-#' @param liste TODO
+#' @param liste a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
 #' @param minInterval a \code{numeric}, the minimum distance between two
 #' nucleosomes.
@@ -437,17 +500,33 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' @param minReads a positive \code{integer}, the minimum
 #' number of reads in a potential canditate region.
 #'
-#' @return \code{0} TODO
+#' @return a \code{list} containing the updated values:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric}, the positions of
+#' the nucleosomes.
+#'     \item sigmaf TODO
+#'     \item sigmar TODO
+#'     \item delta TODO
+#'     \item dl TODO
+#'     \item w TODO
+#' }
 #'
 #' @author Rawane Samb
 #' @keywords internal
 splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
-                                    minReads)
-{
-    k <- length(liste$mu)
-    if (k>1) {
-        ecart.max <- max(sapply(1:(k-1),
-                                function(j){liste$mu[j+1]-liste$mu[j]}))
+                                    minReads) {
+    ## Get the number of nucleosomes
+    k <- liste$k
+
+    if (k > 1) {
+#         ecart.max <- max(sapply(1:(k-1),
+#                                 function(j){liste$mu[j+1]-liste$mu[j]}))
+
+        ## Find the largest distance between 2 nucleosomes
+        ecart <- diff(liste$mu)
+        ecart.max <- max(ecart)
+
         if (ecart.max > maxInterval) {
             j <- 1
             repeat {
@@ -505,7 +584,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                 if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > maxInterval)
-    } ### end of condition if (k>1)
+    } ### end of condition if (k > 1)
     return(liste)
 }
 
@@ -552,8 +631,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kmax, lambda,
-                                    minInterval, maxInterval, minReads)
-{
+                                    minInterval, maxInterval, minReads) {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
         stop("nbrIterations must be a positive integer or numeric")

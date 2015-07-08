@@ -64,7 +64,7 @@ test.Bk_result_with_various_values_of_k <- function() {
     obs <- mapply(c(9, 8, 6, 5, 4, 3, 1, 0),
                     FUN = function(x) {rjmcmc:::Bk(x, 8, 10)})
     exp <- c(0.4000000, 0.444444444444444, 0.5000000, 0.5000000, 0.5000000,
-                    0.5000000, 0.0000000, 0.5000000)
+                    0.5000000, 0.5000000, 0.5000000)
     message <- paste0(" Bk_result_with_various_values_of_k() ",
                     "- Not all tested data generated expected values.")
     checkEqualsNumeric(obs, exp, msg = message)
@@ -132,18 +132,18 @@ test.tnormale_result_with_various_values_of_lambda <- function() {
 }
 
 #########################################################
-## mode() function
+## elementWithHighestMode() function
 #########################################################
 
-test.mode_results_with_different_vectors <- function() {
+test.elementWithHighestMode_results_with_different_vectors <- function() {
     set.seed(101)
     obs <- lapply(list(test1 = c(1, 2, 3, 3, 21, 22),
                     test2 = c(2, 4, 2, 4, 4, 0),
                     test3 = c(12, 13, 13, 12, 1),
                     test4 = c(23, 22, 21, 20, 22, 22, 21, 21, 22)),
-                  FUN = function(x) {rjmcmc:::mode(x)})
+                  FUN = function(x) {rjmcmc:::elementWithHighestMode(x)})
     exp <- list(test1 = 3L, test2 = 4L, test3 = NA, test4 = 22L)
-    message <- paste0(" mode_results_with_different_vectors() ",
+    message <- paste0(" elementWithHighestMode_results_with_different_vectors() ",
                     "- Not all tested vectors generated",
                     " expected values.")
     checkEquals(obs, exp, msg = message)
