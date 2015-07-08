@@ -323,7 +323,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 v <- runif(1)      #Acceptation/rejet du Birth move
 
-                if (rhob[i] >= v) {
+                if (rhob[i] >= v && ktilde[i] <= kmax) {
                     k[i]                    <- ktilde[i]
                     maxValue                <- k[i]
                     mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
@@ -450,7 +450,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 v = runif(1)
 
-                if (rhomh[i] >= v) {
+                if (rhomh[i] >= v && ktilde[i] <= kmax) {
                     k[i]                    <- ktilde[i]
                     maxValue                <- as.integer(k[i])
                     mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
@@ -602,7 +602,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 v <- runif(1)      #Acceptation/rejet du Death move
 
-                if (rhod[i] >= v) {
+                if (rhod[i] >= v && ktilde[i] <= kmax) {
                     k[i]                    <- ktilde[i]
                     maxValue                <- as.integer(k[i])
                     mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
@@ -754,7 +754,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 #                 rhob[i] <- ifelse ( is.na(rhob[i])==FALSE, rhob[i], 0)
                 rhob[i] <- ifelse(is.na(rhob[i]), 0, rhob[i])
 
-                if (rhob[i] >= v) {
+                if (rhob[i] >= v && ktilde[i] <= kmax) {
                     k[i]                    <- ktilde[i]
                     maxValue                <- k[i]
                     mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
@@ -919,6 +919,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         } ###end of moves in case k>=2
     } ###end of boucle RJMCMC
 
+    liste <- rep(list(NULL),nbrIterations)
+
     for (i in 1:nbrIterations)
     {
         kVal <- k[i]
@@ -932,18 +934,31 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         w      = w[i, 1:kVal]
         )
 
-        liste <- mergeNucleosomes(startPosForwardReads, startPosReverseReads,
-                                        y, new.list, minInterval,
+        liste[[i]] <- mergeNucleosomes(startPosForwardReads,
+                                        startPosReverseReads,y, new.list,
+                                        minInterval,
                                         maxInterval, minReads)
+    }
 
-        newKVal              <- liste$k
-        k[i]                 <- newKVal
-        mu[i, 1:newKVal]     <- liste$mu
-        sigmaf[i, 1:newKVal] <- liste$sigmaf
-        sigmar[i, 1:newKVal] <- liste$sigmar
-        delta[i, 1:newKVal]  <- liste$delta
-        dl[i, 1:newKVal]     <- liste$dl
-        w[i, 1:newKVal]      <- liste$w
+    kmax        <- max(kmax, sapply(1:nbrIterations,
+                                        function(i){liste[[i]]$k}))
+    mu          <- matrix(0, nrow=nbrIterations, ncol=kmax)
+    sigmaf      <- matrix(0, nrow=nbrIterations, ncol=kmax)
+    sigmar      <- matrix(0, nrow=nbrIterations, ncol=kmax)
+    delta       <- matrix(0, nrow=nbrIterations, ncol=kmax)
+    w           <- matrix(0, nrow=nbrIterations, ncol=kmax)
+    dl          <- matrix(0, nrow=nbrIterations, ncol=kmax)
+
+    for (i in 1:nbrIterations)
+    {
+        kVal                <- liste[[i]]$k
+        k[i]                <- kVal
+        mu[i, 1:kVal]       <- liste[[i]]$mu
+        sigmaf[i, 1:kVal]   <- liste[[i]]$sigmaf
+        sigmar[i, 1:kVal]   <- liste[[i]]$sigmar
+        delta[i, 1:kVal]    <- liste[[i]]$delta
+        w[i, 1:kVal]        <- liste[[i]]$w
+        dl[i, 1:kVal]       <- liste[[i]]$dl
     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
