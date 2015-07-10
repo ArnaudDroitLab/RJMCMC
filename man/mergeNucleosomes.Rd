@@ -27,11 +27,15 @@ values inside \code{y} must be sorted.}
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of
 the nucleosomes.
-    \item sigmaf TODO
-    \item sigmar TODO
+    \item sigmaf a \code{vector} of \code{numeric} of length
+\code{k}, the variance of the forward reads for each nucleosome.
+    \item sigmar a \code{vector} of \code{numeric} of length
+\code{k}, the variance of the reverse reads for each nucleosome.
     \item delta TODO
     \item dl TODO
-    \item w TODO
+    \item w a \code{vector} of positive \code{numerical} of length
+\code{k}, the weight for each nucleosome. The sum of all \code{w} values
+must be equal to \code{1}.
 }}
 
 \item{minInterval}{a \code{numeric}, the minimum distance between two
@@ -49,11 +53,15 @@ a \code{list} containing the updated values:
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of
 the nucleosomes.
-    \item sigmaf TODO
-    \item sigmar TODO
+    \item sigmaf a \code{vector} of \code{numeric} of length
+\code{k}, the variance of the forward reads for each nucleosome.
+    \item sigmar a \code{vector} of \code{numeric} of length
+\code{k}, the variance of the reverse reads for each nucleosome.
     \item delta TODO
     \item dl TODO
-    \item w TODO
+    \item w a \code{vector} of positive \code{numerical} of length
+\code{k}, the weight for each nucleosome. The sum of all \code{w} values
+must be equal to \code{1}.
 }
 }
 \description{
