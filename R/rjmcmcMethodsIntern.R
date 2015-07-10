@@ -579,8 +579,9 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #                                     function(j){liste$mu[j+1]-liste$mu[j]}))
 
                     ## Update the largest distance between 2 nucleosomes
+                    j           <- 1
                     ecart       <- diff(liste$mu)
-                    p           <- order(ecart, decreasing = T)[1]
+                    p           <- order(ecart, decreasing = T)[j]
                     ecart.max   <- ecart[p]
                 }
                 else
