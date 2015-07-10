@@ -131,7 +131,7 @@ merge = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                     ecart <- diff(liste$mu)
                     ecart.min <- min(ecart)
                 }
-                if ( k== 1 ||  ecart.min>ecartmin) break()
+                if ( k== 1 ||  ecart.min > ecartmin) break()
             } ### end of boucle repeat
             liste <- list(k=k, mu=liste$mu, sigmaf=liste$sigmaf, sigmar=liste$sigmar, delta=liste$delta, dl=liste$dl, w=liste$w)
         } ### end of condition if (ecart.min < ecartmin)
@@ -189,7 +189,8 @@ split = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
                     new.w[p+1] <- (liste$w[p]+liste$w[p+1])/2
                     new.w[k+1] <- liste$w[k]
                     k <- length(new.mu)
-#                     liste <- list(k=k, mu=new.mu, sigmaf=new.sigmaf, sigmar=new.sigmar, delta=new.delta, dl=new.dl, w=new.w/sum(new.w))
+                    liste <- list(k=k, mu=new.mu, sigmaf=new.sigmaf, sigmar=new.sigmar, delta=new.delta, dl=new.dl, w=new.w/sum(new.w))
+
 #                     ecart.max <- max(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
 
                     ## Update the largest distance between 2 nucleosomes
