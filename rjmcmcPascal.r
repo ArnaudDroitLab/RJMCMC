@@ -89,32 +89,53 @@ merge = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 {
     k <- length(liste$mu)
     if (k>1) {
-        ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+#         ecart.min <- min(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
+
+        ## Find the smallest distance between 2 nucleosomes
+        ecart <- diff(liste$mu)
+        ecart.min <- min(ecart)
+
         if (ecart.min < ecartmin)
         {
             repeat
             {
-                p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.min)[1]
+#                 p <- which(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]})==ecart.min)[1]
+
+                ## Find the first position with minimum gap
+                p <- which.min(ecart)
+
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
-                if (length(classes)>minReads){mu <- mean(round(classes))}
-                else {mu <- mean(c(liste$mu[p], liste$mu[p+1]))}
-                liste$mu <- sort(liste$mu[-p])
-                liste$mu[p] <- mu
-                liste$mu <- sort(liste$mu)
-                liste$sigmaf <- liste$sigmaf[-p]
-                liste$sigmar <- liste$sigmar[-p]
-                liste$delta <- liste$delta[-p]
-                liste$dl <- liste$dl[-p]
-                liste$w <- liste$w[-p]/sum(liste$w[-p])
-                k <- k-1
-                if (k>1) {ecart.min <- min(sapply(1:(k-1),function(i){liste$mu[i+1]-liste$mu[i]}))}
+
+                if (length(classes) > minReads){
+                    mu <- mean(round(classes))
+                } else {
+                    mu <- mean(c(liste$mu[p], liste$mu[p+1]))
+                }
+
+                liste$mu        <- sort(liste$mu[-p])
+                liste$mu[p]     <- mu
+                liste$mu        <- sort(liste$mu)
+                liste$sigmaf    <- liste$sigmaf[-p]
+                liste$sigmar    <- liste$sigmar[-p]
+                liste$delta     <- liste$delta[-p]
+                liste$dl    <- liste$dl[-p]
+                liste$w     <- liste$w[-p]/sum(liste$w[-p])
+
+                k <- k - 1
+
+                # Update the smallest distance between 2 nucleosomes
+                if (k > 1) {
+#                     ecart.min <- min(sapply(1:(k-1),function(i){liste$mu[i+1]-liste$mu[i]}))
+                    ecart <- diff(liste$mu)
+                    ecart.min <- min(ecart)
+                }
                 if ( k== 1 ||  ecart.min>ecartmin) break()
             } ### end of boucle repeat
             liste <- list(k=k, mu=liste$mu, sigmaf=liste$sigmaf, sigmar=liste$sigmar, delta=liste$delta, dl=liste$dl, w=liste$w)
         } ### end of condition if (ecart.min < ecartmin)
-        else {liste=liste}
+#         else {liste=liste}
         liste <- split(yf, yr, y, liste, ecartmin, ecartmax, minReads)
     } ### condition else if (k > 1)
     return(liste)
