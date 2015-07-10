@@ -193,11 +193,10 @@ split = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 
 #                     ecart.max <- max(sapply(1:(k-1),function(j){liste$mu[j+1]-liste$mu[j]}))
 
-                    ## Update the largest distance between 2 nucleosomes
-                    j           <- 1
+#                     ## Update the largest distance between 2 nucleosomes
+#                     j           <- 1
+                    ## Update the vector of distance between nucleosomes
                     ecart       <- diff(liste$mu)
-                    p           <- order(ecart, decreasing = T)[j]
-                    ecart.max   <- ecart[p]
                 }
                 else
                 {
@@ -206,9 +205,14 @@ split = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 
                     ## Select the next maximum distance between 2 nucleosomes
                     j           <- j + 1
-                    p           <- order(ecart, decreasing = T)[j]
-                    ecart.max   <- ecart[p]
+#                     p           <- order(ecart, decreasing = T)[j]
+#                     ecart.max   <- ecart[p]
                 }
+
+                ## Get new maximum value to analyse
+                p           <- order(ecart, decreasing = T)[j]
+                ecart.max   <- ecart[p]
+
                 if ( j >= (k-1) || ecart.max <= ecartmax) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > ecartmax)
