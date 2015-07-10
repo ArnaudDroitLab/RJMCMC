@@ -110,3 +110,47 @@ test.rjmcmc_good_result_02 <- function() {
     checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
+
+test.rjmcmc_good_result_03 <- function() {
+    set.seed(101)
+    obs <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+                  startPosReverseReads = reads_demo$readsReverse,
+                  nbrIterations = 110, lambda = 3, kmax = 30,
+                  minInterval = 100, maxInterval = 200, minReads = 335)
+    exp.k       <- 2
+    exp.mu      <- c(72670.440093554484, 72898.810781247870)
+    exp.sigmaf  <- c(20824.077533834301, 4736.790424950710)
+    exp.sigmar  <- c(12111.185532728285, 5617.742233704413)
+    exp.delta   <- c(144.315419790566, 143.959205935876)
+    exp.dl      <- c(4, 3)
+    exp.w       <- c(0.632718493260, 0.367281506740)
+    exp.qmu     <- matrix(c(72669.922485424002, 0.000000000000,
+                            72898.810781247870, 72898.810781247870), nrow=2)
+    exp.qsigmaf <- matrix(c(19.565623379218, 0.000000000000,
+                            21509.940563849304, 4736.790424950710), nrow=2)
+    exp.qsigmar <- matrix(c(32.729034009596, 0.000000000000,
+                            12509.376406312418, 5617.742233704413), nrow=2)
+    exp.qdelta  <- matrix(c(142.465706790323, 0.0000000000000,
+                            144.376399340025, 144.043110382256), nrow=2)
+    exp.qdl     <- matrix(c(3.00000000000, 0.000000000000, 13.000000000000,
+                            3.000000000000),  nrow=2)
+    exp.qw      <- matrix(c(0.529802297936, 0.000000000000, 1.000000000000,
+                            0.470197702064),  nrow=2)
+
+    message     <- paste0(" rjmcmc_good_result_02() ",
+                          "- RJMCMC did not generated expected values")
+
+    checkEqualsNumeric(obs$k, exp.k, msg = message)
+    checkEqualsNumeric(obs$mu, exp.mu, msg = message)
+    checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
+    checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
+    checkEqualsNumeric(obs$delta, exp.delta, msg = message)
+    checkEqualsNumeric(obs$dl, exp.dl, msg = message)
+    checkEqualsNumeric(obs$w, exp.w, msg = message)
+    checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
+    checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
+    checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
+    checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
+    checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
+    checkEqualsNumeric(obs$qw, exp.qw, msg = message)
+}

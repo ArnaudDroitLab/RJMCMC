@@ -524,21 +524,27 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #                                 function(j){liste$mu[j+1]-liste$mu[j]}))
 
         ## Find the largest distance between 2 nucleosomes
-        ecart <- diff(liste$mu)
-        ecart.max <- max(ecart)
+        ## Its position and its value
+        ecart       <- diff(liste$mu)
+        p           <- order(ecart, decreasing = T)[1]
+        ecart.max   <- ecart[p]
 
         if (ecart.max > maxInterval) {
             j <- 1
             repeat {
-                p <- which(sapply(1:(k-1),
-                                function(j){
-                                    liste$mu[j+1]-liste$mu[j]
-                                }) == ecart.max)
+#                 p <- which(sapply(1:(k-1),
+#                                 function(j){
+#                                     liste$mu[j+1]-liste$mu[j]
+#                                 }) == ecart.max)
+#                 p <- which(sapply(1:(k-1),
+#                                   function(j){
+#                                       liste$mu[j+1]-liste$mu[j]
+#                                   }) == ecart.max)[1]
 
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
-                j <- 1
+#                 j <- 1
                 if (length(classes) > minReads)
                 {
                     new.mu <- sort(c(liste$mu[1:k],mean(round(classes))))
@@ -569,19 +575,29 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     delta = new.delta,
                                     dl = new.dl,
                                     w = new.w/sum(new.w))
-                    ecart.max <- max(sapply(1:(k-1),
-                                    function(j){liste$mu[j+1]-liste$mu[j]}))
+#                     ecart.max <- max(sapply(1:(k-1),
+#                                     function(j){liste$mu[j+1]-liste$mu[j]}))
+
+                    ## Update the largest distance between 2 nucleosomes
+                    ecart       <- diff(liste$mu)
+                    p           <- order(ecart, decreasing = T)[1]
+                    ecart.max   <- ecart[p]
                 }
                 else
                 {
-                    liste <- liste
-                    ecart.max <- sort(sapply(1:(k-1),
-                                    function(j){
-                                        liste$mu[j+1]-liste$mu[j]
-                                    }))[k - 1 - j]
-                    j <- j + 1
+#                     liste <- liste
+#                     ecart.max <- sort(sapply(1:(k-1),
+#                                     function(j){
+#                                         liste$mu[j+1]-liste$mu[j]
+#                                     }))[k - 1 - j]
+
+                    ## Select the next maximum distance between 2 nucleosomes
+                    j           <- j + 1
+                    p           <- order(ecart, decreasing = T)[j]
+                    ecart.max   <- ecart[p]
                 }
-                if ( j == (k - 1) || ecart.max <= maxInterval) break()
+                if ( j >= (k - 1) || ecart.max <= maxInterval) break()
+#                 if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > maxInterval)
     } ### end of condition if (k > 1)
