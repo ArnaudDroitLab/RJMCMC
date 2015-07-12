@@ -226,74 +226,75 @@ split = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 {
 
-y <- sort(c(yf,yr))
-n <- length(y)
-size <- n
-nf <- length(yf)
-nr <- length(yr)
-d <- sapply(1:size,function(m){ifelse(min(abs(yr-y[m]))==0,-1,1)})
-zeta <- 147
-deltamin <- 142
-deltamax <- 152
+    y           <- sort(c(yf,yr))
+    n           <- length(y)
+    size        <- n
+    nf          <- length(yf)
+    nr          <- length(yr)
+    d           <- sapply(1:size,function(m){ifelse(min(abs(yr-y[m]))==0,-1,1)})
 
-  ##############################################################
-  #### Initialisation des param?tres############################
-  ##############################################################
+    zeta        <- 147
+    deltamin    <- 142
+    deltamax    <- 152
 
-  k <- rep(0,niter)
-  ktilde <- rep(0,niter)
-  mu <- matrix(0,nrow=niter,ncol=kmax)
-  mutilde <- matrix(0,nrow=niter,ncol=kmax)
-  sigmaftilde <- matrix(0,nrow=niter,ncol=kmax)
-  sigmaf <- matrix(0,nrow=niter,ncol=kmax)
-  sigmartilde <- matrix(0,nrow=niter,ncol=kmax)
-  sigmar <- matrix(0,nrow=niter,ncol=kmax)
-  deltatilde <- matrix(0,nrow=niter,ncol=kmax)
-  delta <- matrix(0,nrow=niter,ncol=kmax)
-  wtilde <- matrix(0,nrow=niter,ncol=kmax)
-  w <- matrix(0,nrow=niter,ncol=kmax)
-  a <- matrix(0,nrow=niter,ncol=kmax+1)
-  atilde <- matrix(0,nrow=niter,ncol=kmax+1)
-  dimtilde <- matrix(0,nrow=niter,ncol=kmax)
-  dim <- matrix(0,nrow=niter,ncol=kmax)
-  dl <- matrix(0,nrow=niter,ncol=kmax)
-  dltilde <- matrix(3,nrow=niter,ncol=kmax)
+    ##############################################################
+    #### Initialisation des param?tres############################
+    ##############################################################
 
-  k[1] <- 1
+    k           <- rep(0,niter)
+    ktilde      <- rep(0,niter)
+    mu          <- matrix(0,nrow=niter,ncol=kmax)
+    mutilde     <- matrix(0,nrow=niter,ncol=kmax)
+    sigmaftilde <- matrix(0,nrow=niter,ncol=kmax)
+    sigmaf      <- matrix(0,nrow=niter,ncol=kmax)
+    sigmartilde <- matrix(0,nrow=niter,ncol=kmax)
+    sigmar      <- matrix(0,nrow=niter,ncol=kmax)
+    deltatilde  <- matrix(0,nrow=niter,ncol=kmax)
+    delta       <- matrix(0,nrow=niter,ncol=kmax)
+    wtilde      <- matrix(0,nrow=niter,ncol=kmax)
+    w           <- matrix(0,nrow=niter,ncol=kmax)
+    a           <- matrix(0,nrow=niter,ncol=kmax+1)
+    atilde      <- matrix(0,nrow=niter,ncol=kmax+1)
+    dimtilde    <- matrix(0,nrow=niter,ncol=kmax)
+    dim         <- matrix(0,nrow=niter,ncol=kmax)
+    dl          <- matrix(0,nrow=niter,ncol=kmax)
+    dltilde     <- matrix(3,nrow=niter,ncol=kmax)
 
-  mu[1,1] <- runif(1,min(y),max(y))
-  sigmaf[1,1] <- 1
-  sigmar[1,1] <- 1
-  delta[1,1] <- runif(1,0, 2*(mu[1,1]-min(y)))
-  w[1,1] <- 1
-  dl[1,1] <- 3
+    k[1]        <- 1
 
-  a[1,1] <- min(y)
-  a[1,k[1]+1] <- max(y)
+    mu[1,1]     <- runif(1,min(y),max(y))
+    sigmaf[1,1] <- 1
+    sigmar[1,1] <- 1
+    delta[1,1]  <- runif(1,0, 2*(mu[1,1]-min(y)))
+    w[1,1]      <- 1
+    dl[1,1]     <- 3
 
-  dim[1,1] <- length(y[a[1,1]<=y & y<=max(y)])
+    a[1,1]      <- min(y)
+    a[1,k[1]+1] <- max(y)
 
-  rhob <- rep(0,niter)
-  rhod <- rep(0,niter)
-  rhomh <- rep(0,niter)
-  Kn1 <- rep(0, niter)
-  Kn2 <- rep(0, niter)
-  Kn <-  rep(0, niter)
-  Ln1 <- rep(0, niter)
-  Ln2 <- rep(0, niter)
-  Ln <-  rep(0, niter)
+    dim[1,1] <- length(y[a[1,1]<=y & y<=max(y)])
 
-  Kaf <- matrix(0,nrow=nf,ncol=kmax)
-  Kbf <- matrix(0,nrow=nf,ncol=kmax)
-  Kar <- matrix(0,nrow=nr,ncol=kmax)
-  Kbr <- matrix(0,nrow=nr,ncol=kmax)
+    rhob    <- rep(0,niter)
+    rhod    <- rep(0,niter)
+    rhomh   <- rep(0,niter)
+    Kn1     <- rep(0, niter)
+    Kn2     <- rep(0, niter)
+    Kn      <- rep(0, niter)
+    Ln1     <- rep(0, niter)
+    Ln2     <- rep(0, niter)
+    Ln      <- rep(0, niter)
 
-  Y1f <- rep(0,nf)
-  Y2f <- rep(0,nf)
-  Y1r <- rep(0,nr)
-  Y2r <- rep(0,nr)
+    Kaf     <- matrix(0,nrow=nf,ncol=kmax)
+    Kbf     <- matrix(0,nrow=nf,ncol=kmax)
+    Kar     <- matrix(0,nrow=nr,ncol=kmax)
+    Kbr     <- matrix(0,nrow=nr,ncol=kmax)
 
- niter <-  ifelse((nf+nr)<=10, 1000, niter)
+    Y1f     <- rep(0,nf)
+    Y2f     <- rep(0,nf)
+    Y1r     <- rep(0,nr)
+    Y2r     <- rep(0,nr)
+
+    niter   <- ifelse((nf+nr)<=10, 1000, niter)
 
   for (i in 2:niter) {
 
