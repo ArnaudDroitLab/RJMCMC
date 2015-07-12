@@ -347,11 +347,15 @@ elementWithHighestMode <- function(sample) {
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
-#'     \item sigmaf TODO
-#'     \item sigmar TODO
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
 #'     \item delta TODO
 #'     \item dl TODO
-#'     \item w TODO
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
+#' must be equal to \code{1}.
 #' }
 #'
 #' @param minInterval a \code{numeric}, the minimum distance between two
@@ -368,11 +372,15 @@ elementWithHighestMode <- function(sample) {
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
-#'     \item sigmaf TODO
-#'     \item sigmar TODO
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
 #'     \item delta TODO
 #'     \item dl TODO
-#'     \item w TODO
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
+#' must be equal to \code{1}.
 #' }
 #'
 #' @author Rawane Samb, Astrid Louise Deschenes
@@ -484,11 +492,15 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
-#'     \item sigmaf TODO
-#'     \item sigmar TODO
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
 #'     \item delta TODO
 #'     \item dl TODO
-#'     \item w TODO
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
+#' must be equal to \code{1}.
 #' }
 #'
 #' @param minInterval a \code{numeric}, the minimum distance between two
@@ -506,13 +518,17 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
 #'     \item sigmaf TODO
-#'     \item sigmar TODO
-#'     \item delta TODO
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
 #'     \item dl TODO
-#'     \item w TODO
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
+#' must be equal to \code{1}.
 #' }
 #'
-#' @author Rawane Samb
+#' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     minReads) {
@@ -526,7 +542,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
         ## Find the largest distance between 2 nucleosomes
         ## Its position and its value
         ecart       <- diff(liste$mu)
-        p           <- order(ecart, decreasing = T)[1]
+        p           <- order(ecart, decreasing = TRUE)[1]
         ecart.max   <- ecart[p]
 
         if (ecart.max > maxInterval) {
@@ -568,21 +584,20 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                     new.w[p+1] <- (liste$w[p]+liste$w[p+1])/2
                     new.w[k+1] <- liste$w[k]
                     k <- length(new.mu)
-                    liste <- list(k = k,
-                                    mu = new.mu,
-                                    sigmaf = new.sigmaf,
-                                    sigmar = new.sigmar,
-                                    delta = new.delta,
-                                    dl = new.dl,
-                                    w = new.w/sum(new.w))
+                    liste <- list(  k       = k,
+                                    mu      = new.mu,
+                                    sigmaf  = new.sigmaf,
+                                    sigmar  = new.sigmar,
+                                    delta   = new.delta,
+                                    dl      = new.dl,
+                                    w       = new.w/sum(new.w))
 #                     ecart.max <- max(sapply(1:(k-1),
 #                                     function(j){liste$mu[j+1]-liste$mu[j]}))
 
-                    ## Update the largest distance between 2 nucleosomes
-                    j           <- 1
-                    ecart       <- diff(liste$mu)
-                    p           <- order(ecart, decreasing = T)[j]
-                    ecart.max   <- ecart[p]
+#                     j           <- 1
+
+                    ## Update the vector of distance between nucleosomes
+                    ecart <- diff(liste$mu)
                 }
                 else
                 {
@@ -592,11 +607,14 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #                                         liste$mu[j+1]-liste$mu[j]
 #                                     }))[k - 1 - j]
 
-                    ## Select the next maximum distance between 2 nucleosomes
-                    j           <- j + 1
-                    p           <- order(ecart, decreasing = T)[j]
-                    ecart.max   <- ecart[p]
+                    ## Update to select the next maximum distance value
+                    j  <- j + 1
                 }
+
+                ## Select the next nucleosome to be potentially split
+                p           <- order(ecart, decreasing = TRUE)[j]
+                ecart.max   <- ecart[p]
+
                 if ( j >= (k - 1) || ecart.max <= maxInterval) break()
 #                 if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
@@ -621,7 +639,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @param nbrIterations a positive \code{integer} or \code{numeric}, the
 #' number of iterations. Non-integer values of
 #' \code{nbrIterations} will be casted to \code{integer} and truncated towards
-#' zero. The maximum value of \code{nbrIterations} is \code{100000}.
+#' zero.
 #'
 #' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
 #' of nucleosomes per region. Non-integer values

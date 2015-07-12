@@ -40,19 +40,27 @@
 #' \item \code{K} a \code{vector} of \code{integer}, the number of
 #' the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
-#' \item \code{mu} a \code{vector} of \code{numeric}, the positions of
-#' the nucleosomes.
-#' \item \code{sigmaf} TODO
-#' \item \code{sigmar} TODO
-#' \item \code{delta} TODO
+#' \item \code{mu} a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes.
+#' \item \code{sigmaf} a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#' \item \code{sigmar} a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
+#' \item \code{delta} a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and reverse reads
+#' position densities for each nucleosome.
 #' \item \code{dl} TODO
-#' \item \code{w} TODO
-#' \item \code{qmu} TODO
+#' \item \code{w} a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
+#' must be equal to \code{1}.
+#' \item \code{qmu} a \code{matrix} of \code{numerical} with a number of rows
+#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{mu}.
 #' \item \code{qsigmaf} TODO
 #' \item \code{qsigmar} TODO
 #' \item \code{qdelta} TODO
 #' \item \code{qdl} TODO
-#' \item \code{qw} TODO
+#' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
+#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
 #' }
 #'
 #' @examples
