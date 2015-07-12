@@ -227,19 +227,35 @@ split = function(yf, yr, y, liste, ecartmin, ecartmax, minReads)
 ############################################
 
 
-RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
+RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 {
 
-    y           <- sort(c(yf,yr))
-    n           <- length(y)
-    size        <- n
-    nf          <- length(yf)
-    nr          <- length(yr)
-    d           <- sapply(1:size,function(m){ifelse(min(abs(yr-y[m]))==0,-1,1)})
+#     y           <- sort(c(yf,yr))
+#     n           <- length(y)
+#     size        <- n
+#     nf          <- length(yf)
+#     nr          <- length(yr)
+#     d           <- sapply(1:size,function(m){ifelse(min(abs(yr-y[m]))==0,-1,1)})
+
+    y               <- c(yf, yr)
+    nf              <- length(yf)
+    nr              <- length(yr)
+    n               <- nf + nr
+
+    # Order reads an mark reverse reads as -1 in a new vector
+    d <- c(rep(1, nf), rep(-1, nr))
+    yOrder <- order(y)
+    y <- y[yOrder]
+    d <- d[yOrder]
+    rm(yOrder)
 
     zeta        <- 147
     deltamin    <- 142
     deltamax    <- 152
+
+    # Max and min read positions
+    minReadPos <- min(y)
+    maxReadPos <- max(y)
 
     ##############################################################
     #### Initialisation des param?tres############################
@@ -266,21 +282,22 @@ RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
     k[1]        <- 1
 
-    mu[1,1]     <- runif(1,min(y),max(y))
+    mu[1,1]     <- runif(1, minReadPos,max(y))
     sigmaf[1,1] <- 1
     sigmar[1,1] <- 1
-    delta[1,1]  <- runif(1,0, 2*(mu[1,1]-min(y)))
+    delta[1,1]  <- runif(1,0, 2*(mu[1,1] - minReadPos))
     w[1,1]      <- 1
     dl[1,1]     <- 3
 
-    a[1,1]      <- min(y)
-    a[1,k[1]+1] <- max(y)
+    a[1,1]      <- minReadPos
+    a[1,k[1]+1] <- maxReadPos
 
-    dim[1,1] <- length(y[a[1,1]<=y & y<=max(y)])
+#     dim[1,1] <- length(y[a[1,1] <= y & y <= maxReadPos])
+    dim[1,1]    <- n
 
-    rhob    <- rep(0,niter)
-    rhod    <- rep(0,niter)
-    rhomh   <- rep(0,niter)
+    rhob    <- rep(0, niter)
+    rhod    <- rep(0, niter)
+    rhomh   <- rep(0, niter)
     Kn1     <- rep(0, niter)
     Kn2     <- rep(0, niter)
     Kn      <- rep(0, niter)
@@ -288,15 +305,15 @@ RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
     Ln2     <- rep(0, niter)
     Ln      <- rep(0, niter)
 
-    Kaf     <- matrix(0,nrow=nf,ncol=kmax)
-    Kbf     <- matrix(0,nrow=nf,ncol=kmax)
-    Kar     <- matrix(0,nrow=nr,ncol=kmax)
-    Kbr     <- matrix(0,nrow=nr,ncol=kmax)
+    Kaf     <- matrix(0, nrow=nf, ncol=kmax)
+    Kbf     <- matrix(0, nrow=nf, ncol=kmax)
+    Kar     <- matrix(0, nrow=nr, ncol=kmax)
+    Kbr     <- matrix(0, nrow=nr, ncol=kmax)
 
-    Y1f     <- rep(0,nf)
-    Y2f     <- rep(0,nf)
-    Y1r     <- rep(0,nr)
-    Y2r     <- rep(0,nr)
+    Y1f     <- rep(0, nf)
+    Y2f     <- rep(0, nf)
+    Y1r     <- rep(0, nr)
+    Y2r     <- rep(0, nr)
 
     niter   <- ifelse((nf+nr)<=10, 1000, niter)
 
@@ -312,16 +329,16 @@ RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
           compteur <- 1
           repeat {
             j <- sample(1:k[i-1],1)
-            mutilde[i,j] <- runif(1,min(y),mu[i-1,j])
+            mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j])
             mutilde[i,1:ktilde[i]] <- sort(c(mu[i-1,1:k[i-1]],mutilde[i,j]))
 
             atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])
             atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:ktilde[i]],atilde[i,j+1]))
-            atilde[i,1] <- min(y)
-            atilde[i,(ktilde[i]+1)] <- max(y)
+            atilde[i,1]             <- minReadPos
+            atilde[i,(ktilde[i]+1)] <- maxReadPos
 
             dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-            dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=max(y)])
+            dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=maxReadPos])
             if (ktilde[i]>2) {
             for (m in 2: (ktilde[i]-1)) {
             dimtilde[i,m] <- length(y[(atilde[i,m]<=y & y<atilde[i,m+1])]) }}
@@ -1010,10 +1027,9 @@ RJMCMC = function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
       } ###end of moves in case k>=2
       } ###end of boucle RJMCMC
 
-liste = rep(list(NULL),niter)
- for (i in 1:niter)
- {
-   new.list <- list(k=k[i],
+    liste = rep(list(NULL),niter)
+    for (i in 1:niter) {
+        new.list <- list(k=k[i],
                     mu=mu[i,1:k[i]],
                     sigmaf=sigmaf[i,1:k[i]],
                     sigmar=sigmar[i,1:k[i]],
@@ -1022,16 +1038,16 @@ liste = rep(list(NULL),niter)
                     w=w[i,1:k[i]]
                  )
 
-   liste[[i]] <- merge(yf, yr, y, new.list, ecartmin, ecartmax, minReads)
- }
+        liste[[i]] <- merge(yf, yr, y, new.list, ecartmin, ecartmax, minReads)
+    }
 
-  kmax = max(kmax,sapply(1:niter,function(i){liste[[i]]$k}))
-  mu <- matrix(0,nrow=niter,ncol=kmax)
-  sigmaf <- matrix(0,nrow=niter,ncol=kmax)
-  sigmar <- matrix(0,nrow=niter,ncol=kmax)
-  delta <- matrix(0,nrow=niter,ncol=kmax)
-  w <- matrix(0,nrow=niter,ncol=kmax)
-  dl <- matrix(0,nrow=niter,ncol=kmax)
+  kmax      <- max(kmax,sapply(1:niter,function(i){liste[[i]]$k}))
+  mu        <- matrix(0,nrow=niter,ncol=kmax)
+  sigmaf    <- matrix(0,nrow=niter,ncol=kmax)
+  sigmar    <- matrix(0,nrow=niter,ncol=kmax)
+  delta     <- matrix(0,nrow=niter,ncol=kmax)
+  w         <- matrix(0,nrow=niter,ncol=kmax)
+  dl        <- matrix(0,nrow=niter,ncol=kmax)
 
  for (i in 1:niter)
  {
@@ -1041,42 +1057,66 @@ liste = rep(list(NULL),niter)
    sigmar[i,1:k[i]] <- liste[[i]]$sigmar
    delta[i,1:k[i]]  <- liste[[i]]$delta
    dl[i,1:k[i]]     <- liste[[i]]$dl
+   w[i,1:k[i]]      <- liste[[i]]$w
 }
 
-  km <- mode(k)
-  K <- which(k==km)
+    ## Getting the number of nucleosomes with the highest frequency
+    km    <- mode(k)
+    kPositions  <- which(k == km)
 
-  mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
-  sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[K,j])})
-  sigmar_hat <- sapply(1:km,function(j){mean(sigmar[K,j])})
-  w_hat      <- sapply(1:km,function(j){mean(w[K,j])})
-  delta_hat  <- sapply(1:km,function(j){mean(delta[K,j])})
-  dl_hat     <- round(sapply(1:km,function(j){mean(dl[K,j])}))
+    mu_hat     <- colMeans(mu[kPositions, 1:km, drop=FALSE])
+    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop=FALSE])
+    sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop=FALSE])
+    w_hat      <- colMeans(w[kPositions, 1:km, drop=FALSE])
+    delta_hat  <- colMeans(delta[kPositions, 1:km, drop=FALSE])
+    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop=FALSE]))
 
-  qmu <- matrix(0,nrow=km,ncol=2)
-  colnames(qmu) <- c("2.5%", "97.5%")
-  qsigmaf <- matrix(0,nrow=km,ncol=2)
-  colnames(qsigmaf) <- c("2.5%", "97.5%")
-  qsigmar <- matrix(0,nrow=km,ncol=2)
-  colnames(qsigmar) <- c("2.5%", "97.5%")
-  qdelta <- matrix(0,nrow=km,ncol=2)
-  colnames(qdelta) <- c("2.5%", "97.5%")
-  qdl <- matrix(0,nrow=km,ncol=2)
-  colnames(qdl) <- c("2.5%", "97.5%")
-  qw <- matrix(0,nrow=km,ncol=2)
-  colnames(qw) <- c("2.5%", "97.5%")
+#
+#   mu_hat     <- sapply(1:km,function(j){mean(mu[K,j])})
+#   sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[K,j])})
+#   sigmar_hat <- sapply(1:km,function(j){mean(sigmar[K,j])})
+#   w_hat      <- sapply(1:km,function(j){mean(w[K,j])})
+#   delta_hat  <- sapply(1:km,function(j){mean(delta[K,j])})
+#   dl_hat     <- round(sapply(1:km,function(j){mean(dl[K,j])}))
 
-  for (j in 1:km)
-  {
-  qmu[j,] <- quantile(mu[,j], probs=c(0.025,0.975), names=FALSE)
-  qsigmaf[j,] <- quantile(sigmaf[,j], probs=c(0.025,0.975), names=FALSE)
-  qsigmar[j,] <- quantile(sigmar[,j], probs=c(0.025,0.975), names=FALSE)
-  qdelta[j,] <- quantile(delta[,j], probs=c(0.025,0.975), names=FALSE)
-  qdl[j,] <- quantile(dl[,j], probs=c(0.025,0.975), names=FALSE)
-  qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
-  }
+#   qmu <- matrix(0,nrow=km,ncol=2)
+#   colnames(qmu) <- c("2.5%", "97.5%")
+#   qsigmaf <- matrix(0,nrow=km,ncol=2)
+#   colnames(qsigmaf) <- c("2.5%", "97.5%")
+#   qsigmar <- matrix(0,nrow=km,ncol=2)
+#   colnames(qsigmar) <- c("2.5%", "97.5%")
+#   qdelta <- matrix(0,nrow=km,ncol=2)
+#   colnames(qdelta) <- c("2.5%", "97.5%")
+#   qdl <- matrix(0,nrow=km,ncol=2)
+#   colnames(qdl) <- c("2.5%", "97.5%")
+#   qw <- matrix(0,nrow=km,ncol=2)
+#   colnames(qw) <- c("2.5%", "97.5%")
+#
+#   for (j in 1:km)
+#   {
+#   qmu[j,] <- quantile(mu[,j], probs=c(0.025,0.975), names=FALSE)
+#   qsigmaf[j,] <- quantile(sigmaf[,j], probs=c(0.025,0.975), names=FALSE)
+#   qsigmar[j,] <- quantile(sigmar[,j], probs=c(0.025,0.975), names=FALSE)
+#   qdelta[j,] <- quantile(delta[,j], probs=c(0.025,0.975), names=FALSE)
+#   qdl[j,] <- quantile(dl[,j], probs=c(0.025,0.975), names=FALSE)
+#   qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
+#   }
 
-  liste <- list(
+    ## Getting 2.5% and 97.5% quantiles for each important data type
+    qmu     <- t(apply(mu[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+    qsigmaf <- t(apply(sigmaf[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+    qsigmar <- t(apply(sigmar[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+    qdelta  <- t(apply(delta[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+    qdl     <- t(apply(dl[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+    qw      <- t(apply(w[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
+                   probs=c(0.025, 0.975)))
+
+    liste <- list(
                 K=k,
                 k=km,
                 mu=mu_hat,
@@ -1092,7 +1132,8 @@ liste = rep(list(NULL),niter)
                 qdl=qdl,
                 qw=qw
                )
- return(liste)
+
+    return(liste)
 
 }
 
