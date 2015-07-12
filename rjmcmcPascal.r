@@ -279,7 +279,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
 
     k[1]        <- 1
 
-    mu[1,1]     <- runif(1, minReadPos,max(y))
+    mu[1,1]     <- runif(1, minReadPos, maxReadPos)
     sigmaf[1,1] <- 1
     sigmar[1,1] <- 1
     delta[1,1]  <- runif(1,0, 2*(mu[1,1] - minReadPos))
@@ -312,7 +312,7 @@ RJMCMC <- function(yf, yr, niter, kmax, lambda, ecartmin, ecartmax, minReads)
     Y1r     <- rep(0, nr)
     Y2r     <- rep(0, nr)
 
-    niter   <- ifelse((nf+nr)<=10, 1000, niter)
+    niter   <- ifelse( n <= 10, 1000, niter)
 
     for (i in 2:niter) {
 
