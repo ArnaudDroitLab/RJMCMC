@@ -19,7 +19,7 @@ a reverse read is always higher that the end positition.}
 \item{nbrIterations}{a positive \code{integer} or \code{numeric}, the
 number of iterations. Non-integer values of
 \code{nbrIterations} will be casted to \code{integer} and truncated towards
-zero. The maximum value of \code{nbrIterations} is \code{100000}.}
+zero.}
 
 \item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
