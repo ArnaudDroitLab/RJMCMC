@@ -8,10 +8,10 @@ RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
   minInterval, maxInterval, minReads)
 }
 \arguments{
-\item{startPosForwardReads}{a \code{vector} of positive \code{numeric}, the
+\item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
 start position of all the forward reads.}
 
-\item{startPosReverseReads}{a \code{vector} of positive \code{numeric}, the
+\item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
 start position of all the reverse reads. Beware that the start position of
 a reverse read is always higher that the end positition.}
 

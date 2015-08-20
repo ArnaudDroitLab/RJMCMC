@@ -4,10 +4,10 @@
 #' profiling of nucleosome positions based on high-throughput short-read
 #' data (MNase-Seq data).
 #'
-#' @param startPosForwardReads a \code{vector} of positive \code{numeric}, the
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
 #'
-#' @param startPosReverseReads a \code{vector} of positive \code{numeric}, the
+#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
 #' start position of all the reverse reads. Beware that the start position of
 #' a reverse read is always higher that the end positition.
 #'
@@ -81,7 +81,7 @@
 #' result$mu
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
-#' @importFrom stats dmultinom dpois
+#' @importFrom stats dmultinom dpois var rmultinom dt quantile
 #' @import BiocGenerics
 #' @author Rawane Samb
 #' @export
@@ -160,7 +160,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     k[1]            <- 1L
 
-    mu[1, 1]        <- runif(1, minReadPos, maxReadPos) #runif(1, min(y), (min(y)+200))
+    mu[1, 1]        <- runif(1, minReadPos, maxReadPos)
+                            #runif(1, min(y), (min(y)+200))
     sigmaf[1, 1]    <- 1
     sigmar[1, 1]    <- 1
     delta[1, 1]     <- runif(1, 0, 2*(mu[1,1] - minReadPos))
@@ -221,8 +222,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     dimtilde[i, 1] <- length(y[atilde[i, 1] <= y &
                                                     y < atilde[i, 2]])
-                    dimtilde[i, ktilde[i]] <- length(y[atilde[i, ktilde[i]]
-                                                        <= y & y <= maxReadPos])
+                    dimtilde[i, ktilde[i]] <- length(y[atilde[i, ktilde[i]] <=
+                                                        y & y <= maxReadPos])
                     if (ktilde[i] > 2) {
                         for (m in 2:(ktilde[i]-1)) {
                             dimtilde[i,m] <- length(y[(atilde[i, m] <= y &
@@ -279,23 +280,23 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     #Rapport de vraisemblance
 
                     for (m in 1:k[i-1]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt((startPosForwardReads-mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt((startPosForwardReads-mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i, m]*(1/sqrt(sigmaftilde[i,m]))*dt((startPosForwardReads-mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1, m]*(1/sqrt(sigmaf[i-1,m]))*dt((startPosForwardReads-mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
-                    Kaf[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kaf[,ktilde[i]] <- (wtilde[i, ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nf) {
-                        Y1f[s] <- log(sum(Kaf[s,1:ktilde[i]]))
-                        Y2f[s] <- log(sum(Kbf[s,1:k[i-1]]))
+                        Y1f[s] <- log(sum(Kaf[s, 1:ktilde[i]]))
+                        Y2f[s] <- log(sum(Kbf[s, 1:k[i - 1]]))
                     }
 
                     for (m in 1:k[i-1]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads-mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads-mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i, m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads-mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1, m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads-mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
-                    Kar[,ktilde[i]] <- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
+                    Kar[,ktilde[i]] <- (wtilde[i, ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
                     for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s,1:k[i-1]]))
+                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
+                        Y2r[s] <- log(sum(Kbr[s, 1:k[i - 1]]))
                     }
 
                     Kn <- sum(Y1f) + sum(Y1r)
@@ -312,17 +313,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
                     }
 
-                    rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
-                    rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
+                    rap.priormu <- (priorMuDensity(mutilde[i, 1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
+                    rap.priorw <- (ddirichlet(wtilde[i, 1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
-                    rap.priork <- (dpois(ktilde[i],lambda)/dpois(k[i-1],lambda))
+                    rap.priork <- (dpois(ktilde[i], lambda)/dpois(k[i - 1], lambda))
                     rap.propmu <- (1/(qalloc))
                     rap.propw <- (ddirichlet(w[i-1, 1:k[i-1]], alphaprop)/ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde))
 
                     rap.prior <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
                     rap.prop <-  rap.propmu  * rap.propw
 
-                    rhob[i] <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(k[i-1],lambda,kmax)))
+                    rhob[i] <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(k[i - 1], lambda, kmax)))
 
                 }
 
@@ -374,12 +375,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]] <= y & y <= maxReadPos])
                     if (ktilde[i]>2) {
                         for (m in 2: (ktilde[i]-1)) {
-                            dimtilde[i,m] <-length(y[(atilde[i,m]<=y & y<atilde[i,m+1])])}}
+                            dimtilde[i,m] <-length(y[(atilde[i, m] <=y & y < atilde[i, m + 1])])}}
                     Pr <- min(dimtilde[i,1:ktilde[i]])
 
                     ybar <- mean(y[atilde[i,j]<=y & y<=atilde[i,j+1]])
                     classesf <- y[atilde[i,j]<=y & y<=ybar]
-                    classesr <- y[ybar<=y & y<=atilde[i,j+1]]
+                    classesr <- y[ybar <= y & y <= atilde[i, j + 1]]
 
                     Lf <- length(classesf[!duplicated(classesf)])
                     Lr <- length(classesr[!duplicated(classesr)])
@@ -393,43 +394,43 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     rhomh[i] <- 0
                 } else {
 
-                    sigmaftilde[i,1:ktilde[i]] <- sigmaf[i-1,1:k[i-1]]
-                    sigmartilde[i,1:ktilde[i]] <- sigmar[i-1,1:k[i-1]]
+                    sigmaftilde[i, 1:ktilde[i]] <- sigmaf[i-1, 1:k[i - 1]]
+                    sigmartilde[i, 1:ktilde[i]] <- sigmar[i-1, 1:k[i - 1]]
 
-                    dltilde[i,j] <- sample(3:30,1)
+                    dltilde[i, j] <- sample(3:30,1)
 
-                    sigmaftilde[i,j] <- ifelse(Lf>1, var(classesf)*(dltilde[i,j]-2)/dltilde[i,j], sigmaf[i-1,j])
-                    sigmartilde[i,j] <- ifelse(Lr>1, var(classesr)*(dltilde[i,j]-2)/dltilde[i,j], sigmar[i-1,j])
+                    sigmaftilde[i, j] <- ifelse(Lf>1, var(classesf)*(dltilde[i,j]-2)/dltilde[i,j], sigmaf[i-1,j])
+                    sigmartilde[i, j] <- ifelse(Lr>1, var(classesr)*(dltilde[i,j]-2)/dltilde[i,j], sigmar[i-1,j])
 
-                    deltatilde[i,1:ktilde[i]] <- delta[i-1,1:k[i-1]]
+                    deltatilde[i, 1:ktilde[i]] <- delta[i-1,1:k[i-1]]
 
-                    deltatilde[i,j] <- tnormale(zeta, 1/(sigmaftilde[i,j]^{-1}+sigmartilde[i,j]^{-1}), deltamin, deltamax)
+                    deltatilde[i, j] <- tnormale(zeta, 1/(sigmaftilde[i,j]^{-1}+sigmartilde[i,j]^{-1}), deltamin, deltamax)
 
                     alpha <- rep(1,k[i-1])
                     alphatilde <- rep(1,ktilde[i])
                     ennetilde <- dimtilde[i,1:ktilde[i]]
                     alphaproptilde <- rep(1,ktilde[i])
                     alphaprop <- rep(1,k[i-1])
-                    wtilde[i,1:ktilde[i]] <- rdirichlet(1,alphaproptilde)
+                    wtilde[i, 1:ktilde[i]] <- rdirichlet(1,alphaproptilde)
 
                     ### calcul du rapport de vraisemblance de M-H move
 
                     for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
+                        Kaf[,m] <- (wtilde[i, m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
+                        Kbf[,m] <- (w[i-1, m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nf) {
-                        Y1f[s] <-log(sum(Kaf[s,1:ktilde[i]]))
-                        Y2f[s] <-log(sum(Kbf[s,1:k[i-1]]))
+                        Y1f[s] <-log(sum(Kaf[s, 1:ktilde[i]]))
+                        Y2f[s] <-log(sum(Kbf[s, 1:k[i - 1]]))
                     }
 
                     for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
+                        Kar[,m] <- (wtilde[i, m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
+                        Kbr[,m] <- (w[i-1, m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
                     }
                     for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s,1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s,1:k[i-1]]))
+                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
+                        Y2r[s] <- log(sum(Kbr[s, 1:k[i-1]]))
                     }
 
                     Kn <- sum(Y1f) + sum(Y1r)
@@ -440,16 +441,16 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                     rap.vrais <- rap.q
 
-                    rap.priormu <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1,1:k[i-1]],y))
+                    rap.priormu <- (priorMuDensity(mutilde[i, 1:ktilde[i]], y)/priorMuDensity(mu[i-1, 1:k[i-1]], y))
                     rap.priorw <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1,1:k[i-1]],alpha) )
                     rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:k[i-1]], nbrReads,w[i-1,1:k[i-1]])
                     rap.priork <- 1
                     rap.propmu <- 1
-                    rap.propw <- (ddirichlet(w[i-1,1:k[i-1]],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
+                    rap.propw <- (ddirichlet(w[i-1, 1:k[i - 1]],alphaprop)/ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde))
 
                     rap.prior <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
                     rap.prop <-  rap.propmu  * rap.propw
-                    rhomh[i] <- min(1, rap.vrais * (rap.prior)  *  (rap.prop ))
+                    rhomh[i] <- min(1, rap.vrais * (rap.prior)  *  (rap.prop))
 
                 }
 
