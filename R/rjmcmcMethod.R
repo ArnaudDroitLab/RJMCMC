@@ -172,12 +172,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     rhob            <- rep(0, nbrIterations)
     rhod            <- rep(0, nbrIterations)
     rhomh           <- rep(0, nbrIterations)
-    # Kn1             <- rep(0, nbrIterations)
-    # Kn2             <- rep(0, nbrIterations)
     Kn              <- rep(0, nbrIterations)
-    # Ln1             <- rep(0, nbrIterations)
-    # Ln2             <- rep(0, nbrIterations)
-    # Ln              <- rep(0, nbrIterations)
 
     Kaf             <- matrix(0, nrow = nf, ncol = kmax)
     Kbf             <- matrix(0, nrow = nf, ncol = kmax)
