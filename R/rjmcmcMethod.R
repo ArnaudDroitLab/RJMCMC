@@ -110,14 +110,10 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     #### Parameter Initialization                             ####
     ##############################################################
 
-#     y               <- sort(c(startPosForwardReads, startPosReverseReads))
     y               <- c(startPosForwardReads, startPosReverseReads)
     nf              <- length(startPosForwardReads)
     nr              <- length(startPosReverseReads)
     nbrReads        <- nf + nr
-#     d               <- sapply(1:nbrReads, function(m) {
-#                           ifelse(min(abs(startPosReverseReads - y[m])) == 0,
-#                                     -1, 1)})
 
     # Order reads an mark reverse reads as -1 in a new vector
     d <- c(rep(1, nf), rep(-1, nr))
@@ -161,7 +157,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     k[1]            <- 1L
 
     mu[1, 1]        <- runif(1, minReadPos, maxReadPos)
-                            #runif(1, min(y), (min(y)+200))
+
     sigmaf[1, 1]    <- 1
     sigmar[1, 1]    <- 1
     delta[1, 1]     <- runif(1, 0, 2*(mu[1,1] - minReadPos))
@@ -171,7 +167,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     a[1, 1]         <- minReadPos
     a[1, k[1] + 1]  <- maxReadPos
 
-#     dim[1,1]        <- length(y[a[1, 1] <= y & y <= maxReadPos])
     dim[1,1]        <- nbrReads
 
     rhob            <- rep(0, nbrIterations)
@@ -327,7 +322,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 }
 
-#                 rhob[i] <- ifelse ( is.na(rhob[i])==FALSE, rhob[i], 0)
                 rhob[i] <- ifelse (is.na(rhob[i]), 0, rhob[i])
 
                 v <- runif(1)      #Acceptation/rejet du Birth move
@@ -760,7 +754,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 }
 
                 v <- runif(1)      # Acceptation/rejet du Birth move
-#                 rhob[i] <- ifelse ( is.na(rhob[i])==FALSE, rhob[i], 0)
+
                 rhob[i] <- ifelse(is.na(rhob[i]), 0, rhob[i])
 
                 if (rhob[i] >= v && ktilde[i] <= kmax) {
@@ -975,42 +969,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     km <- elementWithHighestMode(k)
     kPositions  <- which(k == km)
 
-#     mu_hat     <- sapply(1:km,function(j){mean(mu[kPositions,j])})
-#     sigmaf_hat <- sapply(1:km,function(j){mean(sigmaf[kPositions,j])})
-#     sigmar_hat <- sapply(1:km,function(j){mean(sigmar[kPositions,j])})
-#     w_hat      <- sapply(1:km,function(j){mean(w[kPositions,j])})
-#     delta_hat  <- sapply(1:km,function(j){mean(delta[kPositions,j])})
-#     dl_hat     <- round(sapply(1:km,function(j){mean(dl[kPositions,j])}))
-
     mu_hat     <- colMeans(mu[kPositions, 1:km, drop=FALSE])
     sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop=FALSE])
     sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop=FALSE])
     w_hat      <- colMeans(w[kPositions, 1:km, drop=FALSE])
     delta_hat  <- colMeans(delta[kPositions, 1:km, drop=FALSE])
     dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop=FALSE]))
-
-#     qmu <- matrix(0,nrow=km,ncol=2)
-#     colnames(qmu) <- c("2.5%", "97.5%")
-#     qsigmaf <- matrix(0,nrow=km,ncol=2)
-#     colnames(qsigmaf) <- c("2.5%", "97.5%")
-#     qsigmar <- matrix(0,nrow=km,ncol=2)
-#     colnames(qsigmar) <- c("2.5%", "97.5%")
-#     qdelta <- matrix(0,nrow=km,ncol=2)
-#     colnames(qdelta) <- c("2.5%", "97.5%")
-#     qdl <- matrix(0,nrow=km,ncol=2)
-#     colnames(qdl) <- c("2.5%", "97.5%")
-#     qw <- matrix(0,nrow=km,ncol=2)
-#     colnames(qw) <- c("2.5%", "97.5%")
-#
-#     for (j in 1:km)
-#     {
-#         qmu[j,] <- quantile(mu[,j], probs=c(0.025,0.975), names=FALSE)
-#         qsigmaf[j,] <- quantile(sigmaf[,j], probs=c(0.025,0.975),names=FALSE)
-#         qsigmar[j,] <- quantile(sigmar[,j], probs=c(0.025,0.975),names=FALSE)
-#         qdelta[j,] <- quantile(delta[,j], probs=c(0.025,0.975), names=FALSE)
-#         qdl[j,] <- quantile(dl[,j], probs=c(0.025,0.975), names=FALSE)
-#         qw[j,] <- quantile(w[,j], probs=c(0.025,0.975), names=FALSE)
-#     }
 
     # Getting 2.5% and 97.5% quantiles for each important data type
     qmu     <- t(apply(mu[,1:km, drop=FALSE], MARGIN=2, FUN=quantile,
