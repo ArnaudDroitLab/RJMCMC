@@ -172,12 +172,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     rhob            <- rep(0, nbrIterations)
     rhod            <- rep(0, nbrIterations)
     rhomh           <- rep(0, nbrIterations)
-    Kn1             <- rep(0, nbrIterations)
-    Kn2             <- rep(0, nbrIterations)
+    # Kn1             <- rep(0, nbrIterations)
+    # Kn2             <- rep(0, nbrIterations)
     Kn              <- rep(0, nbrIterations)
-    Ln1             <- rep(0, nbrIterations)
-    Ln2             <- rep(0, nbrIterations)
-    Ln              <- rep(0, nbrIterations)
+    # Ln1             <- rep(0, nbrIterations)
+    # Ln2             <- rep(0, nbrIterations)
+    # Ln              <- rep(0, nbrIterations)
 
     Kaf             <- matrix(0, nrow = nf, ncol = kmax)
     Kbf             <- matrix(0, nrow = nf, ncol = kmax)
@@ -198,7 +198,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
         if (kValue == 1L) {
             ## CASE : Number of nucleosomes equal to 1
-            u<-runif(1)
+            u <- runif(1)
 
             if (u <= 0.5) {
                 ktilde[i] <- kValue + 1L
