@@ -60,9 +60,16 @@ position densities for each nucleosome.
 must be equal to \code{1}.
 \item \code{qmu} a \code{matrix} of \code{numerical} with a number of rows
 of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{mu}.
-\item \code{qsigmaf} TODO
-\item \code{qsigmar} TODO
-\item \code{qdelta} TODO
+\item \code{qsigmaf} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance of the
+forward reads for each nucleosome.
+\item \code{qsigmar} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance the
+reverse reads for each nucleosome.
+\item \code{qdelta} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
+the maxima of the forward and reverse reads
+position densities for each nucleosome.
 \item \code{qdl} TODO
 \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
 of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
