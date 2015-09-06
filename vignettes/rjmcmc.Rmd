@@ -28,9 +28,10 @@ this software.
 If you use this package for a publication, we would ask you to cite the
 following:
 
-> Samb R, Khadraoui K, Lakhal L, Belleau P et Droit A. Using informative 
-> Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation 
-> of nucleosome positions for genome-wide profiling. Submitted (2015). 
+> Samb R, Desch\^enes A, Khadraoui K, Lakhal L, Belleau P et Droit A. Using 
+> informative Multinomial-Dirichlet prior in a t-mixture with reversible jump 
+> estimation of nucleosome positions for genome-wide profiling. 
+> Submitted (2015). 
 
 ## 2. Introduction
 
