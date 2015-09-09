@@ -246,7 +246,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             else {
 
                 ###Metropolis-Hastings move
-                varTilde <- m-hMoveK1(paramValues, kValue, muValue
+                varTilde <- mhMoveK1(paramValues, kValue, muValue
                                       , sigmafValue, sigmarValue, deltaValue
                                       , wValue, dlValue, aValue, dimValue )
 
@@ -275,7 +275,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 } else {
                     ### Metropolis-Hastings move
-                    varTilde <- m-hMove(paramValues, kValue, muValue
+                    varTilde <- mhMove(paramValues, kValue, muValue
                                           , sigmafValue, sigmarValue, deltaValue
                                           , wValue, dlValue, aValue, dimValue )
 
