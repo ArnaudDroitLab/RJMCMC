@@ -748,7 +748,7 @@ isInteger <- function(value) {
 
 #' @title birthMoveK1 birth move in the case k = 1
 #'
-#' @description
+#' @description  birth move
 #'
 #' @param paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
 #'    , kmax = kmax, lambda = lambda, minReads = minReads
@@ -764,7 +764,7 @@ isInteger <- function(value) {
 #'    , dim=numeric(parValue$kmax), rho=0)
 #'
 #' @examples
-#'
+#' birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
 #'
 #'
 #' @author Astrid Louise Deschenes
@@ -912,7 +912,7 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 
     }
 
-    varTilde$rho <- ifelse (is.na(rhob[i]), 0, rhob[i])
+    varTilde$rho <- ifelse (is.na(varTilde$rho), 0, varTilde$rho)
     return(varTilde)
 }
 
@@ -1075,7 +1075,7 @@ birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
 }
 
 
-m-hMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+mhMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
     ###Metropolis-Hastings move
     varTilde <- list( k=0L, mu=numeric(parValue$kmax)
                       , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
@@ -1195,7 +1195,7 @@ m-hMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
     return(varTilde)
 }
 
-m-hMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
     ### Metropolis-Hastings move
     varTilde <- list( k=0L, mu=numeric(parValue$kmax)
                       , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
