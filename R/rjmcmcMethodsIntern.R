@@ -744,3 +744,735 @@ isInteger <- function(value) {
         length(value) == 1))
 }
 
+
+
+#' @title birthMoveK1 birth move in the case k = 1
+#'
+#' @description
+#'
+#' @param paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
+#'    , kmax = kmax, lambda = lambda, minReads = minReads
+#'    , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
+#'    , deltamin = deltamin, deltamax = deltamax
+#'    , minReadPos= minReadPos, maxReadPos = maxReadPos )
+#'    kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue
+#'
+#' @return list( k=0L, mu=numeric(parValue$kmax)
+#'    , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+#'    , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+#'    , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+#'    , dim=numeric(parValue$kmax), rho=0)
+#'
+#' @examples
+#'
+#'
+#'
+#' @author Astrid Louise Deschenes
+#' @keywords internal
+#'
+
+birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ) {
+
+    varTilde <- list( k=0L, mu=numeric(parValue$kmax)
+                      , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+                      , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+                      , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+                      , dim=numeric(parValue$kmax), rho=0)
+
+    Kn              <- rep(0, nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+
+    Y1f             <- rep(0, paramValues$nf)
+    Y2f             <- rep(0, paramValues$nf)
+    Y1r             <- rep(0, paramValues$nr)
+    Y2r             <- rep(0, paramValues$nr)
+
+
+    varTilde$k <- kValue + 1L
+    count  <- 1L
+    repeat {
+        j <- sample(1:kValue, 1)
+        varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[ j])
+        varTilde$mu[ 1:varTilde$k] <- sort(c(muValue[ 1:kValue],
+                                             varTilde$mu[j]))
+
+        varTilde$a[ j+1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
+        varTilde$a[ 1:(varTilde$k+1)] <- sort(c(aValue[ 1:varTilde$k],
+                                                varTilde$a[ j+1]))
+        varTilde$a[ 1]                <- paramValues$minReadPos
+        varTilde$a[ (varTilde$k+1)]    <- paramValues$maxReadPos
+
+        varTilde$dim[ 1] <- length(paramValues$y[varTilde$a[ 1] <= paramValues$y &
+                                                     paramValues$y < varTilde$a[ 2]])
+        varTilde$dim[ varTilde$k] <- length(paramValues$y[varTilde$a[ varTilde$k] <=
+                                                              paramValues$y & paramValues$y <= paramValues$maxReadPos])
+        if (varTilde$k > 2) {   # impossible si kValue == 1
+            for (m in 2:(varTilde$k-1)) {
+                varTilde$dim[m] <- length(paramValues$y[(varTilde$a[ m] <= paramValues$y &
+                                                             paramValues$y < varTilde$a[ m+1])])
+            }
+        }
+        Pr <- min(varTilde$dim[ 1:varTilde$k])
+
+        ybar <- mean(paramValues$y[varTilde$a[ j] <= paramValues$y & paramValues$y <= varTilde$a[ j+1]])
+        classesf <- paramValues$y[varTilde$a[ j] <= paramValues$y & paramValues$y <= ybar]
+        classesr <- paramValues$y[ybar <= paramValues$y & paramValues$y <= varTilde$a[ j+1]]
+
+        Lf <- length(classesf[!duplicated(classesf)])
+        Lr <- length(classesr[!duplicated(classesr)])
+
+        count <- count + 1L
+
+        if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
+                count == 1000L) break()
+    }
+
+    if (count == 1000L) {
+        varTilde$rho <- 0
+    } else  {
+
+        varTilde$dl[ j] <- sample(3:30, 1)
+
+        varTilde$sigmaf[ j] <- ifelse(Lf > 1,
+                                      var(classesf) * (varTilde$dl[ j] - 2)/varTilde$dl[ j],
+                                      sigmafValue[ j])
+        varTilde$sigmar[ j] <- ifelse(Lr > 1,
+                                      var(classesr) * (varTilde$dl[ j] - 2)/varTilde$dl[ j],
+                                      sigmarValue[ j])
+
+        varTilde$sigmaf[ 1:varTilde$k] <- c(sigmafValue[ 1:kValue],
+                                            varTilde$sigmaf[ j])
+        varTilde$sigmar[ 1:varTilde$k] <- c(sigmarValue[ 1:kValue],
+                                            varTilde$sigmar[ j])
+
+        varTilde$delta[ j] <- tnormale(paramValues$zeta,
+                                       1/(varTilde$sigmaf[ j]^{-1} + varTilde$sigmar[j]^{-1}),
+                                       paramValues$deltamin, paramValues$deltamax)
+        varTilde$delta[ 1:varTilde$k] <- c(varTilde$delta[ j],
+                                           deltaValue[ 1:kValue])
+
+        alpha                   <- rep(1, kValue)
+        alphatilde              <- rep(1, varTilde$k)
+        alphaproptilde          <- rep(1, varTilde$k)
+        alphaprop               <- rep(1, kValue)
+        varTilde$w[ 1:varTilde$k]  <- rdirichlet(1, alphaproptilde)
+        ennetilde               <- varTilde$dim[ 1:varTilde$k]
+        enne <- rmultinom(1, paramValues$nbrReads, wValue[ 1:kValue])
+
+        #Rapport de vraisemblance
+
+        for (m in 1:kValue) {
+            Kaf[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmaf[m]))*dt((paramValues$startPSF-varTilde$mu[m]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),varTilde$dl[m]))
+            Kbf[,m] <- (wValue[ m]*(1/sqrt(sigmafValue[m]))*dt((paramValues$startPSF-muValue[m]+deltaValue[m]/2)/sqrt(sigmafValue[m]),dlValue[m]))
+        }
+        Kaf[,varTilde$k] <- (varTilde$w[ varTilde$k]*(1/sqrt(varTilde$sigmaf[varTilde$k]))*dt(( paramValues$startPSF -varTilde$mu[varTilde$k]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),varTilde$dl[m]))
+        for (s in 1:paramValues$nf) {
+            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
+            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
+        }
+
+        for (m in 1:kValue) {
+            Kar[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmar[m]))*dt((paramValues$startPSR-varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
+            Kbr[,m] <- (wValue[ m]*(1/sqrt(sigmarValue[m]))*dt((paramValues$startPSR-muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+        }
+        Kar[,varTilde$k] <- (varTilde$w[ varTilde$k]*(1/sqrt(varTilde$sigmar[varTilde$k]))*dt(( paramValues$startPSR -varTilde$mu[varTilde$k]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[varTilde$k]),varTilde$dl[m]))
+        for (s in 1:paramValues$nr) {
+            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
+            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
+        }
+
+        Kn <- sum(Y1f) + sum(Y1r)
+        Kd <- sum(Y2f) + sum(Y2r)
+
+        q <- Kn - Kd
+        rap.q <- exp(q)
+
+        rap.vrais <- rap.q
+
+        if (j == 1) {
+            qalloc <- 1/(muValue[ j] - paramValues$minReadPos) # Density of varTilde$mu[j]
+        } else {
+            qalloc <- 1/(muValue[ j] - muValue[ j-1])
+        }
+
+        rap.priormu   <- (priorMuDensity(varTilde$mu[ 1:varTilde$k],paramValues$y)/priorMuDensity(muValue[ 1:kValue],paramValues$y))
+        rap.priorw    <- (ddirichlet(varTilde$w[ 1:varTilde$k],alphatilde)/ddirichlet(wValue[ 1:kValue],alpha) )
+        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue], paramValues$nbrReads,wValue[ 1:kValue])
+        rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/dpois(kValue, paramValues$lambda))
+        rap.propmu    <- (1/(qalloc))
+        rap.propw     <- (ddirichlet(wValue[ 1:kValue], alphaprop)/ddirichlet(varTilde$w[ 1:varTilde$k], alphaproptilde))
+
+        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
+        rap.prop      <-  rap.propmu  * rap.propw
+
+        varTilde$rho       <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(varTilde$k,paramValues$lambda,paramValues$kmax)/Bk(kValue, paramValues$lambda, paramValues$kmax)))
+
+    }
+
+    varTilde$rho <- ifelse (is.na(rhob[i]), 0, rhob[i])
+    return(varTilde)
+}
+
+birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+    #Birth move
+
+    varTilde <- list( k=0L, mu=numeric(parValue$kmax)
+                      , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+                      , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+                      , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+                      , dim=numeric(parValue$kmax), rho=0)
+
+    Kn              <- rep(0, nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+
+    Y1f             <- rep(0, paramValues$nf)
+    Y2f             <- rep(0, paramValues$nf)
+    Y1r             <- rep(0, paramValues$nr)
+    Y2r             <- rep(0, paramValues$nr)
+
+
+    varTilde$k <- kValue + 1L
+    count <- 1L
+
+    repeat {
+        j <- sample(1:kValue, 1)
+
+        if (j == 1) {
+            varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[j])
+        } else {
+            varTilde$mu[j] <- runif(1, muValue[j-1], muValue[j])
+        }
+
+        varTilde$mu[ 1:varTilde$k] <- sort(c(muValue[ 1:kValue],varTilde$mu[ j]))
+
+        varTilde$a[j+1] <- ifelse(j<ktilde[i-1], runif(1,varTilde$mu[j],varTilde$mu[j+1]), runif(1,varTilde$mu[j],paramValues$maxReadPos))
+        varTilde$a[1:(varTilde$k+1)] <- sort(c(aValue[1:varTilde$k],varTilde$a[j+1]))
+
+        if (j == 1) {
+            varTilde$a[j] <- paramValues$minReadPos
+        } else {
+            varTilde$a[j] <- runif(1,varTilde$mu[j-1],varTilde$mu[j])
+        }
+        varTilde$a[1]             <- paramValues$minReadPos
+        varTilde$a[varTilde$k+1]   <- paramValues$maxReadPos
+
+        varTilde$dim[1]         <- length(paramValues$y[varTilde$a[1]<=paramValues$y & paramValues$y<varTilde$a[2]])
+        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]<=paramValues$y & paramValues$y<=paramValues$maxReadPos])
+
+        if (varTilde$k > 2) {
+            for (m in 2: (varTilde$k-1)) {
+                varTilde$dim[m] <- length(paramValues$y[varTilde$a[m]<=paramValues$y & paramValues$y<varTilde$a[m+1]])
+            }
+        }
+        Pr <- min(varTilde$dim[1:varTilde$k])
+
+        ybar <- mean(paramValues$y[varTilde$a[j] <= paramValues$y & paramValues$y <= varTilde$a[j+1]])
+        classesf <- paramValues$y[varTilde$a[j] <= paramValues$y & paramValues$y <= ybar]
+        classesr <- paramValues$y[ybar <= paramValues$y & paramValues$y <= varTilde$a[j+1]]
+
+        Lf <- length(classesf[!duplicated(classesf)])
+        Lr <- length(classesr[!duplicated(classesr)])
+        count <- count + 1L
+        if ( (Pr>1 & Lf>1 & Lr>1)  ||
+                 count == 1000L) break()
+
+    }
+
+    if (count == 1000L) {
+        varTilde$rho <- 0
+    } else {
+        varTilde$dl[j] <- sample(3:30, 1)
+        varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmafValue[j])
+        varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmarValue[j])
+
+        if (j == 1) {
+            varTilde$sigmaf[1:varTilde$k]<- c(sigmafValue[1:kValue],varTilde$sigmaf[j])
+            varTilde$sigmar[1:varTilde$k]<- c(sigmarValue[1:kValue],varTilde$sigmar[j] )
+        } else {
+            varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[1:(j-1)],varTilde$sigmaf[j],sigmafValue[j:kValue])
+            varTilde$sigmar[1:varTilde$k] <- c(sigmarValue[1:(j-1)],varTilde$sigmar[j],sigmarValue[j:kValue])
+        }
+
+        varTilde$delta[j] <- tnormale(paramValues$zeta, 1/(varTilde$sigmaf[j]^{-1}+varTilde$sigmar[j]^{-1}), paramValues$deltamin, paramValues$deltamax)
+
+        if (j == 1) {
+            varTilde$delta[ 1:varTilde$k] <- c(varTilde$delta[ j], deltaValue[ 1:kValue])
+        } else if (j == kValue) {
+            varTilde$delta[ 1:varTilde$k] <- c(deltaValue[ 1:kValue], varTilde$delta[ j])
+        } else {
+            varTilde$delta[ 1:varTilde$k] <- c(deltaValue[ 1:(j-1)], varTilde$delta[j], deltaValue[j:kValue])
+        }
+
+        alpha                 <- rep(1, kValue)
+        alphatilde            <- rep(1, varTilde$k)
+        alphaproptilde        <- rep(1, varTilde$k)
+        alphaprop             <- rep(1, kValue)
+        ennetilde             <- varTilde$dim[ 1:varTilde$k]
+        enne                  <- rmultinom(1, paramValues$nbrReads, wValue[ 1:kValue])
+        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
+
+        ### Rapport de vraisemblance ###
+
+        for (m in 1:kValue) {
+            Kaf[,m]<- (varTilde$w[m]*(1/sqrt(varTilde$sigmaf[m]))*dt(( paramValues$startPSF -varTilde$mu[m]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),varTilde$dl[m]))
+            Kbf[,m]<- (wValue[m]*(1/sqrt(sigmafValue[m]))*dt(( paramValues$startPSF -muValue[m]+deltaValue[m]/2)/sqrt(sigmafValue[m]),dlValue[m]))
+        }
+        Kaf[,varTilde$k]<- (varTilde$w[varTilde$k]*(1/sqrt(varTilde$sigmaf[varTilde$k]))*dt(( paramValues$startPSF -varTilde$mu[varTilde$k]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),varTilde$dl[m]))
+        for (s in 1:paramValues$nf) {
+            Y1f[s] <-log(sum(Kaf[s,1:varTilde$k]))
+            Y2f[s] <-log(sum(Kbf[s,1:kValue]))
+        }
+
+        for (m in 1:kValue) {
+            Kar[,m]<- (varTilde$w[m]*(1/sqrt(varTilde$sigmar[m]))*dt(( paramValues$startPSR -varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
+            Kbr[,m]<- (wValue[m]*(1/sqrt(sigmarValue[m]))*dt(( paramValues$startPSR -muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+        }
+        Kar[,varTilde$k]<- (varTilde$w[varTilde$k]*(1/sqrt(varTilde$sigmar[varTilde$k]))*dt(( paramValues$startPSR -varTilde$mu[varTilde$k]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[varTilde$k]),varTilde$dl[m]))
+        for (s in 1:paramValues$nr) {
+            Y1r[s] <-log(sum(Kar[s,1:varTilde$k]))
+            Y2r[s] <-log(sum(Kbr[s,1:kValue]))
+        }
+
+        Kn <- sum(Y1f)+sum(Y1r)
+        Kd <- sum(Y2f)+sum(Y2r)
+
+        q         <- Kn - Kd
+        rap.q     <-exp(q)
+
+        rap.vrais <- rap.q
+
+        #Density of
+        varTilde$mu[j]
+        if (j==1) {
+            qalloc <- 1/(muValue[ j] - paramValues$minReadPos)
+        } else {
+            qalloc <- 1/(muValue[ j] - muValue[ j-1])
+        }
+
+        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],paramValues$y)/priorMuDensity(muValue[ 1:kValue],paramValues$y))
+        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k], alphatilde)/ddirichlet(wValue[ 1:kValue], alpha))
+        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,varTilde$w[1:varTilde$k])/dmultinom(dimValue[ 1:kValue], paramValues$nbrReads,wValue[ 1:kValue])
+        rap.priork    <- (dpois(varTilde$k,paramValues$lambda)/dpois(kValue,paramValues$lambda))
+        rap.propmu    <- (1/(qalloc))
+        rap.propw     <- (ddirichlet(wValue[1:kValue],alphaprop)/ddirichlet(varTilde$w[1:varTilde$k],alphaproptilde))
+
+        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
+        rap.prop      <- rap.propmu  * rap.propw
+        varTilde$rho       <- min(1, (rap.vrais) * (rap.prior)  *  (rap.prop ) * (Dk(varTilde$k,paramValues$lambda,paramValues$kmax)/Bk(kValue,paramValues$lambda,paramValues$kmax)))
+    }
+
+
+
+    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
+
+    return(varTilde)
+}
+
+
+m-hMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+    ###Metropolis-Hastings move
+    varTilde <- list( k=0L, mu=numeric(parValue$kmax)
+                      , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+                      , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+                      , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+                      , dim=numeric(parValue$kmax), rho=0)
+
+    Kn              <- rep(0, nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+
+    Y1f             <- rep(0, paramValues$nf)
+    Y2f             <- rep(0, paramValues$nf)
+    Y1r             <- rep(0, paramValues$nr)
+    Y2r             <- rep(0, paramValues$nr)
+
+    varTilde$k <- kValue
+    count     <- 1L
+    repeat {
+        j                        <- sample(1:kValue, 1)
+        varTilde$mu[ j]            <- runif(1, muValue[ j], paramValues$maxReadPos)
+        varTilde$mu[ 1:varTilde$k]  <- sort(c(varTilde$mu[ 1:varTilde$k]))
+
+        varTilde$a[ j]   <- paramValues$minReadPos
+        varTilde$a[ j+1] <- paramValues$maxReadPos
+
+        varTilde$dim[ 1]           <- length(paramValues$y[varTilde$a[1] <=paramValues$y &  paramValues$y< varTilde$a[2]])
+        varTilde$dim[ varTilde$k]   <- length(paramValues$y[varTilde$a[varTilde$k] <= paramValues$y & paramValues$y <= paramValues$maxReadPos])
+
+        if (varTilde$k > 2) {
+            for (m in 2:(varTilde$k-1)) {
+                varTilde$dim[m] <-length(paramValues$y[(varTilde$a[ m] <=paramValues$y & paramValues$y < varTilde$a[ m + 1])])
+            }
+        }
+
+        Pr <- min(varTilde$dim[ 1:varTilde$k])
+
+        ybar        <- mean(paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=varTilde$a[j+1]])
+        classesf    <- paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=ybar]
+        classesr    <- paramValues$y[ybar <= paramValues$y & paramValues$y <= varTilde$a[ j + 1]]
+
+        Lf      <- length(classesf[!duplicated(classesf)])
+        Lr      <- length(classesr[!duplicated(classesr)])
+        count   <- count + 1L
+
+        if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
+                count == 1000L) break()
+    }
+
+    if (count == 1000L) {
+        varTilde$rho <- 0
+    } else {
+
+        varTilde$sigmaf[ 1:varTilde$k] <- sigmafValue[ 1:kValue]
+        varTilde$sigmar[ 1:varTilde$k] <- sigmarValue[ 1:kValue]
+
+        varTilde$dl[ j] <- sample(3:30,1)
+
+        varTilde$sigmaf[ j] <- ifelse(Lf>1, var(classesf)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmafValue[j])
+        varTilde$sigmar[ j] <- ifelse(Lr>1, var(classesr)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmarValue[j])
+
+        varTilde$delta[ 1:varTilde$k] <- deltaValue[1:kValue]
+
+        varTilde$delta[ j] <- tnormale(paramValues$zeta, 1/(varTilde$sigmaf[j]^{-1}+varTilde$sigmar[j]^{-1}), paramValues$deltamin, paramValues$deltamax)
+
+        alpha <- rep(1, kValue)
+        alphatilde <- rep(1,varTilde$k)
+        ennetilde <- varTilde$dim[1:varTilde$k]
+        alphaproptilde <- rep(1,varTilde$k)
+        alphaprop <- rep(1, kValue)
+        varTilde$w[ 1:varTilde$k] <- rdirichlet(1,alphaproptilde)
+
+        ### calcul du rapport de vraisemblance de M-H move
+
+        for (m in 1:varTilde$k) {
+            Kaf[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmaf[m]))*dt(( paramValues$startPSF -varTilde$mu[m]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),varTilde$dl[m]))
+            Kbf[,m] <- (wValue[ m]*(1/sqrt(sigmafValue[m]))*dt(( paramValues$startPSF -muValue[m]+deltaValue[m]/2)/sqrt(sigmafValue[m]),dlValue[m]))
+        }
+        for (s in 1:paramValues$nf) {
+            Y1f[s] <-log(sum(Kaf[s, 1:varTilde$k]))
+            Y2f[s] <-log(sum(Kbf[s, 1:kValue]))
+        }
+
+        for (m in 1:varTilde$k) {
+            Kar[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmar[m]))*dt((paramValues$startPSR -varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
+            Kbr[,m] <- (wValue[ m]*(1/sqrt(sigmarValue[m]))*dt((paramValues$startPSR -muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+        }
+        for (s in 1:paramValues$nr) {
+            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
+            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
+        }
+
+        Kn <- sum(Y1f) + sum(Y1r)
+        Kd <- sum(Y2f) + sum(Y2r)
+
+        q <- Kn - Kd
+        rap.q <- exp(q)
+
+        rap.vrais <- rap.q
+
+        rap.priormu   <- (priorMuDensity(varTilde$mu[ 1:varTilde$k], paramValues$y)/priorMuDensity(muValue[ 1:kValue], paramValues$y))
+        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k],alphatilde)/ddirichlet(wValue[ 1:kValue],alpha) )
+        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,varTilde$w[1:varTilde$k])/dmultinom(dimValue[ 1:kValue], paramValues$nbrReads,wValue[1:kValue])
+        rap.priork    <- 1
+        rap.propmu    <- 1
+        rap.propw     <- (ddirichlet(wValue[ 1:kValue],alphaprop)/ddirichlet(varTilde$w[ 1:varTilde$k], alphaproptilde))
+
+        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
+        rap.prop      <-  rap.propmu  * rap.propw
+        varTilde$rho      <- min(1, rap.vrais * (rap.prior)  *  (rap.prop))
+
+    }
+
+    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
+    return(varTilde)
+}
+
+m-hMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+    ### Metropolis-Hastings move
+    varTilde <- list( k=0L, mu=numeric(parValue$kmax)
+                      , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+                      , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+                      , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+                      , dim=numeric(parValue$kmax), rho=0)
+
+    Kn              <- rep(0, nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+
+    Y1f             <- rep(0, paramValues$nf)
+    Y2f             <- rep(0, paramValues$nf)
+    Y1r             <- rep(0, paramValues$nr)
+    Y2r             <- rep(0, paramValues$nr)
+
+    varTilde$k   <- kValue
+    count       <- 1L
+    repeat {
+        j                       <- sample(2:kValue, 1)
+        varTilde$mu[1:varTilde$k]  <- muValue[ 1:kValue]
+
+        if (j==1) {
+            varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[j+1])
+        } else {
+            if (j==varTilde$k) {
+                varTilde$mu[j] <- runif(1,muValue[j-1],paramValues$maxReadPos)
+            } else {
+                varTilde$mu[j] <- runif(1,muValue[j-1],muValue[j+1])
+            }
+        }
+
+        varTilde$mu[1:varTilde$k] <- sort(c(varTilde$mu[ 1:varTilde$k]))
+
+        varTilde$a[1:(varTilde$k+1)] <- sort(c(aValue[ 1:(kValue + 1)]))
+
+        if (j==varTilde$k) {
+            varTilde$a[j] <- runif(1,varTilde$mu[j],paramValues$maxReadPos)
+            varTilde$a[j+1] <- paramValues$maxReadPos
+        } else {
+            if (j==1) {
+                varTilde$a[j] <- paramValues$minReadPos
+                varTilde$a[j+1] <- runif(1,varTilde$mu[j],varTilde$mu[j+1])
+            } else {
+                varTilde$a[j] <- runif(1,varTilde$mu[j-1],varTilde$mu[j])
+                varTilde$a[j+1] <- runif(1,varTilde$mu[j],varTilde$mu[j+1])
+            }
+        }
+
+        varTilde$a[1]           <- paramValues$minReadPos
+        varTilde$a[varTilde$k+1] <- paramValues$maxReadPos
+
+        varTilde$dim[1]         <- length(paramValues$y[varTilde$a[1]<=paramValues$y & paramValues$y<varTilde$a[2]])
+        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]<=paramValues$y & paramValues$y<=paramValues$maxReadPos])
+        if (varTilde$k>2) {
+            for (m in 2: (varTilde$k-1)) {
+                varTilde$dim[m]<-length(paramValues$y[varTilde$a[m]<=paramValues$y & paramValues$y<varTilde$a[m+1]])
+            }
+        }
+        Pr <- min(varTilde$dim[1:varTilde$k])
+
+        ybar      <- mean(paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=varTilde$a[j+1]])
+        classesf  <- paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=ybar]
+        classesr  <- paramValues$y[ybar<=paramValues$y & paramValues$y<=varTilde$a[j+1]]
+
+        Lf    <- length(classesf[!duplicated(classesf)])
+        Lr    <- length(classesr[!duplicated(classesr)])
+        count <- count + 1L
+        if ( (Pr > 1 & Lf > 1 & Lr > 1)
+             || count == 1000L) break()
+    }
+
+    if (count == 1000L) {
+        varTilde$rho <- 0
+    } else {
+
+        varTilde$sigmaf[ 1:varTilde$k] <- sigmafValue[ 1:kValue]
+        varTilde$sigmar[ 1:varTilde$k] <- sigmarValue[ 1:kValue]
+
+        varTilde$dl[j] <- sample(3:30, 1)
+
+        varTilde$sigmaf[j] <- ifelse(Lf>1, var(classesf)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmafValue[j])
+        varTilde$sigmar[j] <- ifelse(Lr>1, var(classesr)*(varTilde$dl[j]-2)/varTilde$dl[j], sigmarValue[j])
+
+        varTilde$delta[1:varTilde$k] <- deltaValue[ 1:kValue]
+        varTilde$delta[j] <- tnormale(paramValues$zeta, 1/(varTilde$sigmaf[j]^{-1}+varTilde$sigmar[j]^{-1}), paramValues$deltamin, paramValues$deltamax)
+
+        alpha <- rep(1, kValue)
+        alphatilde <- rep(1,varTilde$k)
+        ennetilde <- varTilde$dim[1:varTilde$k]
+        alphaproptilde <- rep(1,varTilde$k)
+        alphaprop <- rep(1, kValue)
+        varTilde$w[1:varTilde$k] <- rdirichlet(1,alphaproptilde)
+
+        ###calcul du rapport de vraisemblance de M-H move
+
+        for (m in 1:varTilde$k) {
+            Kaf[,m] <- (varTilde$w[m]*(1/sqrt(varTilde$sigmaf[m]))*dt(( paramValues$startPSF -varTilde$mu[m]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),varTilde$dl[m]))
+            Kbf[,m] <- (wValue[m]*(1/sqrt(sigmafValue[m]))*dt(( paramValues$startPSF -muValue[m]+deltaValue[m]/2)/sqrt(sigmafValue[m]),dlValue[m]))
+        }
+        for (s in 1:paramValues$nf) {
+            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
+            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
+        }
+
+        for (m in 1:varTilde$k) {
+            Kar[,m] <- (varTilde$w[m]*(1/sqrt(varTilde$sigmar[m]))*dt(( paramValues$startPSR - varTilde$mu[m] - varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
+            Kbr[,m] <- (wValue[m]*(1/sqrt(sigmarValue[m]))*dt(( paramValues$startPSR - muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+        }
+        for (s in 1:paramValues$nr) {
+            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
+            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
+        }
+
+        Kn <- sum(Y1f) + sum(Y1r)
+        Kd <- sum(Y2f) + sum(Y2r)
+
+        q         <- Kn - Kd
+        rap.q     <- exp(q)
+
+        rap.vrais <- rap.q
+
+        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],paramValues$y)/priorMuDensity(muValue[ 1:kValue],paramValues$y))
+        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k], alphatilde)/ddirichlet(wValue[ 1:kValue],alpha))
+        rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads, varTilde$w[1:varTilde$k])/dmultinom(dimValue[ 1:kValue], paramValues$nbrReads,wValue[ 1:kValue])
+        rap.priork    <- (1)
+        rap.propmu    <- (1)
+        rap.propw     <- (ddirichlet(wValue[ 1:kValue],alphaprop)/ddirichlet(varTilde$w[1:varTilde$k],alphaproptilde))
+        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
+        rap.prop      <- rap.propmu  * rap.propw
+        varTilde$rho      <- min(1, rap.vrais * (rap.prior) * (rap.prop ))
+
+    }
+
+    varTilde$rho <- ifelse(is.na(varTilde$rho) == FALSE, varTilde$rho, 0)
+    return(varTilde)
+}
+
+
+deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+    ### Death move
+    varTilde <- list( k=0L, mu=numeric(parValue$kmax)
+                      , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
+                      , delta=numeric(parValue$kmax), w=numeric(parValue$kmax)
+                      , dl=numeric(parValue$kmax), a=numeric(parValue$kmax)
+                      , dim=numeric(parValue$kmax), rho=0)
+
+    Kn              <- rep(0, nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+
+    Y1f             <- rep(0, paramValues$nf)
+    Y2f             <- rep(0, paramValues$nf)
+    Y1r             <- rep(0, paramValues$nr)
+    Y2r             <- rep(0, paramValues$nr)
+
+    varTilde$k <- kValue - 1L
+    count  <- 1L
+    repeat {
+
+        j <- sample(1:kValue,1)
+        X <- muValue[ 1:kValue]
+        varTilde$mu[1:varTilde$k] <- sort(c(X[-j]))
+
+        Yf <- sigmafValue[1:kValue]
+        varTilde$sigmaf[1:varTilde$k] <- Yf[-j]
+
+        Yr <- sigmarValue[1:kValue]
+        varTilde$sigmar[1:varTilde$k] <- Yr[-j]
+
+        Delta <- deltaValue[1:kValue]
+        varTilde$delta[1:varTilde$k] <- Delta[-j]
+
+        Dl <- dlValue[1:kValue]
+        varTilde$dl[1:varTilde$k] <- Dl[-j]
+
+        Z <- aValue[1:(kValue+1)]
+        if (j == kValue) {
+            varTilde$a[1:(varTilde$k+1)] <- Z[-j]
+        } else {
+            varTilde$a[1:(varTilde$k+1)] <- Z[-(j+1)]
+        }
+        varTilde$a[1]             <- paramValues$minReadPos
+        varTilde$a[varTilde$k+1]   <- paramValues$maxReadPos
+
+        varTilde$dim[1] <- length(paramValues$y[varTilde$a[1]<=paramValues$y & paramValues$y<varTilde$a[2]])
+        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[varTilde$k]<=paramValues$y & paramValues$y<= paramValues$maxReadPos])
+        if (varTilde$k>2) {
+            for (m in 2: (varTilde$k-1)) {
+                varTilde$dim[m] <- length(paramValues$y[varTilde$a[m]<=paramValues$y & paramValues$y<varTilde$a[m+1]]) }}
+        Pr <- min(varTilde$dim[1:varTilde$k])
+
+        ybar <- mean(paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=varTilde$a[j+1]])
+        classesf <- paramValues$y[varTilde$a[j]<=paramValues$y & paramValues$y<=ybar]
+        classesr <- paramValues$y[ybar<=paramValues$y & paramValues$y<=varTilde$a[j+1]]
+
+        Lf <- length(classesf[!duplicated(classesf)])
+        Lr <- length(classesr[!duplicated(classesr)])
+        count <- count + 1L
+
+        if ( (Pr>1 & Lf>1 & Lr>1)  ||
+                 count == 1000L) break()
+    }
+
+    if (count == 1000L) {
+        varTilde$rho <- 0
+    } else {
+        alpha <- rep(1, kValue)
+        alphatilde <- rep(1, varTilde$k)
+        alphaproptilde <- rep(1, varTilde$k)
+        alphaprop <- rep(1, kValue)
+        ennetilde <- varTilde$dim[1:varTilde$k]
+        enne <- rmultinom(1, paramValues$nbrReads, wValue[1:kValue])
+        varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
+
+        ### Rapport de vraisemblance ###
+
+        for (m in 1:varTilde$k) {
+            Kaf[,m] <- (varTilde$w[m]*(1/sqrt(varTilde$sigmaf[m]))*dt(( paramValues$startPSF -varTilde$mu[m]+varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),varTilde$dl[m]))
+            Kbf[,m] <- (wValue[m]*(1/sqrt(sigmafValue[m]))*dt(( paramValues$startPSF -muValue[m]+deltaValue[m]/2)/sqrt(sigmafValue[m]),dlValue[m]))
+        }
+        Kbf[, kValue] <- (wValue[ kValue]*(1/sqrt(sigmafValue[ kValue]))*dt(( paramValues$startPSF -muValue[ kValue]+deltaValue[m]/2)/sqrt(sigmafValue[ kValue]),varTilde$dl[m]))
+
+        for (s in 1:paramValues$nf) {
+            Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
+            Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
+        }
+
+        for (m in 1:varTilde$k) {
+            Kar[,m] <- (varTilde$w[m]*(1/sqrt(varTilde$sigmar[m]))*dt(( paramValues$startPSR -varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
+            Kbr[,m] <- (wValue[m]*(1/sqrt(sigmarValue[m]))*dt(( paramValues$startPSR -muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+        }
+        Kbr[, kValue] <- (wValue[ kValue]*(1/sqrt(sigmarValue[ kValue]))*dt((paramValues$startPSR -muValue[ kValue]-deltaValue[m]/2)/sqrt(sigmarValue[ kValue]),dlValue[m]))
+
+        for (s in 1:paramValues$nr) {
+            Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
+            Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
+        }
+
+        Kn <- sum(Y1f) + sum(Y1r)
+        Kd <- sum(Y2f) + sum(Y2r)
+
+        q <- Kn - Kd
+        rap.q <- exp(q)
+
+        rap.vrais <- rap.q
+
+        # Density of varTilde$mu[j]
+        if (j == 1) {
+            qalloc <- 1/(muValue[j+1] - paramValues$minReadPos)
+        } else {
+            if (j == kValue) {
+                qalloc <- 1/(paramValues$maxReadPos - muValue[ j-1])
+            } else {
+                qalloc <- 1/(muValue[ j+1] - muValue[ j-1])
+            }
+        }
+
+        rap.priormu    <- (priorMuDensity(varTilde$mu[1:varTilde$k],paramValues$y)/priorMuDensity(muValue[ 1:kValue], paramValues$y))
+        rap.priorw     <- (ddirichlet(varTilde$w[1:varTilde$k],alphatilde)/ddirichlet(wValue[ 1:kValue], alpha))
+        rap.priorenne  <- dmultinom(ennetilde, paramValues$nbrReads,varTilde$w[1:varTilde$k])/dmultinom(dimValue[ 1:kValue], paramValues$nbrReads,wValue[ 1:kValue])
+        rap.priork     <- (dpois(varTilde$k,paramValues$lambda)/dpois(kValue,paramValues$lambda))
+        rap.propmu     <- (qalloc)
+        rap.propw      <- (ddirichlet(varTilde$w[ 1:varTilde$k], alphaproptilde)/ddirichlet(wValue[ 1:kValue], alphaprop))
+
+        rap.prior      <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
+        rap.prop       <- rap.propmu  * rap.propw
+
+        varTilde$rho        <- min(1,(rap.vrais) * (rap.prior)  *  (rap.prop) * (Bk(varTilde$k,paramValues$lambda,paramValues$kmax)/Dk(kValue, paramValues$lambda, paramValues$kmax)))
+
+    }
+
+    varTilde$rho <-  ifelse( is.na(varTilde$rho) == FALSE, varTilde$rho, 0)
+    return(varTilde)
+}
+
