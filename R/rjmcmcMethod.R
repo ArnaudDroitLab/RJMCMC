@@ -131,32 +131,58 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     deltamin        <- 142
     deltamax        <- 152
 
-    # Vector of the number of nucleosomes (integer values)
-    k               <- Rle(rep(0L, nbrIterations))
-    ktilde          <- rep(0L, nbrIterations)
+
 
     # Max and min read positions
     minReadPos <- min(y)
     maxReadPos <- max(y)
 
+    paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
+                       , kmax = kmax, lambda = lambda, minReads = minReads
+                       , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
+                       , deltamin = deltamin, deltamax = deltamax
+                       , minReadPos= minReadPos, maxReadPos = maxReadPos )
+
+    # Vector of the number of nucleosomes (integer values)
+    k               <- Rle(rep(0L, nbrIterations))
+
     # Vector of the position of the nucleosomes
     mu              <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    mutilde         <- matrix(0, nrow = nbrIterations, ncol = kmax)
 
-    sigmaftilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
+
+
     sigmaf          <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    sigmartilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
+
     sigmar          <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    deltatilde      <- matrix(0, nrow = nbrIterations, ncol = kmax)
+
     delta           <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    wtilde          <- matrix(0, nrow = nbrIterations, ncol = kmax)
+
     w               <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    a               <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
-    atilde          <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
-    dimtilde        <- matrix(0, nrow = nbrIterations, ncol = kmax)
-    dim             <- matrix(0L, nrow = nbrIterations, ncol = kmax)
+
     dl              <- matrix(0L, nrow = nbrIterations, ncol = kmax)
-    dltilde         <- matrix(3, nrow = nbrIterations, ncol = kmax)
+
+    # Note use at the end
+
+#     a               <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
+#     dim             <- matrix(0L, nrow = nbrIterations, ncol = kmax)
+#     rhob            <- rep(0, nbrIterations)
+#     rhod            <- rep(0, nbrIterations)
+#     rhomh           <- rep(0, nbrIterations)
+#     Kn              <- rep(0, nbrIterations)
+
+
+
+    # Tilde tmp
+#     ktilde          <- rep(0L, nbrIterations)
+#     mutilde         <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     sigmaftilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     sigmartilde     <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     deltatilde      <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     wtilde          <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     atilde          <- matrix(0, nrow = nbrIterations, ncol = kmax + 1L)
+#     dimtilde        <- matrix(0, nrow = nbrIterations, ncol = kmax)
+#     dltilde         <- matrix(3, nrow = nbrIterations, ncol = kmax)
+
 
     k[1]            <- 1L
 
@@ -168,317 +194,62 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     w[1, 1]         <- 1
     dl[1, 1]        <- 3
 
-    a[1, 1]         <- minReadPos
-    a[1, as.integer(k[1]) + 1L]  <- maxReadPos
+#     a[1, 1]         <- minReadPos
+#     a[1, as.integer(k[1]) + 1L]  <- maxReadPos
+#
+#     dim[1,1]        <- nbrReads
 
-    dim[1,1]        <- nbrReads
 
-    rhob            <- rep(0, nbrIterations)
-    rhod            <- rep(0, nbrIterations)
-    rhomh           <- rep(0, nbrIterations)
-    Kn              <- rep(0, nbrIterations)
-
-    Kaf             <- matrix(0, nrow = nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = nr, ncol = kmax)
-
-    Y1f             <- rep(0, nf)
-    Y2f             <- rep(0, nf)
-    Y1r             <- rep(0, nr)
-    Y2r             <- rep(0, nr)
+#     Kaf             <- matrix(0, nrow = nf, ncol = kmax)
+#     Kbf             <- matrix(0, nrow = nf, ncol = kmax)
+#     Kar             <- matrix(0, nrow = nr, ncol = kmax)
+#     Kbr             <- matrix(0, nrow = nr, ncol = kmax)
+#
+#     Y1f             <- rep(0, nf)
+#     Y2f             <- rep(0, nf)
+#     Y1r             <- rep(0, nr)
+#     Y2r             <- rep(0, nr)
 
     nbrIterations   <- ifelse(nbrReads <= 10, 1000, nbrIterations)
 
     kValue <- as.integer(k[1])
 
+    muValue       <- mu[1,]
+    sigmafValue   <- sigmaf[1,]
+    sigmarValue   <- sigmar[1,]
+    deltaValue    <- delta[1,]
+    wValue        <-  w[1,]
+    dlValue       <- dl[1,]
+    aValue        <- rep(0, kmax)
+    aValue[1, 1]  <- minReadPos
+    aValue[1, as.integer(k[1]) + 1L]  <- maxReadPos
+    dimValue       <- rep(0, kmax)
+    dimValue[1, 1] <- nbrReads
+
     for (i in 2:nbrIterations) {
 
         ## Current number of nucleosomes
         ## kValue <- k[i-1]
-
+        varTilde <- list()
         if (kValue == 1L) {
             ## CASE : Number of nucleosomes equal to 1
             u <- runif(1)
 
             if (u <= 0.5) {
-                ktilde[i] <- kValue + 1L
-                count  <- 1L
-                repeat {
-                    j <- sample(1:kValue, 1)
-                    mutilde[i, j] <- runif(1, minReadPos, mu[i-1, j])
-                    mutilde[i, 1:ktilde[i]] <- sort(c(mu[i-1, 1:kValue],
-                                                        mutilde[i, j]))
 
-                    atilde[i, j+1] <- runif(1, mutilde[i, j], mutilde[i, j+1])
-                    atilde[i, 1:(ktilde[i]+1)] <- sort(c(a[i-1, 1:ktilde[i]],
-                                                            atilde[i, j+1]))
-                    atilde[i, 1]                <- minReadPos
-                    atilde[i, (ktilde[i]+1)]    <- maxReadPos
+                # Birth move in case k=1
 
-                    dimtilde[i, 1] <- length(y[atilde[i, 1] <= y &
-                                                    y < atilde[i, 2]])
-                    dimtilde[i, ktilde[i]] <- length(y[atilde[i, ktilde[i]] <=
-                                                        y & y <= maxReadPos])
-                    if (ktilde[i] > 2) {
-                        for (m in 2:(ktilde[i]-1)) {
-                            dimtilde[i,m] <- length(y[(atilde[i, m] <= y &
-                                                    y < atilde[i, m+1])])
-                        }
-                    }
-                    Pr <- min(dimtilde[i, 1:ktilde[i]])
-
-                    ybar <- mean(y[atilde[i, j] <= y & y <= atilde[i, j+1]])
-                    classesf <- y[atilde[i, j] <= y & y <= ybar]
-                    classesr <- y[ybar <= y & y <= atilde[i, j+1]]
-
-                    Lf <- length(classesf[!duplicated(classesf)])
-                    Lr <- length(classesr[!duplicated(classesr)])
-
-                    count <- count + 1L
-
-                    if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
-                                            count == 1000L) break()
-                }
-
-                if (count == 1000L) {
-                    rhob[i] <- 0
-                } else  {
-
-                    dltilde[i, j] <- sample(3:30, 1)
-
-                    sigmaftilde[i, j] <- ifelse(Lf > 1,
-                            var(classesf) * (dltilde[i, j] - 2)/dltilde[i, j],
-                            sigmaf[i-1, j])
-                    sigmartilde[i, j] <- ifelse(Lr > 1,
-                            var(classesr) * (dltilde[i, j] - 2)/dltilde[i, j],
-                            sigmar[i-1, j])
-
-                    sigmaftilde[i, 1:ktilde[i]] <- c(sigmaf[i-1, 1:kValue],
-                                                        sigmaftilde[i, j])
-                    sigmartilde[i, 1:ktilde[i]] <- c(sigmar[i-1, 1:kValue],
-                                                        sigmartilde[i, j])
-
-                    deltatilde[i, j] <- tnormale(zeta,
-                            1/(sigmaftilde[i, j]^{-1} + sigmartilde[i,j]^{-1}),
-                            deltamin, deltamax)
-                    deltatilde[i, 1:ktilde[i]] <- c(deltatilde[i, j],
-                                                        delta[i-1, 1:kValue])
-
-                    alpha                   <- rep(1, kValue)
-                    alphatilde              <- rep(1, ktilde[i])
-                    alphaproptilde          <- rep(1, ktilde[i])
-                    alphaprop               <- rep(1, kValue)
-                    wtilde[i, 1:ktilde[i]]  <- rdirichlet(1, alphaproptilde)
-                    ennetilde               <- dimtilde[i, 1:ktilde[i]]
-                    enne <- rmultinom(1, nbrReads, w[i-1, 1:kValue])
-
-                    #Rapport de vraisemblance
-
-                    for (m in 1:kValue) {
-                        Kaf[,m] <- (wtilde[i, m]*(1/sqrt(sigmaftilde[i,m]))*dt((startPosForwardReads-mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1, m]*(1/sqrt(sigmaf[i-1,m]))*dt((startPosForwardReads-mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
-                    }
-                    Kaf[,ktilde[i]] <- (wtilde[i, ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
-                    for (s in 1:nf) {
-                        Y1f[s] <- log(sum(Kaf[s, 1:ktilde[i]]))
-                        Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-                    }
-
-                    for (m in 1:kValue) {
-                        Kar[,m] <- (wtilde[i, m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads-mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1, m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads-mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
-                    }
-                    Kar[,ktilde[i]] <- (wtilde[i, ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
-                    for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-                    }
-
-                    Kn <- sum(Y1f) + sum(Y1r)
-                    Kd <- sum(Y2f) + sum(Y2r)
-
-                    q <- Kn - Kd
-                    rap.q <- exp(q)
-
-                    rap.vrais <- rap.q
-
-                    if (j == 1) {
-                        qalloc <- 1/(mu[i-1, j] - minReadPos) # Density of mutilde[i,j]
-                    } else {
-                        qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
-                    }
-
-                    rap.priormu   <- (priorMuDensity(mutilde[i, 1:ktilde[i]],y)/priorMuDensity(mu[i-1, 1:kValue],y))
-                    rap.priorw    <- (ddirichlet(wtilde[i, 1:ktilde[i]],alphatilde)/ddirichlet(w[i-1, 1:kValue],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1,1:kValue], nbrReads,w[i-1, 1:kValue])
-                    rap.priork    <- (dpois(ktilde[i], lambda)/dpois(kValue, lambda))
-                    rap.propmu    <- (1/(qalloc))
-                    rap.propw     <- (ddirichlet(w[i-1, 1:kValue], alphaprop)/ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde))
-
-                    rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-                    rap.prop      <-  rap.propmu  * rap.propw
-
-                    rhob[i]       <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(kValue, lambda, kmax)))
-
-                }
-
-                rhob[i] <- ifelse (is.na(rhob[i]), 0, rhob[i])
-
-                v <- runif(1)      #Acceptation/rejet du Birth move
-
-                if (rhob[i] >= v && ktilde[i] <= kmax) {
-                    k[i]                    <- ktilde[i]
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
-                    delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
-                    w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
-                    dim[i,1:maxValue]       <- dimtilde[i, 1:maxValue]
-                    a[i,1:(maxValue+1)]     <- atilde[i, 1:(maxValue + 1)]
-                } else {
-                    k[i]                    <- kValue
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
-                    delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
-                    dl[i,1:maxValue]        <- dl[i-1, 1:maxValue]
-                    w[i,1:maxValue]         <- w[i-1, 1:maxValue]
-                    dim[i,1:maxValue]       <- dim[i-1, 1:maxValue]
-                    a[i,1:(maxValue + 1)]   <- a[i-1, 1:(maxValue+1)]
-                }
+                varTilde <- birthMoveK1(paramValues, kValue, muValue
+                                        , sigmafValue, sigmarValue, deltaValue
+                                        , wValue, dlValue, aValue, dimValue )
             } ### end of B move in case k=1
             else {
 
                 ###Metropolis-Hastings move
+                varTilde <- m-hMoveK1(paramValues, kValue, muValue
+                                      , sigmafValue, sigmarValue, deltaValue
+                                      , wValue, dlValue, aValue, dimValue )
 
-                ktilde[i] <- kValue
-                count     <- 1L
-                repeat {
-                    j                        <- sample(1:kValue, 1)
-                    mutilde[i, j]            <- runif(1, mu[i-1, j], maxReadPos)
-                    mutilde[i, 1:ktilde[i]]  <- sort(c(mutilde[i, 1:ktilde[i]]))
-
-                    atilde[i, j]   <- minReadPos
-                    atilde[i, j+1] <- maxReadPos
-
-                    dimtilde[i, 1]           <- length(y[atilde[i,1] <=y &  y< atilde[i,2]])
-                    dimtilde[i, ktilde[i]]   <- length(y[atilde[i,ktilde[i]] <= y & y <= maxReadPos])
-
-                    if (ktilde[i] > 2) {
-                        for (m in 2:(ktilde[i]-1)) {
-                            dimtilde[i,m] <-length(y[(atilde[i, m] <=y & y < atilde[i, m + 1])])
-                        }
-                    }
-
-                    Pr <- min(dimtilde[i, 1:ktilde[i]])
-
-                    ybar        <- mean(y[atilde[i,j]<=y & y<=atilde[i,j+1]])
-                    classesf    <- y[atilde[i,j]<=y & y<=ybar]
-                    classesr    <- y[ybar <= y & y <= atilde[i, j + 1]]
-
-                    Lf      <- length(classesf[!duplicated(classesf)])
-                    Lr      <- length(classesr[!duplicated(classesr)])
-                    count   <- count + 1L
-
-                    if ((Pr > 1 & Lf > 1 & Lr > 1)  ||
-                                    count == 1000L) break()
-                }
-
-                if (count == 1000L) {
-                    rhomh[i] <- 0
-                } else {
-
-                    sigmaftilde[i, 1:ktilde[i]] <- sigmaf[i-1, 1:kValue]
-                    sigmartilde[i, 1:ktilde[i]] <- sigmar[i-1, 1:kValue]
-
-                    dltilde[i, j] <- sample(3:30,1)
-
-                    sigmaftilde[i, j] <- ifelse(Lf>1, var(classesf)*(dltilde[i,j]-2)/dltilde[i,j], sigmaf[i-1,j])
-                    sigmartilde[i, j] <- ifelse(Lr>1, var(classesr)*(dltilde[i,j]-2)/dltilde[i,j], sigmar[i-1,j])
-
-                    deltatilde[i, 1:ktilde[i]] <- delta[i-1,1:kValue]
-
-                    deltatilde[i, j] <- tnormale(zeta, 1/(sigmaftilde[i,j]^{-1}+sigmartilde[i,j]^{-1}), deltamin, deltamax)
-
-                    alpha <- rep(1, kValue)
-                    alphatilde <- rep(1,ktilde[i])
-                    ennetilde <- dimtilde[i,1:ktilde[i]]
-                    alphaproptilde <- rep(1,ktilde[i])
-                    alphaprop <- rep(1, kValue)
-                    wtilde[i, 1:ktilde[i]] <- rdirichlet(1,alphaproptilde)
-
-                    ### calcul du rapport de vraisemblance de M-H move
-
-                    for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i, m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1, m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
-                    }
-                    for (s in 1:nf) {
-                        Y1f[s] <-log(sum(Kaf[s, 1:ktilde[i]]))
-                        Y2f[s] <-log(sum(Kbf[s, 1:kValue]))
-                    }
-
-                    for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i, m]*(1/sqrt(sigmartilde[i,m]))*dt((startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1, m]*(1/sqrt(sigmar[i-1,m]))*dt((startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
-                    }
-                    for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-                    }
-
-                    Kn <- sum(Y1f) + sum(Y1r)
-                    Kd <- sum(Y2f) + sum(Y2r)
-
-                    q <- Kn - Kd
-                    rap.q <- exp(q)
-
-                    rap.vrais <- rap.q
-
-                    rap.priormu   <- (priorMuDensity(mutilde[i, 1:ktilde[i]], y)/priorMuDensity(mu[i-1, 1:kValue], y))
-                    rap.priorw    <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1, 1:kValue],alpha) )
-                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1, 1:kValue], nbrReads,w[i-1,1:kValue])
-                    rap.priork    <- 1
-                    rap.propmu    <- 1
-                    rap.propw     <- (ddirichlet(w[i-1, 1:kValue],alphaprop)/ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde))
-
-                    rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-                    rap.prop      <-  rap.propmu  * rap.propw
-                    rhomh[i]      <- min(1, rap.vrais * (rap.prior)  *  (rap.prop))
-
-                }
-
-                rhomh[i] <- ifelse(is.na(rhomh[i]), 0, rhomh[i])
-
-                v = runif(1)
-
-                if (rhomh[i] >= v && ktilde[i] <= kmax) {
-                    k[i]                    <- ktilde[i]
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
-                    delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
-                    w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dimtilde[i, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- atilde[i, 1:(maxValue + 1)]
-                } else {
-                    k[i]                    <- kValue
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
-                    delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dl[i-1, 1:maxValue]
-                    w[i, 1:maxValue]        <- w[i-1, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dim[i-1, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- a[i-1, 1:(maxValue + 1)]
-                }
             }    ### end of M-H move in case k=1
         }  ### end of test of k=1
 
@@ -489,467 +260,58 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             if (u <= Dk(kValue, lambda, kmax)) {
 
                 ### Death move
+                varTilde <- deathMove(paramValues, kValue, muValue
+                                      , sigmafValue, sigmarValue, deltaValue
+                                      , wValue, dlValue, aValue, dimValue )
 
-                ktilde[i] <- kValue - 1L
-                count  <- 1L
-                repeat {
-
-                    j <- sample(1:kValue,1)
-                    X <- mu[i-1, 1:kValue]
-                    mutilde[i,1:ktilde[i]] <- sort(c(X[-j]))
-
-                    Yf <- sigmaf[i-1,1:kValue]
-                    sigmaftilde[i,1:ktilde[i]] <- Yf[-j]
-
-                    Yr <- sigmar[i-1,1:kValue]
-                    sigmartilde[i,1:ktilde[i]] <- Yr[-j]
-
-                    Delta <- delta[i-1,1:kValue]
-                    deltatilde[i,1:ktilde[i]] <- Delta[-j]
-
-                    Dl <- dl[i-1,1:kValue]
-                    dltilde[i,1:ktilde[i]] <- Dl[-j]
-
-                    Z <- a[i-1,1:(kValue+1)]
-                    if (j == kValue) {
-                        atilde[i,1:(ktilde[i]+1)] <- Z[-j]
-                    } else {
-                        atilde[i,1:(ktilde[i]+1)] <- Z[-(j+1)]
-                    }
-                    atilde[i,1]             <- minReadPos
-                    atilde[i,ktilde[i]+1]   <- maxReadPos
-
-                    dimtilde[i,1] <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<= maxReadPos])
-                    if (ktilde[i]>2) {
-                        for (m in 2: (ktilde[i]-1)) {
-                            dimtilde[i,m] <- length(y[atilde[i,m]<=y & y<atilde[i,m+1]]) }}
-                    Pr <- min(dimtilde[i,1:ktilde[i]])
-
-                    ybar <- mean(y[atilde[i,j]<=y & y<=atilde[i,j+1]])
-                    classesf <- y[atilde[i,j]<=y & y<=ybar]
-                    classesr <- y[ybar<=y & y<=atilde[i,j+1]]
-
-                    Lf <- length(classesf[!duplicated(classesf)])
-                    Lr <- length(classesr[!duplicated(classesr)])
-                    count <- count + 1L
-
-                    if ( (Pr>1 & Lf>1 & Lr>1)  ||
-                                count == 1000L) break()
-                }
-
-                if (count == 1000L) {
-                    rhod[i] <- 0
-                } else {
-                    alpha <- rep(1, kValue)
-                    alphatilde <- rep(1, ktilde[i])
-                    alphaproptilde <- rep(1, ktilde[i])
-                    alphaprop <- rep(1, kValue)
-                    ennetilde <- dimtilde[i,1:ktilde[i]]
-                    enne <- rmultinom(1, nbrReads, w[i-1,1:kValue])
-                    wtilde[i,1:ktilde[i]] <- rdirichlet(1, alphaproptilde)
-
-                    ### Rapport de vraisemblance ###
-
-                    for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
-                    }
-                    Kbf[, kValue] <- (w[i-1, kValue]*(1/sqrt(sigmaf[i-1, kValue]))*dt(( startPosForwardReads -mu[i-1, kValue]+delta[i-1,m]/2)/sqrt(sigmaf[i-1, kValue]),dltilde[i,m]))
-
-                    for (s in 1:nf) {
-                        Y1f[s] <- log(sum(Kaf[s, 1:ktilde[i]]))
-                        Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-                    }
-
-                    for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
-                    }
-                    Kbr[, kValue] <- (w[i-1, kValue]*(1/sqrt(sigmar[i-1, kValue]))*dt((startPosReverseReads -mu[i-1, kValue]-delta[i-1,m]/2)/sqrt(sigmar[i-1, kValue]),dl[i-1,m]))
-
-                    for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-                    }
-
-                    Kn <- sum(Y1f) + sum(Y1r)
-                    Kd <- sum(Y2f) + sum(Y2r)
-
-                    q <- Kn - Kd
-                    rap.q <- exp(q)
-
-                    rap.vrais <- rap.q
-
-                    # Density of mutilde[i,j]
-                    if (j == 1) {
-                        qalloc <- 1/(mu[i-1,j+1] - minReadPos)
-                    } else {
-                        if (j == kValue) {
-                            qalloc <- 1/(maxReadPos - mu[i-1, j-1])
-                        } else {
-                            qalloc <- 1/(mu[i-1, j+1] - mu[i-1, j-1])
-                        }
-                    }
-
-                    rap.priormu    <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1, 1:kValue], y))
-                    rap.priorw     <- (ddirichlet(wtilde[i,1:ktilde[i]],alphatilde)/ddirichlet(w[i-1, 1:kValue], alpha))
-                    rap.priorenne  <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1, 1:kValue], nbrReads,w[i-1, 1:kValue])
-                    rap.priork     <- (dpois(ktilde[i],lambda)/dpois(kValue,lambda))
-                    rap.propmu     <- (qalloc)
-                    rap.propw      <- (ddirichlet(wtilde[i, 1:ktilde[i]], alphaproptilde)/ddirichlet(w[i-1, 1:kValue], alphaprop))
-
-                    rap.prior      <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-                    rap.prop       <- rap.propmu  * rap.propw
-
-                    rhod[i]        <- min(1,(rap.vrais) * (rap.prior)  *  (rap.prop) * (Bk(ktilde[i],lambda,kmax)/Dk(kValue, lambda, kmax)))
-
-                }
-
-                rhod[i] <-  ifelse( is.na(rhod[i]) == FALSE, rhod[i], 0)
-
-                v <- runif(1)      #Acceptation/rejet du Death move
-
-                if (rhod[i] >= v && ktilde[i] <= kmax) {
-                    k[i]                    <- ktilde[i]
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
-                    delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
-                    w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dimtilde[i, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- atilde[i, 1:(maxValue + 1)]
-                } else {
-                    k[i]                    <- kValue
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
-                    delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dl[i-1, 1:maxValue]
-                    w[i, 1:maxValue]        <- w[i-1, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dim[i-1, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- a[i-1, 1:(maxValue + 1)]
-                }
             } else {
 
                 if (u <= (Dk(kValue, lambda, kmax) + Bk(kValue, lambda, kmax))) {
 
                     #Birth move
+                    varTilde <- birthMove(paramValues, kValue, muValue
+                                          , sigmafValue, sigmarValue, deltaValue
+                                          , wValue, dlValue, aValue, dimValue )
 
-                    ktilde[i] <- kValue + 1L
-                    count <- 1L
-
-                    repeat {
-                    j <- sample(1:kValue, 1)
-
-                    if (j == 1) {
-                      mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j])
-                    } else {
-                      mutilde[i,j] <- runif(1, mu[i-1,j-1], mu[i-1,j])
-                    }
-
-                    mutilde[i, 1:ktilde[i]] <- sort(c(mu[i-1, 1:kValue],mutilde[i, j]))
-
-                    atilde[i,j+1] <- ifelse(j<ktilde[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],maxReadPos))
-                    atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:ktilde[i]],atilde[i,j+1]))
-
-                    if (j == 1) {
-                        atilde[i,j] <- minReadPos
-                    } else {
-                        atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])
-                    }
-                    atilde[i,1]             <- minReadPos
-                    atilde[i,ktilde[i]+1]   <- maxReadPos
-
-                    dimtilde[i,1]         <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=maxReadPos])
-
-                    if (ktilde[i] > 2) {
-                        for (m in 2: (ktilde[i]-1)) {
-                            dimtilde[i,m] <- length(y[atilde[i,m]<=y & y<atilde[i,m+1]])
-                        }
-                    }
-                    Pr <- min(dimtilde[i,1:ktilde[i]])
-
-                    ybar <- mean(y[atilde[i,j] <= y & y <= atilde[i,j+1]])
-                    classesf <- y[atilde[i,j] <= y & y <= ybar]
-                    classesr <- y[ybar <= y & y <= atilde[i,j+1]]
-
-                    Lf <- length(classesf[!duplicated(classesf)])
-                    Lr <- length(classesr[!duplicated(classesr)])
-                    count <- count + 1L
-                    if ( (Pr>1 & Lf>1 & Lr>1)  ||
-                                    count == 1000L) break()
-
-                }
-
-                    if (count == 1000L) {
-                    rhob[i] <- 0
-                } else {
-                    dltilde[i,j] <- sample(3:30, 1)
-                    sigmaftilde[i,j] <- ifelse(Lf > 1, var(classesf)*(dltilde[i,j]-2)/dltilde[i,j], sigmaf[i-1,j])
-                    sigmartilde[i,j] <- ifelse(Lr > 1, var(classesr)*(dltilde[i,j]-2)/dltilde[i,j], sigmar[i-1,j])
-
-                    if (j == 1) {
-                        sigmaftilde[i,1:ktilde[i]]<- c(sigmaf[i-1,1:kValue],sigmaftilde[i,j])
-                        sigmartilde[i,1:ktilde[i]]<- c(sigmar[i-1,1:kValue],sigmartilde[i,j] )
-                    } else {
-                        sigmaftilde[i,1:ktilde[i]] <- c(sigmaf[i-1,1:(j-1)],sigmaftilde[i,j],sigmaf[i-1,j:kValue])
-                        sigmartilde[i,1:ktilde[i]] <- c(sigmar[i-1,1:(j-1)],sigmartilde[i,j],sigmar[i-1,j:kValue])
-                    }
-
-                    deltatilde[i,j] <- tnormale(zeta, 1/(sigmaftilde[i,j]^{-1}+sigmartilde[i,j]^{-1}), deltamin, deltamax)
-
-                    if (j == 1) {
-                        deltatilde[i, 1:ktilde[i]] <- c(deltatilde[i, j], delta[i-1, 1:kValue])
-                    } else if (j == kValue) {
-                        deltatilde[i, 1:ktilde[i]] <- c(delta[i-1, 1:kValue], deltatilde[i, j])
-                    } else {
-                        deltatilde[i, 1:ktilde[i]] <- c(delta[i-1, 1:(j-1)], deltatilde[i,j], delta[i-1,j:kValue])
-                    }
-
-                    alpha                 <- rep(1, kValue)
-                    alphatilde            <- rep(1, ktilde[i])
-                    alphaproptilde        <- rep(1, ktilde[i])
-                    alphaprop             <- rep(1, kValue)
-                    ennetilde             <- dimtilde[i, 1:ktilde[i]]
-                    enne                  <- rmultinom(1, nbrReads, w[i-1, 1:kValue])
-                    wtilde[i,1:ktilde[i]] <- rdirichlet(1, alphaproptilde)
-
-                    ### Rapport de vraisemblance ###
-
-                    for (m in 1:kValue) {
-                        Kaf[,m]<- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m]<- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
-                    }
-                    Kaf[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmaftilde[i,ktilde[i]]))*dt(( startPosForwardReads -mutilde[i,ktilde[i]]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,ktilde[i]]),dltilde[i,m]))
-                    for (s in 1:nf) {
-                        Y1f[s] <-log(sum(Kaf[s,1:ktilde[i]]))
-                        Y2f[s] <-log(sum(Kbf[s,1:kValue]))
-                    }
-
-                    for (m in 1:kValue) {
-                        Kar[,m]<- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads -mutilde[i,m]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m]<- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads -mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
-                    }
-                    Kar[,ktilde[i]]<- (wtilde[i,ktilde[i]]*(1/sqrt(sigmartilde[i,ktilde[i]]))*dt(( startPosReverseReads -mutilde[i,ktilde[i]]-deltatilde[i,m]/2)/sqrt(sigmartilde[i,ktilde[i]]),dltilde[i,m]))
-                    for (s in 1:nr) {
-                        Y1r[s] <-log(sum(Kar[s,1:ktilde[i]]))
-                        Y2r[s] <-log(sum(Kbr[s,1:kValue]))
-                    }
-
-                    Kn <- sum(Y1f)+sum(Y1r)
-                    Kd <- sum(Y2f)+sum(Y2r)
-
-                    q         <- Kn - Kd
-                    rap.q     <-exp(q)
-
-                    rap.vrais <- rap.q
-
-                    #Density of
-                    mutilde[i,j]
-                    if (j==1) {
-                        qalloc <- 1/(mu[i-1, j] - minReadPos)
-                    } else {
-                        qalloc <- 1/(mu[i-1, j] - mu[i-1, j-1])
-                    }
-
-                    rap.priormu   <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1, 1:kValue],y))
-                    rap.priorw    <- (ddirichlet(wtilde[i,1:ktilde[i]], alphatilde)/ddirichlet(w[i-1, 1:kValue], alpha))
-                    rap.priorenne <- dmultinom(ennetilde, nbrReads,wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1, 1:kValue], nbrReads,w[i-1, 1:kValue])
-                    rap.priork    <- (dpois(ktilde[i],lambda)/dpois(kValue,lambda))
-                    rap.propmu    <- (1/(qalloc))
-                    rap.propw     <- (ddirichlet(w[i-1,1:kValue],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
-
-                    rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-                    rap.prop      <- rap.propmu  * rap.propw
-                    rhob[i]       <- min(1, (rap.vrais) * (rap.prior)  *  (rap.prop ) * (Dk(ktilde[i],lambda,kmax)/Bk(kValue,lambda,kmax)))
-                }
-
-                    v <- runif(1)      # Acceptation/rejet du Birth move
-
-                    rhob[i] <- ifelse(is.na(rhob[i]), 0, rhob[i])
-
-                    if (rhob[i] >= v && ktilde[i] <= kmax) {
-                        k[i]                    <- ktilde[i]
-                        maxValue                <- as.integer(k[i])
-                        mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
-                        sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
-                        sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
-                        delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
-                        dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
-                        w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
-                        dim[i, 1:maxValue]      <- dimtilde[i, 1:maxValue]
-                        a[i, 1:(maxValue + 1)]  <- atilde[i, 1:(maxValue + 1)]
-                    } else {
-                        k[i]                    <- kValue
-                        maxValue                <- as.integer(k[i])
-                        mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
-                        sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
-                        sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
-                        delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
-                        dl[i, 1:maxValue]       <- dl[i-1, 1:maxValue]
-                        w[i, 1:maxValue]        <- w[i-1, 1:maxValue]
-                        dim[i,1:maxValue]       <- dim[i-1,1:maxValue]
-                        a[i,1:(maxValue + 1)]   <- a[i-1, 1:(maxValue + 1)]
-                    }
                 } else {
                     ### Metropolis-Hastings move
+                    varTilde <- m-hMove(paramValues, kValue, muValue
+                                          , sigmafValue, sigmarValue, deltaValue
+                                          , wValue, dlValue, aValue, dimValue )
 
-                    ktilde[i]   <- kValue
-                    count       <- 1L
-                    repeat {
-                    j                       <- sample(2:kValue, 1)
-                    mutilde[i,1:ktilde[i]]  <- mu[i-1, 1:kValue]
-
-                    if (j==1) {
-                        mutilde[i,j] <- runif(1, minReadPos, mu[i-1,j+1])
-                    } else {
-                      if (j==ktilde[i]) {
-                        mutilde[i,j] <- runif(1,mu[i-1,j-1],maxReadPos)
-                      } else {
-                        mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j+1])
-                      }
-                    }
-
-                    mutilde[i,1:ktilde[i]] <- sort(c(mutilde[i, 1:ktilde[i]]))
-
-                    atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1, 1:(kValue + 1)]))
-
-                    if (j==ktilde[i]) {
-                        atilde[i,j] <- runif(1,mutilde[i,j],maxReadPos)
-                        atilde[i,j+1] <- maxReadPos
-                    } else {
-                      if (j==1) {
-                        atilde[i,j] <- minReadPos
-                        atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])
-                      } else {
-                            atilde[i,j] <- runif(1,mutilde[i,j-1],mutilde[i,j])
-                            atilde[i,j+1] <- runif(1,mutilde[i,j],mutilde[i,j+1])
-                      }
-                    }
-
-                    atilde[i,1]           <- minReadPos
-                    atilde[i,ktilde[i]+1] <- maxReadPos
-
-                    dimtilde[i,1]         <- length(y[atilde[i,1]<=y & y<atilde[i,2]])
-                    dimtilde[i,ktilde[i]] <- length(y[atilde[i,ktilde[i]]<=y & y<=maxReadPos])
-                    if (ktilde[i]>2) {
-                        for (m in 2: (ktilde[i]-1)) {
-                            dimtilde[i,m]<-length(y[atilde[i,m]<=y & y<atilde[i,m+1]])
-                        }
-                    }
-                    Pr <- min(dimtilde[i,1:ktilde[i]])
-
-                    ybar      <- mean(y[atilde[i,j]<=y & y<=atilde[i,j+1]])
-                    classesf  <- y[atilde[i,j]<=y & y<=ybar]
-                    classesr  <- y[ybar<=y & y<=atilde[i,j+1]]
-
-                    Lf    <- length(classesf[!duplicated(classesf)])
-                    Lr    <- length(classesr[!duplicated(classesr)])
-                    count <- count + 1L
-                    if ( (Pr > 1 & Lf > 1 & Lr > 1)
-                                    || count == 1000L) break()
-                }
-
-                    if (count == 1000L) {
-                    rhomh[i] <- 0
-                } else {
-
-                    sigmaftilde[i, 1:ktilde[i]] <- sigmaf[i-1, 1:kValue]
-                    sigmartilde[i, 1:ktilde[i]] <- sigmar[i-1, 1:kValue]
-
-                    dltilde[i,j] <- sample(3:30, 1)
-
-                    sigmaftilde[i,j] <- ifelse(Lf>1, var(classesf)*(dltilde[i,j]-2)/dltilde[i,j], sigmaf[i-1,j])
-                    sigmartilde[i,j] <- ifelse(Lr>1, var(classesr)*(dltilde[i,j]-2)/dltilde[i,j], sigmar[i-1,j])
-
-                    deltatilde[i,1:ktilde[i]] <- delta[i-1, 1:kValue]
-                    deltatilde[i,j] <- tnormale(zeta, 1/(sigmaftilde[i,j]^{-1}+sigmartilde[i,j]^{-1}), deltamin, deltamax)
-
-                    alpha <- rep(1, kValue)
-                    alphatilde <- rep(1,ktilde[i])
-                    ennetilde <- dimtilde[i,1:ktilde[i]]
-                    alphaproptilde <- rep(1,ktilde[i])
-                    alphaprop <- rep(1, kValue)
-                    wtilde[i,1:ktilde[i]] <- rdirichlet(1,alphaproptilde)
-
-                    ###calcul du rapport de vraisemblance de M-H move
-
-                    for (m in 1:ktilde[i]) {
-                        Kaf[,m] <- (wtilde[i,m]*(1/sqrt(sigmaftilde[i,m]))*dt(( startPosForwardReads -mutilde[i,m]+deltatilde[i,m]/2)/sqrt(sigmaftilde[i,m]),dltilde[i,m]))
-                        Kbf[,m] <- (w[i-1,m]*(1/sqrt(sigmaf[i-1,m]))*dt(( startPosForwardReads -mu[i-1,m]+delta[i-1,m]/2)/sqrt(sigmaf[i-1,m]),dl[i-1,m]))
-                    }
-                    for (s in 1:nf) {
-                        Y1f[s] <- log(sum(Kaf[s, 1:ktilde[i]]))
-                        Y2f[s] <- log(sum(Kbf[s, 1:kValue]))
-                    }
-
-                    for (m in 1:ktilde[i]) {
-                        Kar[,m] <- (wtilde[i,m]*(1/sqrt(sigmartilde[i,m]))*dt(( startPosReverseReads - mutilde[i,m] - deltatilde[i,m]/2)/sqrt(sigmartilde[i,m]),dltilde[i,m]))
-                        Kbr[,m] <- (w[i-1,m]*(1/sqrt(sigmar[i-1,m]))*dt(( startPosReverseReads - mu[i-1,m]-delta[i-1,m]/2)/sqrt(sigmar[i-1,m]),dl[i-1,m]))
-                    }
-                    for (s in 1:nr) {
-                        Y1r[s] <- log(sum(Kar[s, 1:ktilde[i]]))
-                        Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
-                    }
-
-                    Kn <- sum(Y1f) + sum(Y1r)
-                    Kd <- sum(Y2f) + sum(Y2r)
-
-                    q         <- Kn - Kd
-                    rap.q     <- exp(q)
-
-                    rap.vrais <- rap.q
-
-                    rap.priormu   <- (priorMuDensity(mutilde[i,1:ktilde[i]],y)/priorMuDensity(mu[i-1, 1:kValue],y))
-                    rap.priorw    <- (ddirichlet(wtilde[i,1:ktilde[i]], alphatilde)/ddirichlet(w[i-1, 1:kValue],alpha))
-                    rap.priorenne <- dmultinom(ennetilde, nbrReads, wtilde[i,1:ktilde[i]])/dmultinom(dim[i-1, 1:kValue], nbrReads,w[i-1, 1:kValue])
-                    rap.priork    <- (1)
-                    rap.propmu    <- (1)
-                    rap.propw     <- (ddirichlet(w[i-1, 1:kValue],alphaprop)/ddirichlet(wtilde[i,1:ktilde[i]],alphaproptilde))
-                    rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-                    rap.prop      <- rap.propmu  * rap.propw
-                    rhomh[i]      <- min(1, rap.vrais * (rap.prior) * (rap.prop ))
-
-                }
-
-                    rhomh[i] <- ifelse(is.na(rhomh[i]) == FALSE, rhomh[i], 0)
-
-                    v <- runif(1)
-
-                    if (rhomh[i] >= v) {
-                    k[i]                    <- ktilde[i]
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mutilde[i, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaftilde[i, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmartilde[i, 1:maxValue]
-                    delta[i, 1:maxValue]    <- deltatilde[i, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dltilde[i, 1:maxValue]
-                    w[i, 1:maxValue]        <- wtilde[i, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dimtilde[i, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- atilde[i, 1:(maxValue + 1)]
-                } else {
-                    k[i]                    <- kValue
-                    maxValue                <- as.integer(k[i])
-                    mu[i, 1:maxValue]       <- mu[i-1, 1:maxValue]
-                    sigmaf[i, 1:maxValue]   <- sigmaf[i-1, 1:maxValue]
-                    sigmar[i, 1:maxValue]   <- sigmar[i-1, 1:maxValue]
-                    delta[i, 1:maxValue]    <- delta[i-1, 1:maxValue]
-                    dl[i, 1:maxValue]       <- dl[i-1, 1:maxValue]
-                    w[i, 1:maxValue]        <- w[i-1, 1:maxValue]
-                    dim[i, 1:maxValue]      <- dim[i-1, 1:maxValue]
-                    a[i, 1:(maxValue + 1)]  <- a[i-1, 1:(maxValue + 1)]
-                }
                 }
             } #end of else of B move and M-H move
         } ###end of moves in case k>=2
 
+        v <- runif(1)      #Acceptation/rejet
+
+        if (varTilde$rho >= v && varTilde$ktilde <= kmax) {
+            kValue                    <- varTilde$k
+            maxValue                <- as.integer(kValue)
+            muValue[ 1:maxValue]       <- varTilde$mu[ 1:maxValue]
+            sigmafValue[ 1:maxValue]   <- varTilde$sigmaf[ 1:maxValue]
+            sigmarValue[ 1:maxValue]   <- varTilde$sigmar[ 1:maxValue]
+            deltaValue[ 1:maxValue]    <- varTilde$delta[ 1:maxValue]
+            dlValue[ 1:maxValue]       <- varTilde$dl[ 1:maxValue]
+            wValue[ 1:maxValue]        <- varTilde$w[ 1:maxValue]
+            dimValue[ 1:maxValue]       <- varTilde$dim[ 1:maxValue]
+            aValue[ 1:(maxValue+1)]     <- varTilde$a[ 1:(maxValue + 1)]
+        }
+
+        # Si on veut faire le merge on peut le faire ici
+        # et le conserver sans changer les varValue
+        k[i]                    <- kValue
+        maxValue                <- as.integer(k[i])
+        mu[i, 1:maxValue]       <- muValue[ 1:maxValue]
+        sigmaf[i, 1:maxValue]   <- sigmafValue[ 1:maxValue]
+        sigmar[i, 1:maxValue]   <- sigmarValue[ 1:maxValue]
+        delta[i, 1:maxValue]    <- deltaValue[ 1:maxValue]
+        dl[i,1:maxValue]        <- dlValue[ 1:maxValue]
+        w[i,1:maxValue]         <- wValue[ 1:maxValue]
+
         ## Set the new value of kValue for the next iteration
-        kValue <- as.integer(k[i])
+
+        #kValue <- as.integer(k[i])
 
 
     } ###end of boucle RJMCMC
@@ -969,32 +331,40 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         w      = w[i, 1:kVal]
         )
 
-        liste[[i]] <- mergeNucleosomes(startPosForwardReads,
+        listeUpdate <- mergeNucleosomes(startPosForwardReads,
                                         startPosReverseReads,y, new.list,
                                         minInterval,
                                         maxInterval, minReads)
-    }
-
-    kmax        <- max(kmax, sapply(1:nbrIterations,
-                                        function(i){liste[[i]]$k}))
-    mu          <- matrix(0, nrow=nbrIterations, ncol=kmax)
-    sigmaf      <- matrix(0, nrow=nbrIterations, ncol=kmax)
-    sigmar      <- matrix(0, nrow=nbrIterations, ncol=kmax)
-    delta       <- matrix(0, nrow=nbrIterations, ncol=kmax)
-    w           <- matrix(0, nrow=nbrIterations, ncol=kmax)
-    dl          <- matrix(0, nrow=nbrIterations, ncol=kmax)
-
-    for (i in 1:nbrIterations)
-    {
-        kVal                <- liste[[i]]$k
+        kVal                <- listeUpdate$k
         k[i]                <- kVal
-        mu[i, 1:kVal]       <- liste[[i]]$mu
-        sigmaf[i, 1:kVal]   <- liste[[i]]$sigmaf
-        sigmar[i, 1:kVal]   <- liste[[i]]$sigmar
-        delta[i, 1:kVal]    <- liste[[i]]$delta
-        w[i, 1:kVal]        <- liste[[i]]$w
-        dl[i, 1:kVal]       <- liste[[i]]$dl
+        mu[i, ]       <- c(listeUpdate$mu, rep(0, kmax - kVal))
+        sigmaf[i, 1:kVal]   <- c(listeUpdate$sigmaf, rep(0, kmax - kVal))
+        sigmar[i, 1:kVal]   <- c(listeUpdate$sigmar, rep(0, kmax - kVal))
+        delta[i, 1:kVal]    <- c(listeUpdate$delta, rep(0, kmax - kVal))
+        w[i, 1:kVal]        <- c(listeUpdate$w, rep(0, kmax - kVal))
+        dl[i, 1:kVal]       <- c(listeUpdate$dl, rep(0, kmax - kVal))
     }
+
+#     kmax        <- max(kmax, sapply(1:nbrIterations,
+#                                         function(i){liste[[i]]$k}))
+#     mu          <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#     sigmaf      <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#     sigmar      <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#     delta       <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#     w           <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#     dl          <- matrix(0, nrow=nbrIterations, ncol=kmax)
+#
+#     for (i in 1:nbrIterations)
+#     {
+#         kVal                <- liste[[i]]$k
+#         k[i]                <- kVal
+#         mu[i, 1:kVal]       <- liste[[i]]$mu
+#         sigmaf[i, 1:kVal]   <- liste[[i]]$sigmaf
+#         sigmar[i, 1:kVal]   <- liste[[i]]$sigmar
+#         delta[i, 1:kVal]    <- liste[[i]]$delta
+#         w[i, 1:kVal]        <- liste[[i]]$w
+#         dl[i, 1:kVal]       <- liste[[i]]$dl
+#     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     ## Getting the number of nucleosomes with the highest frequency
