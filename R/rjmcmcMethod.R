@@ -34,6 +34,9 @@
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
+#' @param verbose a \code{logical} indicating if extra information must be
+#' printed or not. Default: \code{FALSE}.
+#'
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 #' \itemize{
 #' \item \code{call} the matched call.
@@ -95,7 +98,8 @@
 #' @export
 RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kmax, lambda,
-                    minInterval, maxInterval, minReads)
+                    minInterval, maxInterval, minReads,
+                    verbose = FALSE)
 {
     # Get call information
     cl <- match.call()
@@ -103,7 +107,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     # Parameters validation
     validateParameters(startPosForwardReads, startPosReverseReads,
                             nbrIterations, kmax, lambda, minInterval,
-                            maxInterval, minReads)
+                            maxInterval, minReads, verbose)
 
     # Casting specific inputs as integer
     minReads        <- as.integer(minReads)
@@ -190,7 +194,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     sigmaf[1, 1]    <- 1
     sigmar[1, 1]    <- 1
-    delta[1, 1]     <- runif(1, 0, 2*(mu[1,1] - minReadPos))
+    delta[1, 1]     <- runif(1, 0, 2*(mu[1, 1] - minReadPos))
     w[1, 1]         <- 1
     dl[1, 1]        <- 3
 
@@ -214,17 +218,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     kValue <- as.integer(k[1])
 
-    muValue       <- mu[1,]
-    sigmafValue   <- sigmaf[1,]
-    sigmarValue   <- sigmar[1,]
-    deltaValue    <- delta[1,]
-    wValue        <-  w[1,]
-    dlValue       <- dl[1,]
-    aValue        <- rep(0, kmax)
-    aValue[1, 1]  <- minReadPos
-    aValue[1, as.integer(k[1]) + 1L]  <- maxReadPos
+    muValue       <- mu[1, ]
+    sigmafValue   <- sigmaf[1, ]
+    sigmarValue   <- sigmar[1, ]
+    deltaValue    <- delta[1, ]
+    wValue        <- w[1, ]
+    dlValue       <- dl[1, ]
+    aValue        <- rep(0, kmax + 1L)
+    aValue[1]     <- minReadPos
+    aValue[as.integer(k[1]) + 1L]  <- maxReadPos
     dimValue       <- rep(0, kmax)
-    dimValue[1, 1] <- nbrReads
+    dimValue[1]    <- nbrReads
 
     for (i in 2:nbrIterations) {
 
@@ -269,15 +273,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                 if (u <= (Dk(kValue, lambda, kmax) + Bk(kValue, lambda, kmax))) {
 
                     #Birth move
-                    varTilde <- birthMove(paramValues, kValue, muValue
-                                          , sigmafValue, sigmarValue, deltaValue
-                                          , wValue, dlValue, aValue, dimValue )
+                    varTilde <- birthMove(paramValues, kValue, muValue,
+                                            sigmafValue, sigmarValue,
+                                            deltaValue, wValue, dlValue,
+                                            aValue, dimValue)
 
                 } else {
                     ### Metropolis-Hastings move
-                    varTilde <- mhMove(paramValues, kValue, muValue
-                                          , sigmafValue, sigmarValue, deltaValue
-                                          , wValue, dlValue, aValue, dimValue )
+                    varTilde <- mhMove(paramValues, kValue, muValue,
+                                            sigmafValue, sigmarValue,
+                                            deltaValue, wValue, dlValue,
+                                            aValue, dimValue)
 
                 }
             } #end of else of B move and M-H move
@@ -285,29 +291,31 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
         v <- runif(1)      #Acceptation/rejet
 
-        if (varTilde$rho >= v && varTilde$ktilde <= kmax) {
-            kValue                    <- varTilde$k
-            maxValue                <- as.integer(kValue)
-            muValue[ 1:maxValue]       <- varTilde$mu[ 1:maxValue]
-            sigmafValue[ 1:maxValue]   <- varTilde$sigmaf[ 1:maxValue]
-            sigmarValue[ 1:maxValue]   <- varTilde$sigmar[ 1:maxValue]
-            deltaValue[ 1:maxValue]    <- varTilde$delta[ 1:maxValue]
-            dlValue[ 1:maxValue]       <- varTilde$dl[ 1:maxValue]
-            wValue[ 1:maxValue]        <- varTilde$w[ 1:maxValue]
-            dimValue[ 1:maxValue]       <- varTilde$dim[ 1:maxValue]
-            aValue[ 1:(maxValue+1)]     <- varTilde$a[ 1:(maxValue + 1)]
+        if (varTilde$rho >= v && varTilde$k <= kmax) {
+            # Acceptation, so values are updated
+            kValue      <- varTilde$k
+            maxValue    <- as.integer(kValue)
+            repeatValue <- kmax - maxValue
+            muValue     <- c(varTilde$mu[1:maxValue], rep(0, repeatValue))
+            sigmafValue <- c(varTilde$sigmaf[1:maxValue], rep(0, repeatValue))
+            sigmarValue <- c(varTilde$sigmar[1:maxValue], rep(0, repeatValue))
+            deltaValue  <- c(varTilde$delta[1:maxValue], rep(0, repeatValue))
+            dlValue     <- c(varTilde$dl[1:maxValue], rep(0, repeatValue))
+            wValue      <- c(varTilde$w[1:maxValue], rep(0, repeatValue))
+            dimValue    <- c(varTilde$dim[1:maxValue], rep(0, repeatValue))
+            aValue      <- c(varTilde$a[1:(maxValue + 1)], rep(0, repeatValue))
         }
 
         # Si on veut faire le merge on peut le faire ici
         # et le conserver sans changer les varValue
         k[i]                    <- kValue
         maxValue                <- as.integer(k[i])
-        mu[i, 1:maxValue]       <- muValue[ 1:maxValue]
-        sigmaf[i, 1:maxValue]   <- sigmafValue[ 1:maxValue]
-        sigmar[i, 1:maxValue]   <- sigmarValue[ 1:maxValue]
-        delta[i, 1:maxValue]    <- deltaValue[ 1:maxValue]
-        dl[i,1:maxValue]        <- dlValue[ 1:maxValue]
-        w[i,1:maxValue]         <- wValue[ 1:maxValue]
+        mu[i, 1:maxValue]       <- muValue[1:maxValue]
+        sigmaf[i, 1:maxValue]   <- sigmafValue[1:maxValue]
+        sigmar[i, 1:maxValue]   <- sigmarValue[1:maxValue]
+        delta[i, 1:maxValue]    <- deltaValue[1:maxValue]
+        dl[i, 1:maxValue]       <- dlValue[1:maxValue]
+        w[i, 1:maxValue]        <- wValue[1:maxValue]
 
         ## Set the new value of kValue for the next iteration
 
@@ -331,18 +339,23 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         w      = w[i, 1:kVal]
         )
 
+        if (verbose) {
+            print("TODO")
+        }
+
         listeUpdate <- mergeNucleosomes(startPosForwardReads,
                                         startPosReverseReads,y, new.list,
                                         minInterval,
                                         maxInterval, minReads)
         kVal                <- listeUpdate$k
         k[i]                <- kVal
-        mu[i, ]       <- c(listeUpdate$mu, rep(0, kmax - kVal))
-        sigmaf[i, 1:kVal]   <- c(listeUpdate$sigmaf, rep(0, kmax - kVal))
-        sigmar[i, 1:kVal]   <- c(listeUpdate$sigmar, rep(0, kmax - kVal))
-        delta[i, 1:kVal]    <- c(listeUpdate$delta, rep(0, kmax - kVal))
-        w[i, 1:kVal]        <- c(listeUpdate$w, rep(0, kmax - kVal))
-        dl[i, 1:kVal]       <- c(listeUpdate$dl, rep(0, kmax - kVal))
+        repeatValue         <- kmax - kVal
+        mu[i, ]             <- c(listeUpdate$mu, rep(0, repeatValue))
+        sigmaf[i, 1:kVal]   <- c(listeUpdate$sigmaf, rep(0, repeatValue))
+        sigmar[i, 1:kVal]   <- c(listeUpdate$sigmar, rep(0, repeatValue))
+        delta[i, 1:kVal]    <- c(listeUpdate$delta, rep(0, repeatValue))
+        w[i, 1:kVal]        <- c(listeUpdate$w, rep(0, repeatValue))
+        dl[i, 1:kVal]       <- c(listeUpdate$dl, rep(0, repeatValue))
     }
 
 #     kmax        <- max(kmax, sapply(1:nbrIterations,

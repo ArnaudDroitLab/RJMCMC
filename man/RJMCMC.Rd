@@ -5,7 +5,7 @@
 \title{Nucleosome positioning mapping}
 \usage{
 RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
-  minInterval, maxInterval, minReads)
+  minInterval, maxInterval, minReads, verbose = FALSE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -37,6 +37,9 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
+
+\item{verbose}{a \code{logical} indicating if extra information must be
+printed or not. Default: \code{FALSE}.}
 }
 \value{
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing :

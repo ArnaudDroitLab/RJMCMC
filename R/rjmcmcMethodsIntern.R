@@ -344,7 +344,7 @@ elementWithHighestMode <- function(sample) {
 #' positions of all forward and reverse reads. The
 #' values inside \code{y} must be sorted.
 #'
-#' @param liste a \code{list} containing:
+#' @param list a \code{list} containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
@@ -387,15 +387,15 @@ elementWithHighestMode <- function(sample) {
 #'
 #' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
-mergeNucleosomes <- function(yf, yr, y, liste,
+mergeNucleosomes <- function(yf, yr, y, list,
                                 minInterval, maxInterval, minReads) {
     ## Get the number of nucleosomes
-    k <- liste$k
+    k <- list$k
 
     ## Nucleosome can only be merged when there is more than one
     if (k > 1) {
         ## Find the smallest distance between 2 nucleosomes
-        ecart <- diff(liste$mu)
+        ecart     <- diff(list$mu)
         ecart.min <- min(ecart)
 
         ## The distance between 2 nucleosomes is inferior to minimum distance
@@ -408,52 +408,52 @@ mergeNucleosomes <- function(yf, yr, y, liste,
                 ## Find the first position with minimum gap
                 p <- which.min(ecart)
 
-                classes  <- y[y >= liste$mu[p] & y < liste$mu[p+1]]
-                classesf <- yf[yf >= liste$mu[p] & yf < liste$mu[p+1]]
-                classesr <- yr[yr >= liste$mu[p] & yr < liste$mu[p+1]]
+                classes  <- y[y >= list$mu[p] & y < list$mu[p+1]]
+                classesf <- yf[yf >= list$mu[p] & yf < list$mu[p+1]]
+                classesr <- yr[yr >= list$mu[p] & yr < list$mu[p+1]]
 
                 if (length(classes) > minReads){
                     mu <- mean(round(classes))
                 } else {
-                    mu <- mean(c(liste$mu[p], liste$mu[p+1]))
+                    mu <- mean(c(list$mu[p], list$mu[p+1]))
                 }
 
-                liste$mu        <- sort(liste$mu[-p])
-                liste$mu[p]     <- mu
-                liste$mu        <- sort(liste$mu)
-                liste$sigmaf    <- liste$sigmaf[-p]
-                liste$sigmar    <- liste$sigmar[-p]
-                liste$delta     <- liste$delta[-p]
-                liste$dl        <- liste$dl[-p]
-                liste$w         <- liste$w[-p]/sum(liste$w[-p])
+                list$mu        <- sort(list$mu[-p])
+                list$mu[p]     <- mu
+                list$mu        <- sort(list$mu)
+                list$sigmaf    <- list$sigmaf[-p]
+                list$sigmar    <- list$sigmar[-p]
+                list$delta     <- list$delta[-p]
+                list$dl        <- list$dl[-p]
+                list$w         <- list$w[-p]/sum(list$w[-p])
 
                 # Downgrade the number of nucleosome
                 k <- k - 1
 
                 # Update the smallest distance between 2 nucleosomes
                 if (k > 1) {
-                    ecart <- diff(liste$mu)
+                    ecart     <- diff(list$mu)
                     ecart.min <- min(ecart)
                 }
                 if (k == 1 || ecart.min > minInterval) break()
             } ### end of boucle repeat
 
             ## Updating resulting list
-            liste <- list(  k      = k,
-                            mu     = liste$mu,
-                            sigmaf = liste$sigmaf,
-                            sigmar = liste$sigmar,
-                            delta  = liste$delta,
-                            dl     = liste$dl,
-                            w      = liste$w)
+            list <- list(  k       = k,
+                            mu     = list$mu,
+                            sigmaf = list$sigmaf,
+                            sigmar = list$sigmar,
+                            delta  = list$delta,
+                            dl     = list$dl,
+                            w      = list$w)
         } ### end of condition if (ecart.min < minInterval)
 
         ## Trying to split resulting nucleosomes
-        liste <- splitNucleosome(yf, yr, y, liste, minInterval,
+        list <- splitNucleosome(yf, yr, y, list, minInterval,
                                     maxInterval, minReads)
     } ### end of condition if (k > 1)
 
-    return(liste)
+    return(list)
 }
 
 
@@ -476,7 +476,7 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' positions of all forward and reverse reads. The
 #' values inside \code{y} must be sorted.
 #'
-#' @param liste a \code{list} containing:
+#' @param list a \code{list} containing:
 #' \itemize{
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
@@ -519,50 +519,57 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #'
 #' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
-splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
+splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
                                     minReads) {
     ## Get the number of nucleosomes
-    k <- liste$k
+    k <- list$k
 
     if (k > 1) {
 
         ## Find the largest distance between 2 nucleosomes
         ## Its position and its value
-        ecart       <- diff(liste$mu)
+        ecart       <- diff(list$mu)
         p           <- order(ecart, decreasing = TRUE)[1]
         ecart.max   <- ecart[p]
 
         if (ecart.max > maxInterval) {
             j <- 1
             repeat {
-                classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
-                classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
-                classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
+                classes <- y[y >= list$mu[p] & y < list$mu[p + 1]]
+                classesf <- yf[yf >= list$mu[p] & yf < list$mu[p + 1]]
+                classesr <- yr[yr >= list$mu[p] & yr < list$mu[p + 1]]
 
                 if (length(classes) > minReads)
                 {
-                    new.mu <- sort(c(liste$mu[1:k],mean(round(classes))))
-                    new.sigmaf <- c(liste$sigmaf[1:k],
-                                        (liste$sigmaf[p]+liste$sigmaf[p+1])/2)
-                    new.sigmaf[p+1] <- (liste$sigmaf[p]+liste$sigmaf[p+1])/2
-                    new.sigmaf[k+1] <- liste$sigmaf[k]
-                    new.sigmar <- c(liste$sigmar[1:k],
-                                        (liste$sigmar[p]+liste$sigmar[p+1])/2)
-                    new.sigmar[p+1] <- (liste$sigmar[p]+liste$sigmar[p+1])/2
-                    new.sigmar[k+1] <- liste$sigmar[k]
-                    new.delta <- c(liste$delta[1:k],
-                                   (liste$delta[p]+liste$delta[p+1])/2)
-                    new.delta[p+1] <- (liste$delta[p]+liste$delta[p+1])/2
-                    new.delta[k+1] <- liste$delta[k]
-                    new.dl <- round(c(liste$dl[1:k],
-                                        (liste$dl[p]+liste$dl[p+1])/2))
-                    new.dl[p+1] <- (liste$dl[p]+liste$dl[p+1])/2
-                    new.dl[k+1] <- liste$dl[k]
-                    new.w <- c(liste$w[1:k], (liste$w[p]+liste$w[p+1])/2)
-                    new.w[p+1] <- (liste$w[p]+liste$w[p+1])/2
-                    new.w[k+1] <- liste$w[k]
-                    k <- length(new.mu)
-                    liste <- list(  k       = k,
+                    new.mu <- sort(c(list$mu[1:k], mean(round(classes))))
+
+                    new.sigmaf <- c(list$sigmaf[1:k],
+                                    (list$sigmaf[p] + list$sigmaf[p + 1])/2)
+                    new.sigmaf[p + 1] <- (list$sigmaf[p] + list$sigmaf[p + 1])/2
+                    new.sigmaf[k + 1] <- list$sigmaf[k]
+
+                    new.sigmar <- c(list$sigmar[1:k],
+                                    (list$sigmar[p] + list$sigmar[p + 1])/2)
+                    new.sigmar[p + 1] <- (list$sigmar[p] + list$sigmar[p + 1])/2
+                    new.sigmar[k + 1] <- list$sigmar[k]
+
+                    new.delta        <- c(list$delta[1:k],
+                                   (list$delta[p] + list$delta[p + 1])/2)
+                    new.delta[p + 1] <- (list$delta[p] + list$delta[p + 1])/2
+                    new.delta[k + 1] <- list$delta[k]
+
+                    new.dl <- round(c(list$dl[1:k],
+                                        (list$dl[p] + list$dl[p + 1])/2))
+                    new.dl[p + 1]   <- (list$dl[p] + list$dl[p + 1])/2
+                    new.dl[k + 1]   <- list$dl[k]
+
+                    new.w           <- c(list$w[1:k], (list$w[p] +
+                                                            list$w[p + 1])/2)
+                    new.w[p + 1]    <- (list$w[p]+list$w[p + 1])/2
+                    new.w[k + 1]    <- list$w[k]
+
+                    k       <- length(new.mu)
+                    list    <- list(k       = k,
                                     mu      = new.mu,
                                     sigmaf  = new.sigmaf,
                                     sigmar  = new.sigmar,
@@ -571,7 +578,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     w       = new.w/sum(new.w))
 
                     ## Update the vector of distance between nucleosomes
-                    ecart <- diff(liste$mu)
+                    ecart <- diff(list$mu)
                 }
                 else
                 {
@@ -587,8 +594,9 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > maxInterval)
     } ### end of condition if (k > 1)
-    return(liste)
+    return(list)
 }
+
 
 #' @title Parameters validation for the \code{\link{RJMCMC}}
 #' function
@@ -626,6 +634,9 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
+#' @param verbose a \code{logical} indicating if extra information must be
+#' printed or not.
+#'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
@@ -633,7 +644,8 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kmax, lambda,
-                                    minInterval, maxInterval, minReads) {
+                                    minInterval, maxInterval, minReads,
+                                    verbose) {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
         stop("nbrIterations must be a positive integer or numeric")
@@ -670,6 +682,11 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
                     "numeric values."))
+    }
+
+    ## Validate that verbose is a logical
+    if (!is.logical(verbose)) {
+        stop("verbose must be a logical.")
     }
 
     return(0)

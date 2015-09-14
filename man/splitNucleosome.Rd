@@ -4,7 +4,7 @@
 \alias{splitNucleosome}
 \title{Spliting a nucleosomal region into two regions}
 \usage{
-splitNucleosome(yf, yr, y, liste, minInterval, maxInterval, minReads)
+splitNucleosome(yf, yr, y, list, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{numeric}
@@ -21,7 +21,7 @@ corresponding to the
 positions of all forward and reverse reads. The
 values inside \code{y} must be sorted.}
 
-\item{liste}{a \code{list} containing:
+\item{list}{a \code{list} containing:
 \itemize{
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of

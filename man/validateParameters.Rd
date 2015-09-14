@@ -6,7 +6,7 @@
 function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
-  kmax, lambda, minInterval, maxInterval, minReads)
+  kmax, lambda, minInterval, maxInterval, minReads, verbose)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -38,6 +38,9 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
+
+\item{verbose}{a \code{logical} indicating if extra information must be
+printed or not.}
 }
 \value{
 \code{0} indicating that all parameters validations have been

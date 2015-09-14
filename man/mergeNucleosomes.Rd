@@ -4,7 +4,7 @@
 \alias{mergeNucleosomes}
 \title{Merging two nucleosomal regions}
 \usage{
-mergeNucleosomes(yf, yr, y, liste, minInterval, maxInterval, minReads)
+mergeNucleosomes(yf, yr, y, list, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{numeric}
@@ -22,7 +22,7 @@ corresponding to the
 positions of all forward and reverse reads. The
 values inside \code{y} must be sorted.}
 
-\item{liste}{a \code{list} containing:
+\item{list}{a \code{list} containing:
 \itemize{
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of
