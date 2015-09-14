@@ -716,6 +716,52 @@ isInteger <- function(value) {
 #' @description  Attempt to add a new nucleosome in the case that only one
 #' nucleosome is present, \code{case k = 1}.
 #'
+#' @param paramValues a \code{list} containing:
+#' \itemize{
+#'     \item startPSF a \code{vector} of \code{numeric}, the
+#' start position of all the forward reads.
+#'     \item startPSR a \code{vector} of \code{numeric}, the
+#' start position of all the reverse reads.
+#'     \item kmax a positive \code{integer} or \code{numeric}, the maximum
+#' number of nucleosomes per region.
+#'     \item lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
+#'     \item minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region.
+#'     \item y TODO
+#'     \item nr TODO
+#'     \item nf TODO
+#'     \item nbrReads TODO
+#'     \item zeta TODO
+#'     \item deltamin TODO
+#'     \item detlamax TODO
+#'     \item minReadPos TODO
+#'     \item maxReadPos TODO
+#' }
+#'
+#' @param kValue a \code{integer}, the number of nucleosomes.
+#'
+#' @param muValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the positions of the nucleosomes.
+#'
+#' @param sigmafValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the forward reads for each nucleosome.
+#'
+#' @param sigmarValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the reverse reads for each nucleosome.
+#'
+#' @param deltaValue
+#'
+#' @param wValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the weight for each nucleosome. The sum of all \code{wValue}
+#' values must be equal to \code{1}.
+#'
+#' @param dlValue
+#'
+#' @param aValue
+#'
+#' @param dimValue
+#'
 #' @param paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
 #'    , kmax = kmax, lambda = lambda, minReads = minReads
 #'    , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
