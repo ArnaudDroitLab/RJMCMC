@@ -41,7 +41,7 @@
 #' \itemize{
 #' \item \code{call} the matched call.
 #' \item \code{K} a \code{vector} of \code{integer}, the number of
-#' nucleosomes for each iteration.
+#' the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
@@ -145,7 +145,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                        , kmax = kmax, lambda = lambda, minReads = minReads
                        , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
                        , deltamin = deltamin, deltamax = deltamax
-                       , minReadPos= minReadPos, maxReadPos = maxReadPos )
+                       , minReadPos= minReadPos, maxReadPos = maxReadPos,  nbrIterations = nbrIterations)
 
     # Vector of the number of nucleosomes (integer values)
     k               <- Rle(rep(0L, nbrIterations))
@@ -218,17 +218,19 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     kValue <- as.integer(k[1])
 
-    muValue       <- mu[1, ]
-    sigmafValue   <- sigmaf[1, ]
-    sigmarValue   <- sigmar[1, ]
-    deltaValue    <- delta[1, ]
-    wValue        <- w[1, ]
-    dlValue       <- dl[1, ]
+
+    muValue       <- mu[1,]
+    sigmafValue   <- sigmaf[1,]
+    sigmarValue   <- sigmar[1,]
+    deltaValue    <- delta[1,]
+    wValue        <-  w[1,]
+    dlValue       <- dl[1,]
     aValue        <- rep(0, kmax + 1L)
-    aValue[1]     <- minReadPos
-    aValue[as.integer(k[1]) + 1L]  <- maxReadPos
+    aValue[1, 1]  <- minReadPos
+    aValue[1, as.integer(k[1]) + 1L]  <- maxReadPos
     dimValue       <- rep(0, kmax)
-    dimValue[1]    <- nbrReads
+    dimValue[1, 1] <- nbrReads
+    ktildeValue <- as.integer(k[1])
 
     for (i in 2:nbrIterations) {
 
@@ -293,17 +295,16 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
         if (varTilde$rho >= v && varTilde$k <= kmax) {
             # Acceptation, so values are updated
-            kValue      <- varTilde$k
-            maxValue    <- as.integer(kValue)
-            repeatValue <- kmax - maxValue
-            muValue     <- c(varTilde$mu[1:maxValue], rep(0, repeatValue))
-            sigmafValue <- c(varTilde$sigmaf[1:maxValue], rep(0, repeatValue))
-            sigmarValue <- c(varTilde$sigmar[1:maxValue], rep(0, repeatValue))
-            deltaValue  <- c(varTilde$delta[1:maxValue], rep(0, repeatValue))
-            dlValue     <- c(varTilde$dl[1:maxValue], rep(0, repeatValue))
-            wValue      <- c(varTilde$w[1:maxValue], rep(0, repeatValue))
-            dimValue    <- c(varTilde$dim[1:maxValue], rep(0, repeatValue))
-            aValue      <- c(varTilde$a[1:(maxValue + 1)], rep(0, repeatValue))
+            kValue          <- varTilde$k
+            maxValue        <- as.integer(kValue)
+            muValue         <- c(varTilde$mu[ 1:maxValue], rep(0, kmax-maxValue))
+            sigmafValue     <- c(varTilde$sigmaf[ 1:maxValue], rep(0, kmax-maxValue))
+            sigmarValue     <- c(varTilde$sigmar[ 1:maxValue], rep(0, kmax-maxValue))
+            deltaValue      <- c(varTilde$delta[ 1:maxValue], rep(0, kmax-maxValue))
+            dlValue         <- c(varTilde$dl[ 1:maxValue], rep(0, kmax-maxValue))
+            wValue          <- c(varTilde$w[ 1:maxValue], rep(0, kmax-maxValue))
+            dimValue        <- c(varTilde$dim[ 1:maxValue], rep(0, kmax-maxValue))
+            aValue          <- c(varTilde$a[ 1:(maxValue + 1)], rep(0, kmax-maxValue))
         }
 
         # Si on veut faire le merge on peut le faire ici
@@ -317,6 +318,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         dl[i, 1:maxValue]       <- dlValue[1:maxValue]
         w[i, 1:maxValue]        <- wValue[1:maxValue]
 
+        #ktildeValue <- varTilde$k
         ## Set the new value of kValue for the next iteration
 
         #kValue <- as.integer(k[i])
@@ -349,13 +351,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                                         maxInterval, minReads)
         kVal                <- listeUpdate$k
         k[i]                <- kVal
-        repeatValue         <- kmax - kVal
-        mu[i, ]             <- c(listeUpdate$mu, rep(0, repeatValue))
-        sigmaf[i, 1:kVal]   <- c(listeUpdate$sigmaf, rep(0, repeatValue))
-        sigmar[i, 1:kVal]   <- c(listeUpdate$sigmar, rep(0, repeatValue))
-        delta[i, 1:kVal]    <- c(listeUpdate$delta, rep(0, repeatValue))
-        w[i, 1:kVal]        <- c(listeUpdate$w, rep(0, repeatValue))
-        dl[i, 1:kVal]       <- c(listeUpdate$dl, rep(0, repeatValue))
+        mu[i, ]             <- c(listeUpdate$mu, rep(0, kmax - kVal))
+        sigmaf[i, ]   <- c(listeUpdate$sigmaf, rep(0, kmax - kVal))
+        sigmar[i, ]   <- c(listeUpdate$sigmar, rep(0, kmax - kVal))
+        delta[i, ]    <- c(listeUpdate$delta, rep(0, kmax - kVal))
+        w[i, ]        <- c(listeUpdate$w, rep(0, kmax - kVal))
+        dl[i, ]       <- c(listeUpdate$dl, rep(0, kmax - kVal))
     }
 
 #     kmax        <- max(kmax, sapply(1:nbrIterations,

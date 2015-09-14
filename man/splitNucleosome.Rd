@@ -68,7 +68,7 @@ Split a nucleosomal region into two regions with respect of
 the minimal and maximal intervals allowed.
 }
 \author{
-Rawane Samb, Astrid Deschenes
+Rawane Samb, Astrid Louise Deschenes
 }
 \keyword{internal}
 
