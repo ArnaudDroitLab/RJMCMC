@@ -147,7 +147,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 #'
 #' @importFrom stats runif rt
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 student.mixture <- function(i, k, weight, mu, sigma, dfr) {
     # Adding zero to the weight vector and calculating the cumulative sums
@@ -200,7 +200,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 #'
 #' @importFrom stats runif
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 normal.mixture <- function(i, k, weight, mu, sigma) {
     # Adding zero to the weight vector and calculating the cumulative sums
@@ -262,7 +262,7 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' ## Calculation of the exact prior density of mu
 #' density <- rjmcmc:::priorMuDensity(mu, readPositions)
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 priorMuDensity <- function(mu, readPositions) {
     ## Get the number of nucleosomes
@@ -306,7 +306,7 @@ priorMuDensity <- function(mu, readPositions) {
 #' \code{NA} when more than one \code{integer} have the highest number
 #' of occurences.
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 #' @examples
 #'
@@ -385,7 +385,7 @@ elementWithHighestMode <- function(sample) {
 #' must be equal to \code{1}.
 #' }
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 mergeNucleosomes <- function(yf, yr, y, liste,
                                 minInterval, maxInterval, minReads) {
@@ -394,10 +394,6 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 
     ## Nucleosome can only be merged when there is more than one
     if (k > 1) {
-
-#         ecart.min <- min(sapply(1:(k-1),
-#                             function(j){liste$mu[j+1] - liste$mu[j]}))
-
         ## Find the smallest distance between 2 nucleosomes
         ecart <- diff(liste$mu)
         ecart.min <- min(ecart)
@@ -409,10 +405,6 @@ mergeNucleosomes <- function(yf, yr, y, liste,
             ## up to the moment there is no nucleosome with inferior distance
             repeat
             {
-#                 p <- which(sapply(1:(k-1),
-#                             function(j){liste$mu[j+1] - liste$mu[j]}) ==
-#                             ecart.min)[1]
-
                 ## Find the first position with minimum gap
                 p <- which.min(ecart)
 
@@ -440,8 +432,6 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 
                 # Update the smallest distance between 2 nucleosomes
                 if (k > 1) {
-#                     ecart.min <- min(sapply(1:(k-1),
-#                                     function(i){liste$mu[i+1]-liste$mu[i]}))
                     ecart <- diff(liste$mu)
                     ecart.min <- min(ecart)
                 }
@@ -457,9 +447,6 @@ mergeNucleosomes <- function(yf, yr, y, liste,
                             dl     = liste$dl,
                             w      = liste$w)
         } ### end of condition if (ecart.min < minInterval)
-#         else {
-#             liste <- liste
-#         }
 
         ## Trying to split resulting nucleosomes
         liste <- splitNucleosome(yf, yr, y, liste, minInterval,
@@ -530,7 +517,7 @@ mergeNucleosomes <- function(yf, yr, y, liste,
 #' must be equal to \code{1}.
 #' }
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     minReads) {
@@ -538,8 +525,6 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
     k <- liste$k
 
     if (k > 1) {
-#         ecart.max <- max(sapply(1:(k-1),
-#                                 function(j){liste$mu[j+1]-liste$mu[j]}))
 
         ## Find the largest distance between 2 nucleosomes
         ## Its position and its value
@@ -550,19 +535,10 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
         if (ecart.max > maxInterval) {
             j <- 1
             repeat {
-#                 p <- which(sapply(1:(k-1),
-#                                 function(j){
-#                                     liste$mu[j+1]-liste$mu[j]
-#                                 }) == ecart.max)
-#                 p <- which(sapply(1:(k-1),
-#                                   function(j){
-#                                       liste$mu[j+1]-liste$mu[j]
-#                                   }) == ecart.max)[1]
-
                 classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
                 classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
                 classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
-#                 j <- 1
+
                 if (length(classes) > minReads)
                 {
                     new.mu <- sort(c(liste$mu[1:k],mean(round(classes))))
@@ -593,22 +569,12 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                                     delta   = new.delta,
                                     dl      = new.dl,
                                     w       = new.w/sum(new.w))
-#                     ecart.max <- max(sapply(1:(k-1),
-#                                     function(j){liste$mu[j+1]-liste$mu[j]}))
-
-#                     j           <- 1
 
                     ## Update the vector of distance between nucleosomes
                     ecart <- diff(liste$mu)
                 }
                 else
                 {
-#                     liste <- liste
-#                     ecart.max <- sort(sapply(1:(k-1),
-#                                     function(j){
-#                                         liste$mu[j+1]-liste$mu[j]
-#                                     }))[k - 1 - j]
-
                     ## Update to select the next maximum distance value
                     j  <- j + 1
                 }
@@ -618,7 +584,6 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
                 ecart.max   <- ecart[p]
 
                 if ( j >= (k - 1) || ecart.max <= maxInterval) break()
-#                 if ( j == (k - 1) || ecart.max <= maxInterval) break()
             } ### end of boucle repeat
         } ### end of condition if (ecart.max > maxInterval)
     } ### end of condition if (k > 1)
@@ -664,7 +629,7 @@ splitNucleosome <- function(yf, yr, y, liste, minInterval, maxInterval,
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
-#' @author Astrid Louise Deschenes
+#' @author Astrid Deschenes
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kmax, lambda,
@@ -736,7 +701,7 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 #' ## Return FALSE because the length of the input is not 1
 #' rjmcmc:::isInteger(c(444.2, 442.1))
 #'
-#' @author Astrid Louise Deschenes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 isInteger <- function(value) {
@@ -746,9 +711,10 @@ isInteger <- function(value) {
 
 
 
-#' @title birthMoveK1 birth move in the case k = 1
+#' @title Birth move in the case that only one nucleosome is present
 #'
-#' @description  birth move
+#' @description  Attempt to add a new nucleosome in the case that only one
+#' nucleosome is present, \code{case k = 1}.
 #'
 #' @param paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
 #'    , kmax = kmax, lambda = lambda, minReads = minReads
@@ -764,14 +730,15 @@ isInteger <- function(value) {
 #'    , dim=numeric(parValue$kmax), rho=0)
 #'
 #' @examples
-#' birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
+#' birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue,
+#' deltaValue, wValue, dlValue, aValue, dimValue )
 #'
 #'
-#' @author Astrid Louise Deschenes
-#' @keywords internal
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #'
-
-birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ) {
+birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
+                            sigmarValue, deltaValue, wValue, dlValue,
+                            aValue, dimValue) {
 
     varTilde <- list( k=0L, mu=numeric(parValue$kmax)
                       , sigmaf=numeric(parValue$kmax), sigmar=numeric(parValue$kmax)
@@ -916,7 +883,7 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
-birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
     #Birth move
 
     varTilde <- list( k=0L, mu=numeric(parValue$kmax)

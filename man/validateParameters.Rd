@@ -48,7 +48,7 @@ Validation of all parameters needed by the public
 \code{\link{RJMCMC}} function.
 }
 \author{
-Astrid Louise Deschenes
+Astrid Deschenes
 }
 \keyword{internal}
 

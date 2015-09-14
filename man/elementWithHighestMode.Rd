@@ -31,7 +31,7 @@ data02 <- c(3L, 6L, 4L, 3L, 6L)
 rjmcmc:::elementWithHighestMode(data02)
 }
 \author{
-Rawane Samb, Astrid Louise Deschenes
+Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
 
