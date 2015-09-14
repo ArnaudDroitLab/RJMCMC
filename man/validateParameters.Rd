@@ -6,7 +6,7 @@
 function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
-  kmax, lambda, minInterval, maxInterval, minReads, verbose)
+  kMax, lambda, minInterval, maxInterval, minReads, verbose)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -21,9 +21,9 @@ number of iterations. Non-integer values of
 \code{nbrIterations} will be casted to \code{integer} and truncated towards
 zero.}
 
-\item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
+\item{kMax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
-of \code{kmax} will be casted to \code{integer} and truncated towards zero.}
+of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
 of the Poisson distribution.}
@@ -51,7 +51,7 @@ Validation of all parameters needed by the public
 \code{\link{RJMCMC}} function.
 }
 \author{
-Astrid Louise Deschenes
+Astrid Deschenes
 }
 \keyword{internal}
 

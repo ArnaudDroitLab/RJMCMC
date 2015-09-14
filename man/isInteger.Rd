@@ -32,7 +32,7 @@ rjmcmc:::isInteger(323.21)
 rjmcmc:::isInteger(c(444.2, 442.1))
 }
 \author{
-Astrid Louise Deschenes
+Astrid Deschenes
 }
 \keyword{internal}
 

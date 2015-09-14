@@ -4,7 +4,7 @@
 \alias{RJMCMC}
 \title{Nucleosome positioning mapping}
 \usage{
-RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
+RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
   minInterval, maxInterval, minReads, verbose = FALSE)
 }
 \arguments{
@@ -20,9 +20,9 @@ number of iterations. Non-integer values of
 \code{nbrIterations} will be casted to \code{integer} and truncated towards
 zero.}
 
-\item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
+\item{kMax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
-of \code{kmax} will be casted to \code{integer} and truncated towards zero.}
+of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
 of the Poisson distribution.}
@@ -90,7 +90,7 @@ data(reads_demo)
 ## Nucleosome positioning
 result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
          startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 1000, lambda = 2, kmax = 30,
+         nbrIterations = 1000, lambda = 2, kMax = 30,
          minInterval = 146, maxInterval = 292, minReads = 5)
 
 ## Print the number of nucleosomes

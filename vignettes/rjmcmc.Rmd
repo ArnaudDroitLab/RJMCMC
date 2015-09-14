@@ -60,7 +60,7 @@ data(reads_demo)
 ## Nucleosome positioning
 result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
             startPosReverseReads = reads_demo$readsReverse,
-            nbrIterations = 1000, lambda = 3, kmax = 30,
+            nbrIterations = 1000, lambda = 3, kMax = 30,
             minInterval = 140, maxInterval = 295, minReads = 5)
 
 # Print the resulting nucleosomes and the related information

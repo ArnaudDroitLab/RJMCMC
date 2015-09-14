@@ -147,7 +147,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 #'
 #' @importFrom stats runif rt
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 student.mixture <- function(i, k, weight, mu, sigma, dfr) {
     # Adding zero to the weight vector and calculating the cumulative sums
@@ -200,7 +200,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 #'
 #' @importFrom stats runif
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 normal.mixture <- function(i, k, weight, mu, sigma) {
     # Adding zero to the weight vector and calculating the cumulative sums
@@ -212,17 +212,6 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
     position <- max(which(sumWeight < u))
 
     return(rnorm(1, mu[position], sd = sqrt(sigma[position])))
-
-#   ANCIEN CODE MOINS RAPIDE
-#   v <- c(0, weight)
-#   u <- runif(1, 0, 1)
-#     for (j in 1:k) {
-#         if (sum(v[1:j]) < u & u <= sum(v[1:(j+1)]))
-#         {
-#             mixte <- rnorm(1, mu[j], sd = sqrt(sigma[j]))
-#         }
-#     }
-#     return(mixte)
 }
 
 
@@ -262,7 +251,7 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' ## Calculation of the exact prior density of mu
 #' density <- rjmcmc:::priorMuDensity(mu, readPositions)
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 priorMuDensity <- function(mu, readPositions) {
     ## Get the number of nucleosomes
@@ -306,7 +295,7 @@ priorMuDensity <- function(mu, readPositions) {
 #' \code{NA} when more than one \code{integer} have the highest number
 #' of occurences.
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 #' @examples
 #'
@@ -385,7 +374,7 @@ elementWithHighestMode <- function(sample) {
 #' must be equal to \code{1}.
 #' }
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 mergeNucleosomes <- function(yf, yr, y, list,
                                 minInterval, maxInterval, minReads) {
@@ -528,7 +517,7 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #' must be equal to \code{1}.
 #' }
 #'
-#' @author Rawane Samb, Astrid Louise Deschenes
+#' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
 splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
                                     minReads) {
@@ -558,9 +547,9 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #                                       liste$mu[j+1]-liste$mu[j]
 #                                   }) == ecart.max)[1]
 
-                classes <- y[y>=liste$mu[p] & y<liste$mu[p+1]]
-                classesf <- yf[yf>=liste$mu[p] & yf<liste$mu[p+1]]
-                classesr <- yr[yr>=liste$mu[p] & yr<liste$mu[p+1]]
+                classes <- y[y>=list$mu[p] & y<list$mu[p+1]]
+                classesf <- yf[yf>=list$mu[p] & yf<list$mu[p+1]]
+                classesr <- yr[yr>=list$mu[p] & yr<list$mu[p+1]]
 #                 j <- 1
 
                 if (length(classes) > minReads)
@@ -651,9 +640,9 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #' \code{nbrIterations} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @param kmax a positive \code{integer} or \code{numeric}, the maximum number
+#' @param kMax a positive \code{integer} or \code{numeric}, the maximum number
 #' of nucleosomes per region. Non-integer values
-#' of \code{kmax} will be casted to \code{integer} and truncated towards zero.
+#' of \code{kMax} will be casted to \code{integer} and truncated towards zero.
 #'
 #' @param lambda a positive \code{numeric}, the theorical mean
 #' of the Poisson distribution.
@@ -675,10 +664,10 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
-#' @author Astrid Louise Deschenes
+#' @author Astrid Deschenes
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
-                                    nbrIterations, kmax, lambda,
+                                    nbrIterations, kMax, lambda,
                                     minInterval, maxInterval, minReads,
                                     verbose) {
     ## Validate the nbrIterations parameter
@@ -686,9 +675,9 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
         stop("nbrIterations must be a positive integer or numeric")
     }
 
-    ## Validate the kmax parameter
-    if (!isInteger(kmax) || as.integer(kmax) < 1) {
-        stop("kmax must be a positive integer or numeric")
+    ## Validate the kMax parameter
+    if (!isInteger(kMax) || as.integer(kMax) < 1) {
+        stop("kMax must be a positive integer or numeric")
     }
 
     ## Validate the minReads parameter
@@ -753,7 +742,7 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 #' ## Return FALSE because the length of the input is not 1
 #' rjmcmc:::isInteger(c(444.2, 442.1))
 #'
-#' @author Astrid Louise Deschenes
+#' @author Astrid Deschenes
 #' @keywords internal
 #'
 isInteger <- function(value) {
@@ -784,11 +773,12 @@ isInteger <- function(value) {
 #' birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
 #'
 #'
-#' @author Astrid Louise Deschenes
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
-
-birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ) {
+birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
+                            sigmarValue, deltaValue, wValue,
+                            dlValue, aValue, dimValue) {
 
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
@@ -796,11 +786,11 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                       , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    Kn              <- rep(0, paramValues$paramValues$nbrIterations)
-    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kn              <- rep(0, paramValues$nbrIterations)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
 
     Y1f             <- rep(0, paramValues$nf)
     Y2f             <- rep(0, paramValues$nf)
@@ -816,15 +806,15 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         varTilde$mu[ 1:varTilde$k] <- sort(c(muValue[ 1:kValue],
                                              varTilde$mu[j]))
 
-        varTilde$a[ j+1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
-        varTilde$a[ 1:(varTilde$k+1)] <- sort(c(aValue[ 1:varTilde$k],
+        varTilde$a[j + 1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
+        varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[ 1:varTilde$k],
                                                 varTilde$a[ j+1]))
-        varTilde$a[ 1]                <- paramValues$minReadPos
-        varTilde$a[ (varTilde$k+1)]    <- paramValues$maxReadPos
+        varTilde$a[1]                <- paramValues$minReadPos
+        varTilde$a[(varTilde$k+1)]    <- paramValues$maxReadPos
 
-        varTilde$dim[ 1] <- length(paramValues$y[varTilde$a[ 1] <= paramValues$y &
+        varTilde$dim[1] <- length(paramValues$y[varTilde$a[ 1] <= paramValues$y &
                                                      paramValues$y < varTilde$a[ 2]])
-        varTilde$dim[ varTilde$k] <- length(paramValues$y[varTilde$a[ varTilde$k] <=
+        varTilde$dim[varTilde$k] <- length(paramValues$y[varTilde$a[ varTilde$k] <=
                                                               paramValues$y & paramValues$y <= paramValues$maxReadPos])
         if (varTilde$k > 2) {   # impossible si kValue == 1
             for (m in 2:(varTilde$k-1)) {
@@ -834,9 +824,9 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         }
         Pr <- min(varTilde$dim[ 1:varTilde$k])
 
-        ybar <- mean(paramValues$y[varTilde$a[ j] <= paramValues$y & paramValues$y <= varTilde$a[ j+1]])
-        classesf <- paramValues$y[varTilde$a[ j] <= paramValues$y & paramValues$y <= ybar]
-        classesr <- paramValues$y[ybar <= paramValues$y & paramValues$y <= varTilde$a[ j+1]]
+        ybar <- mean(paramValues$y[varTilde$a[j] <= paramValues$y & paramValues$y <= varTilde$a[j+1]])
+        classesf <- paramValues$y[varTilde$a[j] <= paramValues$y & paramValues$y <= ybar]
+        classesr <- paramValues$y[ybar <= paramValues$y & paramValues$y <= varTilde$a[j+1]]
 
         Lf <- length(classesf[!duplicated(classesf)])
         Lr <- length(classesr[!duplicated(classesr)])
@@ -868,8 +858,8 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         varTilde$delta[ j] <- tnormale(paramValues$zeta,
                                        1/(varTilde$sigmaf[ j]^{-1} + varTilde$sigmar[j]^{-1}),
                                        paramValues$deltamin, paramValues$deltamax)
-        varTilde$delta[ 1:varTilde$k] <- c(varTilde$delta[ j],
-                                           deltaValue[ 1:kValue])
+        varTilde$delta[ 1:varTilde$k] <- c(varTilde$delta[j],
+                                           deltaValue[1:kValue])
 
         alpha                   <- rep(1, kValue)
         alphatilde              <- rep(1, varTilde$k)
@@ -877,7 +867,7 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         alphaprop               <- rep(1, kValue)
         varTilde$w[ 1:varTilde$k]  <- rdirichlet(1, alphaproptilde)
         ennetilde               <- varTilde$dim[ 1:varTilde$k]
-        enne <- rmultinom(1, paramValues$nbrReads, wValue[ 1:kValue])
+        enne <- rmultinom(1, paramValues$nbrReads, wValue[1:kValue])
 
         #Rapport de vraisemblance
 
@@ -893,7 +883,7 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 
         for (m in 1:kValue) {
             Kar[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmar[m]))*dt((paramValues$startPSR-varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
-            Kbr[,m] <- (wValue[ m]*(1/sqrt(sigmarValue[m]))*dt((paramValues$startPSR-muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
+            Kbr[,m] <- (wValue[m]*(1/sqrt(sigmarValue[m]))*dt((paramValues$startPSR-muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
         }
         Kar[,varTilde$k] <- (varTilde$w[ varTilde$k]*(1/sqrt(varTilde$sigmar[varTilde$k]))*dt(( paramValues$startPSR -varTilde$mu[varTilde$k]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[varTilde$k]),varTilde$dl[m]))
         for (s in 1:paramValues$nr) {
@@ -901,39 +891,42 @@ birthMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
             Y2r[s] <- log(sum(Kbr[s, 1:kValue]))
         }
 
-        Kn <- sum(Y1f) + sum(Y1r)
-        Kd <- sum(Y2f) + sum(Y2r)
+        Kn          <- sum(Y1f) + sum(Y1r)
+        Kd          <- sum(Y2f) + sum(Y2r)
 
-        q <- Kn - Kd
-        rap.q <- exp(q)
+        q           <- Kn - Kd
+        rap.q       <- exp(q)
 
-        rap.vrais <- rap.q
+        rap.vrais   <- rap.q
 
         if (j == 1) {
-            qalloc <- 1/(muValue[ j] - paramValues$minReadPos) # Density of varTilde$mu[j]
+            qalloc <- 1/(muValue[j] - paramValues$minReadPos) # Density of varTilde$mu[j]
         } else {
-            qalloc <- 1/(muValue[ j] - muValue[ j-1])
+            qalloc <- 1/(muValue[j] - muValue[j-1])
         }
 
-        rap.priormu   <- (priorMuDensity(varTilde$mu[ 1:varTilde$k],paramValues$y)/priorMuDensity(muValue[ 1:kValue],paramValues$y))
-        rap.priorw    <- (ddirichlet(varTilde$w[ 1:varTilde$k],alphatilde)/ddirichlet(wValue[ 1:kValue],alpha) )
+        rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],paramValues$y)/priorMuDensity(muValue[1:kValue],paramValues$y))
+        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k],alphatilde)/ddirichlet(wValue[ 1:kValue],alpha) )
         rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue], paramValues$nbrReads,wValue[ 1:kValue])
         rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/dpois(kValue, paramValues$lambda))
         rap.propmu    <- (1/(qalloc))
-        rap.propw     <- (ddirichlet(wValue[ 1:kValue], alphaprop)/ddirichlet(varTilde$w[ 1:varTilde$k], alphaproptilde))
+        rap.propw     <- (ddirichlet(wValue[1:kValue], alphaprop)/ddirichlet(varTilde$w[1:varTilde$k], alphaproptilde))
 
         rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop      <-  rap.propmu  * rap.propw
+        rap.prop      <- rap.propmu  * rap.propw
 
-        varTilde$rho       <- min(1,(rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(varTilde$k,paramValues$lambda,paramValues$kmax)/Bk(kValue, paramValues$lambda, paramValues$kmax)))
+        varTilde$rho  <- min(1, (rap.vrais) * (rap.prior) * (rap.prop ) * (Dk(varTilde$k, paramValues$lambda, paramValues$kmax)/Bk(kValue, paramValues$lambda, paramValues$kmax)))
 
     }
 
-    varTilde$rho <- ifelse (is.na(varTilde$rho), 0, varTilde$rho)
+    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
+
     return(varTilde)
 }
 
-birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
+                            deltaValue, wValue, dlValue,
+                            aValue, dimValue){
     #Birth move
 
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
@@ -943,10 +936,10 @@ birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
                       , dim=rep(0, paramValues$kmax), rho=0)
 
     Kn              <- rep(0, paramValues$nbrIterations)
-    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
 
     Y1f             <- rep(0, paramValues$nf)
     Y2f             <- rep(0, paramValues$nf)
@@ -1092,7 +1085,8 @@ birthMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
 }
 
 
-mhMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
+mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
+                            deltaValue, wValue, dlValue, aValue, dimValue) {
     ###Metropolis-Hastings move
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
@@ -1100,11 +1094,12 @@ mhMoveK1 <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, de
                       , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
+    ## ASTRID : Kn n'a pas besoin d'etre initialise
     Kn              <- rep(0, paramValues$nbrIterations)
-    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
 
     Y1f             <- rep(0, paramValues$nf)
     Y2f             <- rep(0, paramValues$nf)
@@ -1221,10 +1216,10 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, delt
                       , dim=rep(0, paramValues$kmax), rho=0)
 
     Kn              <- rep(0, paramValues$nbrIterations)
-    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
 
     Y1f             <- rep(0, paramValues$nf)
     Y2f             <- rep(0, paramValues$nf)
@@ -1363,10 +1358,10 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
                       , dim=rep(0, paramValues$kmax), rho=0)
 
     Kn              <- rep(0, paramValues$nbrIterations)
-    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = kmax)
-    Kar             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
-    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = kmax)
+    Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
+    Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
+    Kbr             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
 
     Y1f             <- rep(0, paramValues$nf)
     Y2f             <- rep(0, paramValues$nf)
