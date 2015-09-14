@@ -705,16 +705,34 @@ isInteger <- function(value) {
 
 
 
-#' @title birthMoveK1 birth move in the case k = 1
+#' @title Birth move in the case that only one nucleosome is present
 #'
-#' @description  birth move
+#' @description Attempts to add a component for a new nucleosome in the
+#' case that only one nucleosome is present \code{k = 1}
 #'
 #' @param paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
 #'    , kmax = kmax, lambda = lambda, minReads = minReads
 #'    , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
 #'    , deltamin = deltamin, deltamax = deltamax
 #'    , minReadPos= minReadPos, maxReadPos = maxReadPos )
-#'    kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue
+#'
+#' @param kValue
+#'
+#' @param muValue
+#'
+#' @param sigmafValue
+#'
+#' @param sigmarValue
+#'
+#' @param deltaValue
+#'
+#' @param wValue
+#'
+#' @param dlValue
+#'
+#' @param aValue
+#'
+#' @param dimValue
 #'
 #' @return list( k=0L, mu=numeric(paramValues$kmax)
 #'    , sigmaf=numeric(paramValues$kmax), sigmar=numeric(paramValues$kmax)
@@ -723,7 +741,8 @@ isInteger <- function(value) {
 #'    , dim=numeric(paramValues$kmax), rho=0)
 #'
 #' @examples
-#' birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
+#' birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue,
+#' deltaValue, wValue, dlValue, aValue, dimValue )
 #'
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes

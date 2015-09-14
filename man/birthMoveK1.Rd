@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{birthMoveK1}
 \alias{birthMoveK1}
-\title{birthMoveK1 birth move in the case k = 1}
+\title{Birth move in the case that only one nucleosome is present}
 \usage{
 birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
   wValue, dlValue, aValue, dimValue)
@@ -12,8 +12,25 @@ birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
    , kmax = kmax, lambda = lambda, minReads = minReads
    , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
    , deltamin = deltamin, deltamax = deltamax
-   , minReadPos= minReadPos, maxReadPos = maxReadPos )
-   kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue}
+   , minReadPos= minReadPos, maxReadPos = maxReadPos )}
+
+\item{kValue}{}
+
+\item{muValue}{}
+
+\item{sigmafValue}{}
+
+\item{sigmarValue}{}
+
+\item{deltaValue}{}
+
+\item{wValue}{}
+
+\item{dlValue}{}
+
+\item{aValue}{}
+
+\item{dimValue}{}
 }
 \value{
 list( k=0L, mu=numeric(paramValues$kmax)
@@ -23,10 +40,12 @@ list( k=0L, mu=numeric(paramValues$kmax)
    , dim=numeric(paramValues$kmax), rho=0)
 }
 \description{
-birth move
+Attempts to add a component for a new nucleosome in the
+case that only one nucleosome is present \code{k = 1}
 }
 \examples{
-birthMoveK1(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
+birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue,
+deltaValue, wValue, dlValue, aValue, dimValue )
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes

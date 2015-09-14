@@ -141,25 +141,25 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     deltamin        <- 142
     deltamax        <- 152
 
-
-
     # Max and min read positions
     minReadPos <- min(y)
     maxReadPos <- max(y)
 
-    paramValues = list(startPSF =  startPosForwardReads, startPSR = startPosReverseReads
-                       , kmax = kMax, lambda = lambda, minReads = minReads
-                       , y = y, nr = nr, nf =nf, nbrReads = nbrReads , zeta = zeta
-                       , deltamin = deltamin, deltamax = deltamax
-                       , minReadPos= minReadPos, maxReadPos = maxReadPos,  nbrIterations = nbrIterations)
+    paramValues = list(startPSF =  startPosForwardReads,
+                        startPSR = startPosReverseReads,
+                        kmax = kMax,
+                        lambda = lambda,
+                        minReads = minReads,
+                        y = y, nr = nr, nf =nf, nbrReads = nbrReads,
+                        zeta = zeta, deltamin = deltamin, deltamax = deltamax,
+                        minReadPos = minReadPos, maxReadPos = maxReadPos,
+                        nbrIterations = nbrIterations)
 
     # Vector of the number of nucleosomes (integer values)
     k               <- Rle(rep(0L, nbrIterations))
 
     # Vector of the position of the nucleosomes
     mu              <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-
 
     sigmaf          <- matrix(0, nrow = nbrIterations, ncol = kMax)
 
@@ -222,7 +222,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     nbrIterations   <- ifelse(nbrReads <= 10, 1000, nbrIterations)
 
-    kValue <- as.integer(k[1])
+    kValue          <- as.integer(k[1])
 
 
     muValue       <- mu[1,]
