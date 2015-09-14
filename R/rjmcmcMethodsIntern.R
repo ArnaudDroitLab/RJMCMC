@@ -716,19 +716,45 @@ isInteger <- function(value) {
 #'    , deltamin = deltamin, deltamax = deltamax
 #'    , minReadPos= minReadPos, maxReadPos = maxReadPos )
 #'
+#' @param paramValues a \code{list} containing:
+#' \itemize{
+#'     \item startPSF a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
+#'     \item startPSR a \code{vector} of positive \code{integer}, the
+#' start position of all the reverse reads.
+#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
+#'     \item lambda TODO
+#'     \item minReads TODO
+#'     \item y TODO
+#'     \item nr TODO
+#'     \item nf TODO
+#'     \item nbrReads TODO
+#'     \item zeta TODO
+#'     \item deltamin TODO
+#'     \item deltamax TODO
+#'     \item minReadPos TODO
+#'     \item maxReadPos TODO
+#' }
+#'
 #' @param kValue
 #'
-#' @param muValue
+#' @param muValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the positions of the nucleosomes.
 #'
-#' @param sigmafValue
+#' @param sigmafValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the forward reads for each nucleosome.
 #'
-#' @param sigmarValue
+#' @param sigmarValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the reverse reads for each nucleosome.
 #'
-#' @param deltaValue
+#' @param deltaValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
 #'
-#' @param wValue
+#' @param wValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue
+#' @param dlValue TODO
 #'
 #' @param aValue
 #'

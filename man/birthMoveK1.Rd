@@ -16,21 +16,47 @@ birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
 
 \item{kValue}{}
 
-\item{muValue}{}
+\item{muValue}{a \code{vector} of \code{numeric} of length
+\code{kValue}, the positions of the nucleosomes.}
 
-\item{sigmafValue}{}
+\item{sigmafValue}{a \code{vector} of \code{numeric} of length
+\code{kValue}, the variance of the forward reads for each nucleosome.}
 
-\item{sigmarValue}{}
+\item{sigmarValue}{a \code{vector} of \code{numeric} of length
+\code{kValue}, the variance of the reverse reads for each nucleosome.}
 
-\item{deltaValue}{}
+\item{deltaValue}{a \code{vector} of \code{numeric} of length
+\code{kValue}, the distance between the maxima of the forward and
+reverse reads position densities for each nucleosome.}
 
-\item{wValue}{}
+\item{wValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{}
+\item{dlValue}{TODO}
 
 \item{aValue}{}
 
 \item{dimValue}{}
+
+\item{paramValues}{a \code{list} containing:
+\itemize{
+    \item startPSF a \code{vector} of positive \code{integer}, the
+start position of all the forward reads.
+    \item startPSR a \code{vector} of positive \code{integer}, the
+start position of all the reverse reads.
+    \item kmax a \code{integer} the maximum number of nucleosomes allowed.
+    \item lambda TODO
+    \item minReads TODO
+    \item y TODO
+    \item nr TODO
+    \item nf TODO
+    \item nbrReads TODO
+    \item zeta TODO
+    \item deltamin TODO
+    \item deltamax TODO
+    \item minReadPos TODO
+    \item maxReadPos TODO
+}}
 }
 \value{
 list( k=0L, mu=numeric(paramValues$kmax)
