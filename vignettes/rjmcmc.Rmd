@@ -40,7 +40,7 @@ concerted actions of Transcription Factors (TFs) and the proteins that
 constitute chromatin. The key structural element of chromatin is the 
 nucleosome, which consists of an octameric histone core wrapped by 146 bps 
 of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
-DNA (reference TODO).
+DNA (Polishko et al., 2012).
 
 ## 3. Loading the RJMCMC package
 
@@ -69,4 +69,4 @@ result
 
 ## 5. References
 
-TODO
+Polishko et al., 2012
