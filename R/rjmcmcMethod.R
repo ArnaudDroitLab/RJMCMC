@@ -643,7 +643,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         mutilde[i,j] <- runif(1,mu[i-1,j-1],mu[i-1,j])}
                     mutilde[i,1:ktilde[i]] <- sort(c(mu[i-1,1:k[i-1]],mutilde[i,j]))
 
-                    atilde[i,j+1] <- ifelse(j<ktilde[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],maxReadPos))
+                    atilde[i,j+1] <- ifelse(j<k[i-1], runif(1,mutilde[i,j],mutilde[i,j+1]), runif(1,mutilde[i,j],maxReadPos))
                     atilde[i,1:(ktilde[i]+1)] <- sort(c(a[i-1,1:ktilde[i]],atilde[i,j+1]))
                     if (j == 1){
                         atilde[i,j] <- minReadPos}
