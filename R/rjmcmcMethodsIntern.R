@@ -817,10 +817,10 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
                       , delta=rep(0, paramValues$kmax), w=rep(0, paramValues$kmax)
-                      , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
+                      , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    Kn              <- rep(0, paramValues$nbrIterations)
+    Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
@@ -916,6 +916,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         }
 
         for (m in 1:kValue) {
+
             Kar[,m] <- (varTilde$w[ m]*(1/sqrt(varTilde$sigmar[m]))*dt((paramValues$startPSR-varTilde$mu[m]-varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),varTilde$dl[m]))
             Kbr[,m] <- (wValue[m]*(1/sqrt(sigmarValue[m]))*dt((paramValues$startPSR-muValue[m]-deltaValue[m]/2)/sqrt(sigmarValue[m]),dlValue[m]))
         }
@@ -966,10 +967,10 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
                       , delta=rep(0, paramValues$kmax), w=rep(0, paramValues$kmax)
-                      , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
+                      , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    Kn              <- rep(0, paramValues$nbrIterations)
+    Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
@@ -1232,11 +1233,11 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
                       , delta=rep(0, paramValues$kmax), w=rep(0, paramValues$kmax)
-                      , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
+                      , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
     ## ASTRID : Kn n'a pas besoin d'etre initialise
-    Kn              <- rep(0, paramValues$nbrIterations)
+    Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
@@ -1353,10 +1354,10 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, delt
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
                       , delta=rep(0, paramValues$kmax), w=rep(0, paramValues$kmax)
-                      , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
+                      , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    Kn              <- rep(0, paramValues$nbrIterations)
+    Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
@@ -1495,10 +1496,10 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, d
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
                       , sigmaf=rep(0, paramValues$kmax), sigmar=rep(0, paramValues$kmax)
                       , delta=rep(0, paramValues$kmax), w=rep(0, paramValues$kmax)
-                      , dl=rep(0, paramValues$kmax), a=rep(0, paramValues$kmax)
+                      , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    Kn              <- rep(0, paramValues$nbrIterations)
+    Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kar             <- matrix(0, nrow = paramValues$nr, ncol = paramValues$kmax)
