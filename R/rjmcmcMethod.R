@@ -171,29 +171,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     dl              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
 
-    # Note use at the end
-
-#     a               <- matrix(0, nrow = nbrIterations, ncol = kMax + 1L)
-#     dim             <- matrix(0L, nrow = nbrIterations, ncol = kMax)
-#     rhob            <- rep(0, nbrIterations)
-#     rhod            <- rep(0, nbrIterations)
-#     rhomh           <- rep(0, nbrIterations)
-#     Kn              <- rep(0, nbrIterations)
-
-
-
-    # Tilde tmp
-#     ktilde          <- rep(0L, nbrIterations)
-#     mutilde         <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     sigmaftilde     <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     sigmartilde     <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     deltatilde      <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     wtilde          <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     atilde          <- matrix(0, nrow = nbrIterations, ncol = kMax + 1L)
-#     dimtilde        <- matrix(0, nrow = nbrIterations, ncol = kMax)
-#     dltilde         <- matrix(3, nrow = nbrIterations, ncol = kMax)
-
-
     k[1]            <- 1L
 
     mu[1, 1]        <- runif(1, minReadPos, maxReadPos)
@@ -204,27 +181,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     w[1, 1]         <- 1
     dl[1, 1]        <- 3
 
-#     a[1, 1]         <- minReadPos
-#     a[1, as.integer(k[1]) + 1L]  <- maxReadPos
-#
-#     dim[1,1]        <- nbrReads
-
-
-#     Kaf             <- matrix(0, nrow = nf, ncol = kMax)
-#     Kbf             <- matrix(0, nrow = nf, ncol = kMax)
-#     Kar             <- matrix(0, nrow = nr, ncol = kMax)
-#     Kbr             <- matrix(0, nrow = nr, ncol = kMax)
-#
-#     Y1f             <- rep(0, nf)
-#     Y2f             <- rep(0, nf)
-#     Y1r             <- rep(0, nr)
-#     Y2r             <- rep(0, nr)
-
     nbrIterations   <- ifelse(nbrReads <= 10, 1000, nbrIterations)
 
     kValue          <- as.integer(k[1])
 
 
+    ## Initialization of current values used in the loop
     muValue       <- mu[1,]
     sigmafValue   <- sigmaf[1,]
     sigmarValue   <- sigmar[1,]
@@ -240,9 +202,9 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     for (i in 2:nbrIterations) {
 
-        ## Current number of nucleosomes
-        ## kValue <- k[i-1]
+        ## List of current values that is going to be passed to sub-functions
         varTilde <- list()
+
         if (kValue == 1L) {
             ## CASE : Number of nucleosomes equal to 1
             u <- runif(1)
@@ -250,13 +212,11 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             if (u <= 0.5) {
 
                 # Birth move in case k=1
-
                 varTilde <- birthMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
                                         wValue, dlValue, aValue, dimValue)
             } ### end of B move in case k=1
             else {
-
                 ###Metropolis-Hastings move
                 varTilde <- mhMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
@@ -264,39 +224,38 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
             }    ### end of M-H move in case k=1
         }  ### end of test of k=1
-
         else {
-
+            ## CASE : Number of nucleosomes larger than 1
             u<-runif(1)
 
             if (u <= Dk(kValue, lambda, kMax)) {
-
                 ### Death move
                 varTilde <- deathMove(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
                                         wValue, dlValue, aValue, dimValue )
 
-            } else {
+            } ### end of Death move
+            else {
 
                 if (u <= (Dk(kValue, lambda, kMax) +
                                 Bk(kValue, lambda, kMax))) {
-
-                    #Birth move
+                    ### Birth move
                     varTilde <- birthMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
                                             deltaValue, wValue, dlValue,
                                             aValue, dimValue)
 
-                } else {
+                } ### end of Birth move
+                else {
                     ### Metropolis-Hastings move
                     varTilde <- mhMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
                                             deltaValue, wValue, dlValue,
                                             aValue, dimValue)
 
-                }
-            } #end of else of B move and M-H move
-        } ###end of moves in case k>=2
+                } ### end of Metropolis-Hastings move
+            } #end of else of Birth move and Metropolis-Hastings move
+        } ###end of moves in case larger than 1
 
         v <- runif(1)      #Acceptation/rejet
 
@@ -326,11 +285,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         dl[i, 1:maxValue]       <- dlValue[1:maxValue]
         w[i, 1:maxValue]        <- wValue[1:maxValue]
 
-        #ktildeValue <- varTilde$k
         ## Set the new value of kValue for the next iteration
-
-        #kValue <- as.integer(k[i])
-
 
     } ###end of boucle RJMCMC
 
@@ -366,27 +321,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         w[i, ]        <- c(listeUpdate$w, rep(0, kMax - kVal))
         dl[i, ]       <- c(listeUpdate$dl, rep(0, kMax - kVal))
     }
-
-#     kMax        <- max(kMax, sapply(1:nbrIterations,
-#                                         function(i){liste[[i]]$k}))
-#     mu          <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#     sigmaf      <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#     sigmar      <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#     delta       <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#     w           <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#     dl          <- matrix(0, nrow=nbrIterations, ncol=kMax)
-#
-#     for (i in 1:nbrIterations)
-#     {
-#         kVal                <- liste[[i]]$k
-#         k[i]                <- kVal
-#         mu[i, 1:kVal]       <- liste[[i]]$mu
-#         sigmaf[i, 1:kVal]   <- liste[[i]]$sigmaf
-#         sigmar[i, 1:kVal]   <- liste[[i]]$sigmar
-#         delta[i, 1:kVal]    <- liste[[i]]$delta
-#         w[i, 1:kVal]        <- liste[[i]]$w
-#         dl[i, 1:kVal]       <- liste[[i]]$dl
-#     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     ## Getting the number of nucleosomes with the highest frequency
