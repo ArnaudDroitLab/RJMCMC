@@ -91,7 +91,7 @@ data (MNase-Seq data).
 ## Loading dataset
 data(reads_demo)
 
-## Nucleosome positioning
+## Nucleosome positioning, running both merge and split functions
 result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
          startPosReverseReads = reads_demo$readsReverse,
          nbrIterations = 1000, lambda = 2, kMax = 30,

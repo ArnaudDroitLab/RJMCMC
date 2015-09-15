@@ -2,6 +2,7 @@
 
 export(RJMCMC)
 import(BiocGenerics)
+importFrom(IRanges,IRanges)
 importFrom(MCMCpack,ddirichlet)
 importFrom(MCMCpack,rdirichlet)
 importFrom(S4Vectors,Rle)

@@ -79,7 +79,7 @@ reverse reads position densities for each nucleosome.
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated number of reads associated to each nucleosome.
-    \item rho TODO
+    \item rho a \code{numeric}, the acceptance probability.
 }
 }
 \description{

@@ -331,7 +331,9 @@ elementWithHighestMode <- function(sample) {
 #' \code{k}, the variance of the forward reads for each nucleosome.
 #'     \item sigmar a \code{vector} of \code{numeric} of length
 #' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta TODO
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
 #'     \item dl TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -356,7 +358,9 @@ elementWithHighestMode <- function(sample) {
 #' \code{k}, the variance of the forward reads for each nucleosome.
 #'     \item sigmar a \code{vector} of \code{numeric} of length
 #' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta TODO
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
 #'     \item dl TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -463,7 +467,9 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #' \code{k}, the variance of the forward reads for each nucleosome.
 #'     \item sigmar a \code{vector} of \code{numeric} of length
 #' \code{k}, the variance of the reverse reads for each nucleosome.
-#'     \item delta TODO
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
 #'     \item dl TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -484,11 +490,13 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #'     \item k a \code{integer}, the number of nucleosomes.
 #'     \item mu a \code{vector} of \code{numeric}, the positions of
 #' the nucleosomes.
-#'     \item sigmaf TODO
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
 #'     \item sigmar a \code{vector} of \code{numeric} of length
 #' \code{k}, the variance of the reverse reads for each nucleosome.
 #'     \item delta a \code{vector} of \code{numeric} of length
-#' \code{k}, the variance of the forward reads for each nucleosome.
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
 #'     \item dl TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -787,7 +795,7 @@ isInteger <- function(value) {
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho TODO
+#'     \item rho a \code{numeric}, the acceptance probability.
 #' }
 #'
 #' @examples
@@ -1048,7 +1056,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho TODO
+#'     \item rho a \code{numeric}, the acceptance probability.
 #' }
 #'
 #' @examples
@@ -1316,7 +1324,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
 #' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho TODO
+#'     \item rho a \code{numeric}, the acceptance probability.
 #' }
 #'
 #' @examples
@@ -1550,7 +1558,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
 #' \code{k}, the updated number of reads associated to each nucleosome.
-#'     \item rho TODO
+#'     \item rho a \code{numeric}, the acceptance probability.
 #' }
 #'
 #' @examples

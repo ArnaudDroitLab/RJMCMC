@@ -81,7 +81,7 @@
 #' ## Loading dataset
 #' data(reads_demo)
 #'
-#' ## Nucleosome positioning
+#' ## Nucleosome positioning, running both merge and split functions
 #' result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
@@ -96,6 +96,7 @@
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois var rmultinom dt quantile
 #' @importFrom S4Vectors Rle
+#' @importFrom IRanges IRanges
 #' @import BiocGenerics
 #' @author Rawane Samb, Pascal Belleau, Astrid Desch&ecirc;nes
 #' @export
@@ -279,106 +280,44 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             aValue          <- c(varTilde$a[1:(maxValue + 1)], zeroVector)
         }
 
-        ## Assign resulting values for this iteration
-        k[i]                    <- kValue
-        maxValue                <- as.integer(k[i])
-        mu[i, 1:maxValue]       <- muValue[1:maxValue]
-        sigmaf[i, 1:maxValue]   <- sigmafValue[1:maxValue]
-        sigmar[i, 1:maxValue]   <- sigmarValue[1:maxValue]
-        delta[i, 1:maxValue]    <- deltaValue[1:maxValue]
-        dl[i, 1:maxValue]       <- dlValue[1:maxValue]
-        w[i, 1:maxValue]        <- wValue[1:maxValue]
+        ## Prepared list used by merge and split function
+        kVal <- kValue
+        listUpdate <- list(k       = kVal,
+                            mu     = muValue[1:kVal],
+                            sigmaf = sigmafValue[1:kVal],
+                            sigmar = sigmarValue[1:kVal],
+                            delta  = deltaValue[1:kVal],
+                            dl     = dlValue[1:kVal],
+                            w      = wValue[1:kVal]
+        )
 
         ## Run merging function if activated
         if (runMergeFunction) {
-            ## Prepared list used by merge function
-            kVal <- as.integer(k[i])
-            new.list <- list(
-                k      = kVal,
-                mu     = mu[i, 1:kVal],
-                sigmaf = sigmaf[i, 1:kVal],
-                sigmar = sigmar[i, 1:kVal],
-                delta  = delta[i, 1:kVal],
-                dl     = dl[i, 1:kVal],
-                w      = w[i, 1:kVal]
-            )
+            listUpdate <- mergeNucleosomes(startPosForwardReads,
+                                    startPosReverseReads, y, listUpdate,
+                                    minInterval, maxInterval, minReads)
+        }
 
-            listeUpdate <- mergeNucleosomes(startPosForwardReads,
-                                            startPosReverseReads, y, new.list,
-                                            minInterval,
-                                            maxInterval, minReads)
-
-            ## Assign new resulting values for this iterations
-            kVal          <- listeUpdate$k
-            k[i]          <- kVal
-            zeroVector    <- rep(0, kMax - kVal)
-            mu[i, ]       <- c(listeUpdate$mu, zeroVector)
-            sigmaf[i, ]   <- c(listeUpdate$sigmaf, zeroVector)
-            sigmar[i, ]   <- c(listeUpdate$sigmar, zeroVector)
-            delta[i, ]    <- c(listeUpdate$delta, zeroVector)
-            w[i, ]        <- c(listeUpdate$w, zeroVector)
-            dl[i, ]       <- c(listeUpdate$dl, zeroVector)
-        }###end of merge function
-
-        ## Run spliting function if activated
+        ## Run split function if activated
         if (runSplitFunction) {
-            # Prepare list used by split function
-            kVal <- as.integer(k[i])
-            new.list <- list(
-                k      = kVal,
-                mu     = mu[i, 1:kVal],
-                sigmaf = sigmaf[i, 1:kVal],
-                sigmar = sigmar[i, 1:kVal],
-                delta  = delta[i, 1:kVal],
-                dl     = dl[i, 1:kVal],
-                w      = w[i, 1:kVal]
-            )
+            listUpdate <- splitNucleosome(startPosForwardReads,
+                                    startPosReverseReads, y, listUpdate,
+                                    minInterval, maxInterval, minReads)
+        }
 
-            listeUpdate <- splitNucleosome(startPosForwardReads,
-                                            startPosReverseReads, y, new.list,
-                                            minInterval,
-                                            maxInterval, minReads)
-
-            ## Assign new resulting values for this iterations
-            kVal          <- listeUpdate$k
-            k[i]          <- kVal
-            zeroVector    <- rep(0, kMax - kVal)
-            mu[i, ]       <- c(listeUpdate$mu, zeroVector)
-            sigmaf[i, ]   <- c(listeUpdate$sigmaf, zeroVector)
-            sigmar[i, ]   <- c(listeUpdate$sigmar, zeroVector)
-            delta[i, ]    <- c(listeUpdate$delta, zeroVector)
-            w[i, ]        <- c(listeUpdate$w, zeroVector)
-            dl[i, ]       <- c(listeUpdate$dl, zeroVector)
-        }###end of split function
+        ## Assign resulting values for this iteration
+        kVal          <- listUpdate$k
+        k[i]          <- kVal
+        zeroVector    <- rep(0, kMax - kVal)
+        mu[i, ]       <- c(listUpdate$mu, zeroVector)
+        sigmaf[i, ]   <- c(listUpdate$sigmaf, zeroVector)
+        sigmar[i, ]   <- c(listUpdate$sigmar, zeroVector)
+        delta[i, ]    <- c(listUpdate$delta, zeroVector)
+        w[i, ]        <- c(listUpdate$w, zeroVector)
+        dl[i, ]       <- c(listUpdate$dl, zeroVector)
 
     } ###end of boucle RJMCMC
 
-#     for (i in 1:nbrIterations)
-#     {
-#         kVal <- as.integer(k[i])
-#         new.list <- list(
-#                         k      = kVal,
-#                         mu     = mu[i, 1:kVal],
-#                         sigmaf = sigmaf[i, 1:kVal],
-#                         sigmar = sigmar[i, 1:kVal],
-#                         delta  = delta[i, 1:kVal],
-#                         dl     = dl[i, 1:kVal],
-#                         w      = w[i, 1:kVal]
-#         )
-#
-#         listeUpdate <- mergeNucleosomes(startPosForwardReads,
-#                                         startPosReverseReads, y, new.list,
-#                                         minInterval,
-#                                         maxInterval, minReads)
-#         kVal                <- listeUpdate$k
-#         k[i]                <- kVal
-#         mu[i, ]             <- c(listeUpdate$mu, rep(0, kMax - kVal))
-#         sigmaf[i, ]   <- c(listeUpdate$sigmaf, rep(0, kMax - kVal))
-#         sigmar[i, ]   <- c(listeUpdate$sigmar, rep(0, kMax - kVal))
-#         delta[i, ]    <- c(listeUpdate$delta, rep(0, kMax - kVal))
-#         w[i, ]        <- c(listeUpdate$w, rep(0, kMax - kVal))
-#         dl[i, ]       <- c(listeUpdate$dl, rep(0, kMax - kVal))
-#     }
 
     ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
     ## Getting the number of nucleosomes with the highest frequency

@@ -31,7 +31,9 @@ the nucleosomes.
 \code{k}, the variance of the forward reads for each nucleosome.
     \item sigmar a \code{vector} of \code{numeric} of length
 \code{k}, the variance of the reverse reads for each nucleosome.
-    \item delta TODO
+    \item delta a \code{vector} of \code{numeric} of length
+\code{k}, the distance between the maxima of the forward and
+reverse reads position densities for each nucleosome.
     \item dl TODO
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -57,7 +59,9 @@ the nucleosomes.
 \code{k}, the variance of the forward reads for each nucleosome.
     \item sigmar a \code{vector} of \code{numeric} of length
 \code{k}, the variance of the reverse reads for each nucleosome.
-    \item delta TODO
+    \item delta a \code{vector} of \code{numeric} of length
+\code{k}, the distance between the maxima of the forward and
+reverse reads position densities for each nucleosome.
     \item dl TODO
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
