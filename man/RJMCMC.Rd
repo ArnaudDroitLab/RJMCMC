@@ -5,7 +5,8 @@
 \title{Nucleosome positioning mapping}
 \usage{
 RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
-  minInterval, maxInterval, minReads, verbose = FALSE)
+  minInterval, maxInterval, minReads, runSplitFunction = TRUE,
+  runMergeFunction = TRUE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -38,8 +39,11 @@ number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
 
-\item{verbose}{a \code{logical} indicating if extra information must be
-printed or not. Default: \code{FALSE}.}
+\item{runSplitFunction}{a \code{logical} indicating if the split function
+is run or skipt. Default: \code{TRUE}.}
+
+\item{runMergeFunction}{a \code{logical} indicating if the merge function
+is run or skipt. Default: \code{TRUE}.}
 }
 \value{
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
@@ -100,6 +104,6 @@ result$k
 result$mu
 }
 \author{
-Rawane Samb
+Rawane Samb, Pascal Belleau, Astrid Desch&ecirc;nes
 }
 

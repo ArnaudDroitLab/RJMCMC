@@ -6,7 +6,8 @@
 function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
-  kMax, lambda, minInterval, maxInterval, minReads, verbose)
+  kMax, lambda, minInterval, maxInterval, minReads, runSplitFunction,
+  runMergeFunction)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -39,8 +40,11 @@ number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
 
-\item{verbose}{a \code{logical} indicating if extra information must be
-printed or not.}
+\item{runSplitFunction}{a \code{logical} indicating if the split function
+is run or skipt.}
+
+\item{runMergeFunction}{a \code{logical} indicating if the merge function
+is run or skipt.}
 }
 \value{
 \code{0} indicating that all parameters validations have been

@@ -427,8 +427,8 @@ mergeNucleosomes <- function(yf, yr, y, list,
         } ### end of condition if (ecart.min < minInterval)
 
         ## Trying to split resulting nucleosomes
-        list <- splitNucleosome(yf, yr, y, list, minInterval,
-                                    maxInterval, minReads)
+        ##list <- splitNucleosome(yf, yr, y, list, minInterval,
+        ##                            maxInterval, minReads)
     } ### end of condition if (k > 1)
 
     return(list)
@@ -611,8 +611,10 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @param verbose a \code{logical} indicating if extra information must be
-#' printed or not.
+#' @param runSplitFunction a \code{logical} indicating if the split function
+#' is run or skipt.
+#' @param runMergeFunction a \code{logical} indicating if the merge function
+#' is run or skipt.
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
@@ -622,7 +624,7 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kMax, lambda,
                                     minInterval, maxInterval, minReads,
-                                    verbose) {
+                                    runSplitFunction, runMergeFunction) {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
         stop("nbrIterations must be a positive integer or numeric")
@@ -661,9 +663,14 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
                     "numeric values."))
     }
 
-    ## Validate that verbose is a logical
-    if (!is.logical(verbose)) {
-        stop("verbose must be a logical.")
+    ## Validate that runSplitFunction is a logical
+    if (!is.logical(runSplitFunction)) {
+        stop("runSplitFunction must be a logical.")
+    }
+
+    ## Validate that runMergeFunction is a logical
+    if (!is.logical(runMergeFunction)) {
+        stop("runMergeFunction must be a logical.")
     }
 
     return(0)
