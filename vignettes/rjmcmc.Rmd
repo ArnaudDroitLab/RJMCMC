@@ -16,7 +16,7 @@ BiocStyle::markdown()
 
 </br>
 
-Author: Rawane Samb, Astrid Louise Deschenes, Khader Khadraoui, 
+Author: Rawane Samb, Astrid Deschenes, Khader Khadraoui, 
 Lajmi Lakhal-Chaieb, Pascal Belleau and Arnaud Droit<br />
 Compilation date: `r Sys.Date()`
 
@@ -29,9 +29,10 @@ this software.
 If you use this package for a publication, we would ask you to cite the
 following:
 
-> Samb R, Khadraoui K, Belleau P, Desch&ecirc;nes A, Lakhal L et Droit A.  
-> Using informative Multinomial-Dirichlet prior in a t-mixture with reversible 
-> jump estimation of nucleosome positions for genome-wide profiling. 
+> Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal L et Droit A.  
+> Using informative Multinomial-Dirichlet prior in a t-mixture with   
+> reversible jump estimation of nucleosome positions for genome-wide  
+> profiling.  
 > Submitted (2015). 
 
 
@@ -42,7 +43,27 @@ concerted actions of Transcription Factors (TFs) and the proteins that
 constitute chromatin. The key structural element of chromatin is the 
 nucleosome, which consists of an octameric histone core wrapped by 146 bps 
 of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
-DNA [@Polishko2012a].
+DNA [@Polishko2012].
+
+The literature on nucleosome positioning commonly focuses on frequentist 
+inferences within parametric approaches (see for instance @Chen2010 and
+@Xi2010).  In those works, the detection of nucleosome positions is done 
+using a hidden Markov model with a known order by 
+assumption.  
+
+The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
+model for profiling of nucleosome positions based on high-throughput  
+short-read data (MNase-Seq data). 
+
+The implemantation is based on a strategy which 
+incorporates four aspects. First, it jointly models local concentrations
+of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
+construction of an informative prior distribution coupled to a t-mixture model 
+with unknown degrees of freedom. Third,the number of nucleosomes
+is considered to be a random variable and refers to a prior distribution. 
+Fourth, the unknown parameters are simultaneously using the reversible jump 
+Markov chain Monte Carlo (RJMCMC) simulation technique (see for instance 
+@Green1995 and @Richardson1997). 
 
 
 ## Loading the RJMCMC package
