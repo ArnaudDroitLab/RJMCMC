@@ -104,8 +104,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
                     runSplitFunction = TRUE,
-                    runMergeFunction = TRUE)
-{
+                    runMergeFunction = TRUE) {
+
     # Get call information
     cl <- match.call()
 
@@ -119,7 +119,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                                 maxInterval = maxInterval,
                                 minReads = minReads,
                                 runSplitFunction = runSplitFunction,
-                                runMergeFunction =runMergeFunction)
+                                runMergeFunction = runMergeFunction)
 
     # Casting specific inputs as integer
     minReads        <- as.integer(minReads)
@@ -151,7 +151,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     minReadPos <- min(y)
     maxReadPos <- max(y)
 
-    paramValues = list(startPSF =  startPosForwardReads,
+    paramValues <- list(startPSF =  startPosForwardReads,
                         startPSR = startPosReverseReads,
                         kmax = kMax,
                         lambda = lambda,
@@ -191,23 +191,21 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     kValue          <- as.integer(k[1])
 
-
     ## Initialization of current values used in the loop
-    muValue       <- mu[1,]
-    sigmafValue   <- sigmaf[1,]
-    sigmarValue   <- sigmar[1,]
-    deltaValue    <- delta[1,]
-    wValue        <- w[1,]
-    dlValue       <- dl[1,]
-    aValue        <- rep(0, kMax + 1L)
-    aValue[1]     <- minReadPos
-    aValue[as.integer(k[1]) + 1L]  <- maxReadPos
-    dimValue       <- rep(0, kMax)
-    dimValue[1]    <- nbrReads
-    ktildeValue    <- as.integer(k[1])
+    muValue                         <- mu[1,]
+    sigmafValue                     <- sigmaf[1,]
+    sigmarValue                     <- sigmar[1,]
+    deltaValue                      <- delta[1,]
+    wValue                          <- w[1,]
+    dlValue                         <- dl[1,]
+    aValue                          <- rep(0, kMax + 1L)
+    aValue[1]                       <- minReadPos
+    aValue[as.integer(k[1]) + 1L]   <- maxReadPos
+    dimValue                        <- rep(0, kMax)
+    dimValue[1]                     <- nbrReads
+    ktildeValue                     <- as.integer(k[1])
 
     for (i in 2:nbrIterations) {
-
         ## List of current values that is going to be passed to sub-functions
         varTilde <- list()
 
@@ -216,7 +214,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             u <- runif(1)
 
             if (u <= 0.5) {
-
                 # Birth move in case k=1
                 varTilde <- birthMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
@@ -319,7 +316,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     } ###end of boucle RJMCMC
 
 
-    ## Astrid : Si la fonction mode() retourne NA, le cas n'est pas gere
+    ## ATTENTION: Beware that the potential return of NA is not handled
     ## Getting the number of nucleosomes with the highest frequency
     km          <- elementWithHighestMode(as.integer(k))
     kPositions  <- which(as.integer(k) == km)
@@ -367,5 +364,4 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     class(result)<-"rjmcmcNucleosomes"
 
     return(result)
-
 }
