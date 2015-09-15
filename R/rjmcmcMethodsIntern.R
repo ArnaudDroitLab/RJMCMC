@@ -1236,7 +1236,6 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                       , dl=rep(3, paramValues$kmax),a=rep(0, paramValues$kmax + 1L)
                       , dim=rep(0, paramValues$kmax), rho=0)
 
-    ## ASTRID : Kn n'a pas besoin d'etre initialise
     Kn              <- 0
     Kaf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
     Kbf             <- matrix(0, nrow = paramValues$nf, ncol = paramValues$kmax)
