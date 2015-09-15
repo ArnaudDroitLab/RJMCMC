@@ -251,16 +251,16 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
                 # Birth move in case k=1
 
-                varTilde <- birthMoveK1(paramValues, kValue, muValue
-                                        , sigmafValue, sigmarValue, deltaValue
-                                        , wValue, dlValue, aValue, dimValue )
+                varTilde <- birthMoveK1(paramValues, kValue, muValue,
+                                        sigmafValue, sigmarValue, deltaValue,
+                                        wValue, dlValue, aValue, dimValue)
             } ### end of B move in case k=1
             else {
 
                 ###Metropolis-Hastings move
-                varTilde <- mhMoveK1(paramValues, kValue, muValue
-                                      , sigmafValue, sigmarValue, deltaValue
-                                      , wValue, dlValue, aValue, dimValue )
+                varTilde <- mhMoveK1(paramValues, kValue, muValue,
+                                        sigmafValue, sigmarValue, deltaValue,
+                                        wValue, dlValue, aValue, dimValue)
 
             }    ### end of M-H move in case k=1
         }  ### end of test of k=1
@@ -272,13 +272,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             if (u <= Dk(kValue, lambda, kMax)) {
 
                 ### Death move
-                varTilde <- deathMove(paramValues, kValue, muValue
-                                      , sigmafValue, sigmarValue, deltaValue
-                                      , wValue, dlValue, aValue, dimValue )
+                varTilde <- deathMove(paramValues, kValue, muValue,
+                                        sigmafValue, sigmarValue, deltaValue,
+                                        wValue, dlValue, aValue, dimValue )
 
             } else {
 
-                if (u <= (Dk(kValue, lambda, kMax) + Bk(kValue, lambda, kMax))) {
+                if (u <= (Dk(kValue, lambda, kMax) +
+                                Bk(kValue, lambda, kMax))) {
 
                     #Birth move
                     varTilde <- birthMove(paramValues, kValue, muValue,
@@ -303,14 +304,15 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             # Acceptation, so values are updated
             kValue          <- varTilde$k
             maxValue        <- as.integer(kValue)
-            muValue         <- c(varTilde$mu[ 1:maxValue], rep(0, kMax-maxValue))
-            sigmafValue     <- c(varTilde$sigmaf[ 1:maxValue], rep(0, kMax-maxValue))
-            sigmarValue     <- c(varTilde$sigmar[ 1:maxValue], rep(0, kMax-maxValue))
-            deltaValue      <- c(varTilde$delta[ 1:maxValue], rep(0, kMax-maxValue))
-            dlValue         <- c(varTilde$dl[ 1:maxValue], rep(0, kMax-maxValue))
-            wValue          <- c(varTilde$w[ 1:maxValue], rep(0, kMax-maxValue))
-            dimValue        <- c(varTilde$dim[ 1:maxValue], rep(0, kMax-maxValue))
-            aValue          <- c(varTilde$a[ 1:(maxValue + 1)], rep(0, kMax-maxValue))
+            zeroVector      <- rep(0, kMax - maxValue)
+            muValue         <- c(varTilde$mu[1:maxValue], zeroVector)
+            sigmafValue     <- c(varTilde$sigmaf[1:maxValue], zeroVector)
+            sigmarValue     <- c(varTilde$sigmar[1:maxValue], zeroVector)
+            deltaValue      <- c(varTilde$delta[1:maxValue], zeroVector)
+            dlValue         <- c(varTilde$dl[1:maxValue], zeroVector)
+            wValue          <- c(varTilde$w[1:maxValue], zeroVector)
+            dimValue        <- c(varTilde$dim[1:maxValue], zeroVector)
+            aValue          <- c(varTilde$a[1:(maxValue + 1)], zeroVector)
         }
 
         # Si on veut faire le merge on peut le faire ici
@@ -332,7 +334,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     } ###end of boucle RJMCMC
 
-    liste <- rep(list(NULL),nbrIterations)
+    liste <- rep(list(NULL), nbrIterations)
 
     for (i in 1:nbrIterations)
     {
@@ -352,7 +354,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         }
 
         listeUpdate <- mergeNucleosomes(startPosForwardReads,
-                                        startPosReverseReads,y, new.list,
+                                        startPosReverseReads, y, new.list,
                                         minInterval,
                                         maxInterval, minReads)
         kVal                <- listeUpdate$k
