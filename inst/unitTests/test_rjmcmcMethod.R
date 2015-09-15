@@ -138,7 +138,7 @@ test.rjmcmc_good_result_03 <- function() {
     exp.qw      <- matrix(c(0.617525448735973, 0.000000000000, 1.000000000000,
                             0.382474551264027),  nrow=2)
 
-    message     <- paste0(" rjmcmc_good_result_02() ",
+    message     <- paste0(" rjmcmc_good_result_03() ",
                           "- RJMCMC did not generated expected values")
 
     checkEqualsNumeric(obs$k, exp.k, msg = message)
