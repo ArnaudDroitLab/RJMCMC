@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{mhMoveK1}
 \alias{mhMoveK1}
-\title{Metropolis-Hastings move}
+\title{Metropolis-Hastings move when number of nucleosomes is equal to 1}
 \usage{
 mhMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
   wValue, dlValue, aValue, dimValue)
@@ -53,7 +53,8 @@ reverse reads position densities for each nucleosome.}
 
 \item{dlValue}{TODO}
 
-\item{aValue}{TODO}
+\item{aValue}{a \code{vector} of positive \code{integer} of length
+\code{kValue + 1}, TODO}
 
 \item{dimValue}{a \code{vector} of positive \code{integer} of length
 \code{kValue}, the number of reads associated to each nucleosome.}
@@ -74,14 +75,16 @@ reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
     \item dl TODO
-    \item a TODO
+    \item a a \code{vector} of positive \code{integer} of length
+\code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{integer} of length
 \code{k}, the updated number of reads associated to each nucleosome.
     \item rho TODO
 }
 }
 \description{
-Attempt to randomly change the position of one nucleosome. This
+Attempt to randomly change the position of one nucleosome.
+Special case for a number of nucleosomes equal to one. This
 move is given by the usual Metropolis-Hastings move, see for instance
 Tierney (1994).
 }
@@ -98,8 +101,13 @@ minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
 nbrIterations = 100)
 
-rjmcmc:::mhMoveK1(paramValues = paramList, kValue, muValue, sigmafValue,
-sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue )
+rjmcmc:::mhMoveK1(paramValues = paramList, kValue = 1L,
+muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
+deltaValue, wValue = c(1), dlValue = c(3),
+aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+dimValue = c(length(reads_demo$readsForward) +
+length(reads_demo$readsReverse)))
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes

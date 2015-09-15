@@ -11,10 +11,10 @@
 #' @aliases rjmcmc-package rjmcmc
 #'
 #' @author  Rawane Samb,
-#' Astrid Louise Deschenes,
 #' Khader Khadraoui,
-#' Lajmi Lakhal,
-#' Pascal Belleau and
+#' Astrid Louise Deschenes,
+#' Pascal Belleau,
+#' Lajmi Lakhal and
 #' Arnaud Droit
 #'
 #' Maintainer:
@@ -66,7 +66,7 @@ NULL
 #' ## Nucleosome positioning
 #' RJMCMC(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
-#'          nbrIterations = 100, lambda = 3, kmax = 30,
+#'          nbrIterations = 100, lambda = 3, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
 #'
 NULL
@@ -110,7 +110,7 @@ NULL
 #' ## Nucleosome positioning
 #' RJMCMC(startPosForwardReads = reads_demo_02$readsForward,
 #'          startPosReverseReads = reads_demo_02$readsReverse,
-#'          nbrIterations = 150, lambda = 3, kmax = 30,
+#'          nbrIterations = 150, lambda = 3, kMax = 30,
 #'          minInterval = 144, maxInterval = 290, minReads = 6)
 #'
 NULL

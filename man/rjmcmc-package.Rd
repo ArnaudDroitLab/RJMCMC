@@ -12,10 +12,10 @@ estimation of nucleosome positions for genome-wide profiling.
 }
 \author{
 Rawane Samb,
-Astrid Louise Deschenes,
 Khader Khadraoui,
-Lajmi Lakhal,
-Pascal Belleau and
+Astrid Louise Deschenes,
+Pascal Belleau,
+Lajmi Lakhal and
 Arnaud Droit
 
 Maintainer:
