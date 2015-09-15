@@ -100,13 +100,7 @@ minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
 nbrIterations = 100)
 
-rjmcmc:::mhMove(paramValues = paramList, kValue = 1L,
-muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-deltaValue, wValue = c(1), dlValue = c(3),
-aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-dimValue = c(length(reads_demo$readsForward) +
-length(reads_demo$readsReverse)))
+## TODO
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes
