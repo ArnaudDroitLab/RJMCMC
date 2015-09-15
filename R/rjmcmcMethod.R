@@ -150,7 +150,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         kmax = kMax,
                         lambda = lambda,
                         minReads = minReads,
-                        y = y, nr = nr, nf =nf, nbrReads = nbrReads,
+                        y = y, nr = nr, nf = nf, nbrReads = nbrReads,
                         zeta = zeta, deltamin = deltamin, deltamax = deltamax,
                         minReadPos = minReadPos, maxReadPos = maxReadPos,
                         nbrIterations = nbrIterations)
