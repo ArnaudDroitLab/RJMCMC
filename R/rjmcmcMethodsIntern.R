@@ -707,7 +707,7 @@ isInteger <- function(value) {
 
 #' @title Birth move in the case that only one nucleosome is present
 #'
-#' @description Attempts to add a component for a new nucleosome in the
+#' @description Attempt to add a component for a new nucleosome in the
 #' case that only one nucleosome is present \code{k = 1}
 #'
 #' @param paramValues a \code{list} containing:
@@ -959,6 +959,110 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
     return(varTilde)
 }
 
+#' @title Birth move
+#'
+#' @description Attempt to add a component for a new nucleosome.
+#'
+#' @param paramValues a \code{list} containing:
+#' \itemize{
+#'     \item startPSF a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
+#'     \item startPSR a \code{vector} of positive \code{integer}, the
+#' start position of all the reverse reads.
+#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
+#'     \item lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
+#'     \item minReads a \code{integer}, the minimum
+#' number of reads in a potential canditate region.
+#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
+#' including forward and reverse reads).
+#'     \item nr a \code{integer}, the number of reverse reads.
+#'     \item nf a \code{integer}, the number of forward reads.
+#'     \item nbrReads a \code{integer}, the total number of reads (including
+#' forward and reverse reads).
+#'     \item zeta TODO
+#'     \item deltamin TODO
+#'     \item deltamax TODO
+#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
+#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
+#'     \item nbrIterations a \code{integer}, the number of iterations.
+#' }
+#'
+#' @param kValue a \code{integer}, the number of nucleosomes.
+#'
+#' @param muValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the positions of the nucleosomes.
+#'
+#' @param sigmafValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the forward reads for each nucleosome.
+#'
+#' @param sigmarValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the reverse reads for each nucleosome.
+#'
+#' @param deltaValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#'
+#' @param wValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the weight for each nucleosome.
+#'
+#' @param dlValue TODO
+#'
+#' @param aValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue + 1}, TODO
+#'
+#' @param dimValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the number of reads associated to each nucleosome.
+#'
+#' @return a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the updated number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated positions of the nucleosomes.
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the updated distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated weight for each nucleosome.
+#'     \item dl TODO
+#'     \item a a \code{vector} of positive \code{numerical} of length
+#' \code{k + 1}, TODO
+#'     \item dim a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated number of reads associated to each nucleosome.
+#'     \item rho TODO
+#' }
+#'
+#' @examples
+#'
+#' ## Load dataset
+#' data(reads_demo)
+#'
+#' ## Create a list containing the mandatory parameters
+#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
+#' nr = length(reads_demo$readsReverse),
+#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
+#' zeta = 147, deltamin = 142, deltamax = 142,
+#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' nbrIterations = 100)
+#'
+#' ## Create a list containing the mandatory parameters
+#' rjmcmc:::birthMove(paramValues = paramList, kValue = 1L,
+#' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
+#' deltaValue, wValue = c(1), dlValue = c(3),
+#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+#' dimValue = c(length(reads_demo$readsForward) +
+#' length(reads_demo$readsReverse)))
+#'
+#'
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @keywords internal
+#'
 birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                             deltaValue, wValue, dlValue,
                             aValue, dimValue){
@@ -1348,6 +1452,112 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
+#' @title Metropolis-Hastings move
+#'
+#' @description Attempt to randomly change the position of one nucleosome.
+#' This move is given by the usual Metropolis-Hastings move, see for instance
+#' Tierney (1994).
+#'
+#' @param paramValues a \code{list} containing:
+#' \itemize{
+#'     \item startPSF a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
+#'     \item startPSR a \code{vector} of positive \code{integer}, the
+#' start position of all the reverse reads.
+#'     \item kmax a \code{integer} the maximum number of nucleosomes allowed.
+#'     \item lambda a positive \code{numeric}, the theorical mean
+#' of the Poisson distribution.
+#'     \item minReads a \code{integer}, the minimum
+#' number of reads in a potential canditate region.
+#'     \item y a \code{vector} of \code{numeric}, the position of all reads (
+#' including forward and reverse reads).
+#'     \item nr a \code{integer}, the number of reverse reads.
+#'     \item nf a \code{integer}, the number of forward reads.
+#'     \item nbrReads a \code{integer}, the total number of reads (including
+#' forward and reverse reads).
+#'     \item zeta TODO
+#'     \item deltamin TODO
+#'     \item deltamax TODO
+#'     \item minReadPos a \code{numeric}, the minimum position of the reads.
+#'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
+#'     \item nbrIterations a \code{integer}, the number of iterations.
+#' }
+#'
+#' @param kValue a \code{integer}, the number of nucleosomes.
+#'
+#' @param muValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the positions of the nucleosomes.
+#'
+#' @param sigmafValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the forward reads for each nucleosome.
+#'
+#' @param sigmarValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the variance of the reverse reads for each nucleosome.
+#'
+#' @param deltaValue a \code{vector} of \code{numeric} of length
+#' \code{kValue}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#'
+#' @param wValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the weight for each nucleosome.
+#'
+#' @param dlValue TODO
+#'
+#' @param aValue a \code{vector} of positive \code{integer} of length
+#' \code{kValue + 1}, TODO
+#'
+#' @param dimValue a \code{vector} of positive \code{integer} of length
+#' \code{kValue}, the number of reads associated to each nucleosome.
+#'
+#' @return a \code{list} containing:
+#' \itemize{
+#'     \item k a \code{integer}, the updated number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated positions of the nucleosomes.
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the updated distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#'     \item w a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated weight for each nucleosome.
+#'     \item dl TODO
+#'     \item a a \code{vector} of positive \code{integer} of length
+#' \code{k + 1}, TODO
+#'     \item dim a \code{vector} of positive \code{integer} of length
+#' \code{k}, the updated number of reads associated to each nucleosome.
+#'     \item rho TODO
+#' }
+#'
+#' @examples
+#'
+#' ## Load dataset
+#' data(reads_demo)
+#'
+#' ## Create a list containing the mandatory parameters
+#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
+#' nr = length(reads_demo$readsReverse),
+#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
+#' zeta = 147, deltamin = 142, deltamax = 142,
+#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' nbrIterations = 100)
+#'
+#' rjmcmc:::mhMove(paramValues = paramList, kValue = 1L,
+#' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
+#' deltaValue, wValue = c(1), dlValue = c(3),
+#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+#' dimValue = c(length(reads_demo$readsForward) +
+#' length(reads_demo$readsReverse)))
+#'
+#' @importFrom stats runif dmultinom
+#' @importFrom MCMCpack rdirichlet ddirichlet
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @keywords internal
+#'
 mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue, deltaValue, wValue, dlValue, aValue, dimValue ){
     ### Metropolis-Hastings move
     varTilde <- list( k=0L, mu=rep(0,paramValues$kmax)
