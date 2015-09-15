@@ -13,13 +13,13 @@ estimation of nucleosome positions for genome-wide profiling.
 \author{
 Rawane Samb,
 Khader Khadraoui,
-Astrid Louise Deschenes,
+Astrid Deschenes,
 Pascal Belleau,
 Lajmi Lakhal and
 Arnaud Droit
 
 Maintainer:
-Astrid Louise Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
+Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
 }
 \seealso{
 \itemize{

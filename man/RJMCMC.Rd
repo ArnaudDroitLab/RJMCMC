@@ -104,6 +104,6 @@ result$k
 result$mu
 }
 \author{
-Rawane Samb, Pascal Belleau, Astrid Desch&ecirc;nes
+Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
 

@@ -98,7 +98,7 @@
 #' @importFrom S4Vectors Rle
 #' @importFrom IRanges IRanges
 #' @import BiocGenerics
-#' @author Rawane Samb, Pascal Belleau, Astrid Desch&ecirc;nes
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @export
 RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
