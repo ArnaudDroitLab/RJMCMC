@@ -1903,7 +1903,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 
     }
 
-    varTilde$rho <- ifelse(is.na(varTilde$rho) == FALSE, varTilde$rho, 0)
+    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
 
     return(varTilde)
 }
@@ -2188,7 +2188,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             paramValues$kmax)))
     }
 
-    varTilde$rho <- ifelse(is.na(varTilde$rho) == FALSE, varTilde$rho, 0)
+    varTilde$rho <- ifelse(is.na(varTilde$rho), 0, varTilde$rho)
 
     return(varTilde)
 }
