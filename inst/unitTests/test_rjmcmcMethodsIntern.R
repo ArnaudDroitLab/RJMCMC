@@ -286,16 +286,17 @@ test.isInteger_with_vector_of_integers <- function() {
 
 ## Test the validateParameters
 test.validateParameters_empty_startPosForwardReads<- function() {
-
-    obs <- tryCatch(rjmcmc:::validateParameters(startPosForwardReads =
-                    c(72282.19, 72280.45, 72281.02, 72285.49, 72282.65),
+    obs <- tryCatch(rjmcmc:::validateParameters(startPosForwardReads = NULL,
                     startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                             72429.24, 72426.08),
                     nbrIterations = 10, kMax = 11, lambda = 72400,
                     minInterval = 142, maxInterval = 200, minReads = 5),
                     error=conditionMessage)
-    message <- paste0(" isInteger_with_vector_of_integers() ",
-                      "- A vector of integers did not generated FALSE.")
-    checkEquals(obs, FALSE, msg = message)
+    exp <- paste0("startPosForwardReads must be a non-empty vector ",
+                  "of numeric values.")
+    message <- paste0(" test.validateParameters_empty_startPosForwardReads() ",
+                      "- A empty startPosForwardReads did not generated ",
+                      "expected message.")
+    checkEquals(obs, exp, msg = message)
 }
 
