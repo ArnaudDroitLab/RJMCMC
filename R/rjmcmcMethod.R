@@ -345,7 +345,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     # Create the final list
     result <- list(
         call    = cl,
-        K       = as.integer(k),
+        K       = k,
         k       = km,
         mu      = mu_hat,
         sigmaf  = sigmaf_hat,
