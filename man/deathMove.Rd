@@ -91,12 +91,13 @@ data(reads_demo)
 
 ## Create a list containing the mandatory parameters
 paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-nr = length(reads_demo$readsReverse),
-nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-zeta = 147, deltamin = 142, deltamax = 142,
-minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
-nbrIterations = 100)
+    nr = length(reads_demo$readsReverse),
+    nbrReads = length(reads_demo$readsForward) +
+    length(reads_demo$readsReverse),
+    zeta = 147, deltamin = 142, deltamax = 142,
+    minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+    maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
+    nbrIterations = 100)
 
 ## TODO
 }
