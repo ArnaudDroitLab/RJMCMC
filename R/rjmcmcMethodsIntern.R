@@ -146,6 +146,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' rjmcmc:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 #'
+#' @importFrom stats runif rt
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 student.mixture <- function(i, k, weight, mu, sigma, dfr) {
@@ -198,6 +199,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #' rjmcmc:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 #'
+#' @importFrom stats runif
 #' @author Rawane Samb, Astrid Louise Deschenes
 #' @keywords internal
 normal.mixture <- function(i, k, weight, mu, sigma) {
@@ -690,19 +692,19 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
     ## Validate that the startPosForwardReads has at least one read
     ## and that the values are integer
     if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
-        || length(startPosForwardReads) < 1 || !all(startPosForwardReads > 0))
+        || length(startPosForwardReads) < 1)
     {
         stop(paste0("startPosForwardReads must be a non-empty vector of ",
-                    "non-negative numeric values."))
+                    "numeric values."))
     }
 
     ## Validate that the startPosReverseReads has at least one read
     ## and that the values are integer
     if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
-        || length(startPosReverseReads) < 1 || !all(startPosReverseReads > 0))
+        || length(startPosReverseReads) < 1)
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
-                    "non-negative numeric values."))
+                    "numeric values."))
     }
 
     return(0)
