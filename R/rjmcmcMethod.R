@@ -350,6 +350,20 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     qw      <- t(apply(w[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
                         probs=c(0.025, 0.975), na.rm = TRUE))
 
+    # Getting 2.5% and 97.5% quantiles for each important data type
+    qmuNew     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+    qsigmafNew <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+    qsigmarNew <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+    qdeltaNew  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+    qdlNew     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+    qwNew     <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+
     # Create the final list
     result <- list(
         call    = cl,
@@ -366,7 +380,13 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         qsigmar = qsigmar,
         qdelta  = qdelta,
         qdl     = qdl,
-        qw      = qw
+        qw      = qw,
+        qmuNew     = qmuNew,
+        qsigmafNew = qsigmafNew,
+        qsigmarNew = qsigmarNew,
+        qdeltaNew  = qdeltaNew,
+        qdlNew     = qdlNew,
+        qwNew      = qwNew
     )
 
     class(result)<-"rjmcmcNucleosomes"
