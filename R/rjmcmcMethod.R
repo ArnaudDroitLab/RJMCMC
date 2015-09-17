@@ -329,26 +329,26 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     km          <- elementWithHighestMode(as.integer(k))
     kPositions  <- which(as.integer(k) == km)
 
-    mu_hat     <- colMeans(mu[kPositions, 1:km, drop=FALSE])
-    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop=FALSE])
-    sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop=FALSE])
-    w_hat      <- colMeans(w[kPositions, 1:km, drop=FALSE])
-    delta_hat  <- colMeans(delta[kPositions, 1:km, drop=FALSE])
-    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop=FALSE]))
+    mu_hat     <- colMeans(mu[kPositions, 1:km, drop = FALSE])
+    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop = FALSE])
+    sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
+    w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
+    delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
+    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
-    qmu     <- t(apply(mu[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmaf <- t(apply(sigmaf[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmar <- t(apply(sigmar[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
-    qdelta  <- t(apply(delta[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
-    qdl     <- t(apply(dl[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
-    qw      <- t(apply(w[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975), na.rm = TRUE))
+    qmu     <- t(apply(mu[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
+    qsigmaf <- t(apply(sigmaf[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
+    qsigmar <- t(apply(sigmar[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
+    qdelta  <- t(apply(delta[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
+    qdl     <- t(apply(dl[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
+    qw      <- t(apply(w[, 1:km, drop = FALSE], MARGIN = 2,
+                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
     qmuNew     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
@@ -361,7 +361,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
     qdlNew     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qwNew     <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qwNew      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
 
     # Create the final list
