@@ -30,7 +30,6 @@ forward and reverse reads).
     \item deltamax TODO
     \item minReadPos a \code{numeric}, the minimum position of the reads.
     \item maxReadPos a \code{numeric}, the maximum position of the reads.
-    \item nbrIterations a \code{integer}, the number of iterations.
 }}
 
 \item{kValue}{a \code{integer}, the number of nucleosomes.}
@@ -95,8 +94,7 @@ nr = length(reads_demo$readsReverse),
 nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
 zeta = 147, deltamin = 142, deltamax = 142,
 minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
-nbrIterations = 100)
+maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 
 ## Create a list containing the mandatory parameters
 rjmcmc:::birthMove(paramValues = paramList, kValue = 1L,

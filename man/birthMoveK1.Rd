@@ -96,8 +96,7 @@ nr = length(reads_demo$readsReverse),
 nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
 zeta = 147, deltamin = 142, deltamax = 142,
 minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)),
-nbrIterations = 100)
+maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 
 ## Create a list containing the mandatory parameters
 rjmcmc:::birthMoveK1(paramValues = paramList, kValue = 1L,

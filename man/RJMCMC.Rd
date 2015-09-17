@@ -6,7 +6,7 @@
 \usage{
 RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
   minInterval, maxInterval, minReads, runSplitFunction = TRUE,
-  runMergeFunction = TRUE)
+  runMergeFunction = TRUE, adaptIterationsToReads = TRUE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -44,12 +44,16 @@ is run or skipt. Default: \code{TRUE}.}
 
 \item{runMergeFunction}{a \code{logical} indicating if the merge function
 is run or skipt. Default: \code{TRUE}.}
+
+\item{adaptIterationsToReads}{a \code{logical} indicating if the number
+of iterations must be modified in function of the number of reads.
+Default: \code{TRUE}.}
 }
 \value{
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 \itemize{
 \item \code{call} the matched call.
-\item \code{K} a \code{vector} of \code{integer}, the number of
+\item \code{K} a \code{Rle} of \code{integer}, the number of
 the nucleosomes for each iteration.
 \item \code{k} a \code{integer}, the number of nucleosomes.
 \item \code{mu} a \code{vector} of \code{numeric} of length

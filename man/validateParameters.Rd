@@ -7,7 +7,7 @@ function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
   kMax, lambda, minInterval, maxInterval, minReads, runSplitFunction,
-  runMergeFunction)
+  runMergeFunction, adaptIterationsToReads)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -45,6 +45,9 @@ is run or skipt.}
 
 \item{runMergeFunction}{a \code{logical} indicating if the merge function
 is run or skipt.}
+
+\item{adaptIterationsToReads}{a \code{logical} indicating if the number
+of iterations must be modified in function of the number of reads.}
 }
 \value{
 \code{0} indicating that all parameters validations have been

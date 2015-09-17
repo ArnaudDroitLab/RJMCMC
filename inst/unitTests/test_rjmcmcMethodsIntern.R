@@ -284,7 +284,7 @@ test.isInteger_with_vector_of_integers <- function() {
 ## validateParameters() function
 #########################################################
 
-## Test the validateParameters
+## Test the result when startPosForwardReads is null
 test.validateParameters_empty_startPosForwardReads<- function() {
     obs <- tryCatch(rjmcmc:::validateParameters(startPosForwardReads = NULL,
                     startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -297,6 +297,23 @@ test.validateParameters_empty_startPosForwardReads<- function() {
     message <- paste0(" test.validateParameters_empty_startPosForwardReads() ",
                       "- A empty startPosForwardReads did not generated ",
                       "expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when adaptIterationsToReads is number
+test.validateParameters_number_for_adaptIterationsToReads<- function() {
+    obs <- tryCatch(rjmcmc:::validateParameters(startPosForwardReads = c(72424.14,
+                        72411.49, 72408.21, 723260.24, 72326.08),
+                        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                        72429.24, 72426.08),
+                        nbrIterations = 10, kMax = 11, lambda = 72400,
+                        minInterval = 142, maxInterval = 200, minReads = 5,
+                        adaptIterationsToReads = 32),
+                        error=conditionMessage)
+    exp <- "adaptIterationsToReads must be a logical."
+    message <- paste0(" test.validateParameters_number_for_adaptIterationsToReads() ",
+                      "- A number for adaptIterationsToReads did not  ",
+                      "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 

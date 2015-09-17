@@ -40,10 +40,14 @@
 #' @param runMergeFunction a \code{logical} indicating if the merge function
 #' is run or skipt. Default: \code{TRUE}.
 #'
+#' @param adaptIterationsToReads a \code{logical} indicating if the number
+#' of iterations must be modified in function of the number of reads.
+#' Default: \code{TRUE}.
+#'
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 #' \itemize{
 #' \item \code{call} the matched call.
-#' \item \code{K} a \code{vector} of \code{integer}, the number of
+#' \item \code{K} a \code{Rle} of \code{integer}, the number of
 #' the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
@@ -104,22 +108,24 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
                     runSplitFunction = TRUE,
-                    runMergeFunction = TRUE) {
+                    runMergeFunction = TRUE,
+                    adaptIterationsToReads = TRUE) {
 
     # Get call information
     cl <- match.call()
 
     # Parameters validation
     validateParameters(startPosForwardReads = startPosForwardReads,
-                                startPosReverseReads = startPosReverseReads,
-                                nbrIterations = nbrIterations,
-                                kMax = kMax,
-                                lambda = lambda,
-                                minInterval = minInterval,
-                                maxInterval = maxInterval,
-                                minReads = minReads,
-                                runSplitFunction = runSplitFunction,
-                                runMergeFunction = runMergeFunction)
+                            startPosReverseReads = startPosReverseReads,
+                            nbrIterations = nbrIterations,
+                            kMax = kMax,
+                            lambda = lambda,
+                            minInterval = minInterval,
+                            maxInterval = maxInterval,
+                            minReads = minReads,
+                            runSplitFunction = runSplitFunction,
+                            runMergeFunction = runMergeFunction,
+                            adaptIterationsToReads = adaptIterationsToReads)
 
     # Casting specific inputs as integer
     minReads        <- as.integer(minReads)
@@ -142,7 +148,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     d       <- d[yOrder]
     rm(yOrder)
 
-    ## ASTRID : voir si zeta, detamin, deltamax devraient etre des integer
+    ## Fixed parameters
     zeta            <- 147
     deltamin        <- 142
     deltamax        <- 152
@@ -151,6 +157,12 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     minReadPos <- min(y)
     maxReadPos <- max(y)
 
+    # Adapt the number of iterations
+    if (adaptIterationsToReads) {
+        nbrIterations <- ifelse(nbrReads <= 10, 1000, nbrIterations)
+    }
+
+    # List of fixed parameters
     paramValues <- list(startPSF =  startPosForwardReads,
                         startPSR = startPosReverseReads,
                         kmax = kMax,
@@ -158,8 +170,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         minReads = minReads,
                         y = y, nr = nr, nf = nf, nbrReads = nbrReads,
                         zeta = zeta, deltamin = deltamin, deltamax = deltamax,
-                        minReadPos = minReadPos, maxReadPos = maxReadPos,
-                        nbrIterations = nbrIterations)
+                        minReadPos = minReadPos, maxReadPos = maxReadPos)
 
     # Vector of the number of nucleosomes (integer values)
     k               <- Rle(rep(0L, nbrIterations))
@@ -186,8 +197,6 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     delta[1, 1]     <- runif(1, 0, 2*(mu[1, 1] - minReadPos))
     w[1, 1]         <- 1
     dl[1, 1]        <- 3
-
-    nbrIterations   <- ifelse(nbrReads <= 10, 1000, nbrIterations)
 
     kValue          <- as.integer(k[1])
 
@@ -305,16 +314,15 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         ## Assign resulting values for this iteration
         kVal          <- listUpdate$k
         k[i]          <- kVal
-        zeroVector    <- rep(0, kMax - kVal)
-        mu[i, ]       <- c(listUpdate$mu, zeroVector)
-        sigmaf[i, ]   <- c(listUpdate$sigmaf, zeroVector)
-        sigmar[i, ]   <- c(listUpdate$sigmar, zeroVector)
-        delta[i, ]    <- c(listUpdate$delta, zeroVector)
-        w[i, ]        <- c(listUpdate$w, zeroVector)
-        dl[i, ]       <- c(listUpdate$dl, zeroVector)
+        naVector      <- rep(NA, kMax - kVal)
+        mu[i, ]       <- c(listUpdate$mu, naVector)
+        sigmaf[i, ]   <- c(listUpdate$sigmaf, naVector)
+        sigmar[i, ]   <- c(listUpdate$sigmar, naVector)
+        delta[i, ]    <- c(listUpdate$delta, naVector)
+        w[i, ]        <- c(listUpdate$w, naVector)
+        dl[i, ]       <- c(listUpdate$dl, naVector)
 
     } ###end of boucle RJMCMC
-
 
     ## ATTENTION: Beware that the potential return of NA is not handled
     ## Getting the number of nucleosomes with the highest frequency
@@ -330,17 +338,17 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     # Getting 2.5% and 97.5% quantiles for each important data type
     qmu     <- t(apply(mu[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
     qsigmaf <- t(apply(sigmaf[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
     qsigmar <- t(apply(sigmar[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
     qdelta  <- t(apply(delta[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
     qdl     <- t(apply(dl[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
     qw      <- t(apply(w[, 1:km, drop=FALSE], MARGIN=2, FUN=quantile,
-                        probs=c(0.025, 0.975)))
+                        probs=c(0.025, 0.975), na.rm = TRUE))
 
     # Create the final list
     result <- list(
