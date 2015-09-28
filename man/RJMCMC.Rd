@@ -53,7 +53,7 @@ Default: \code{TRUE}.}
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 \itemize{
 \item \code{call} the matched call.
-\item \code{K} a \code{Rle} of \code{integer}, the number of
+\item \code{K} a \code{vector} of \code{integer}, the number of
 the nucleosomes for each iteration.
 \item \code{k} a \code{integer}, the number of nucleosomes.
 \item \code{mu} a \code{vector} of \code{numeric} of length

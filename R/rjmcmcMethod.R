@@ -47,7 +47,7 @@
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 #' \itemize{
 #' \item \code{call} the matched call.
-#' \item \code{K} a \code{Rle} of \code{integer}, the number of
+#' \item \code{K} a \code{vector} of \code{integer}, the number of
 #' the nucleosomes for each iteration.
 #' \item \code{k} a \code{integer}, the number of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
@@ -99,7 +99,6 @@
 #'
 #' @importFrom MCMCpack ddirichlet rdirichlet
 #' @importFrom stats dmultinom dpois var rmultinom dt quantile
-#' @importFrom S4Vectors Rle
 #' @importFrom IRanges IRanges
 #' @import BiocGenerics
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
@@ -173,7 +172,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                         minReadPos = minReadPos, maxReadPos = maxReadPos)
 
     # Vector of the number of nucleosomes (integer values)
-    k               <- Rle(rep(0L, nbrIterations))
+    k               <- rep(0L, nbrIterations)
 
     # Vector of the position of the nucleosomes
     mu              <- matrix(0, nrow = nbrIterations, ncol = kMax)
