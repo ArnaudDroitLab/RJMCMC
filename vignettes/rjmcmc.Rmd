@@ -3,6 +3,7 @@ title: "RJMCMC: Nucleosome Positioning"
 output:
   BiocStyle::html_document:
     toc: true
+bibliography: rjmcmc.bibtex
 vignette: >
   %\VignetteIndexEntry{Detection of consensus peak regions inside a group of experiences using narrowPeak files}
   %\VignettePackage{consensusSeekeR}
@@ -15,11 +16,11 @@ BiocStyle::markdown()
 
 </br>
 
-Author: Rawane Samb, Astrid Louise Deschenes, Khader Khadraoui, Lajmi Lakhal-Chaieb, 
-Pascal Belleau and Arnaud Droit<br />
+Author: Rawane Samb, Astrid Deschenes, Khader Khadraoui, 
+Lajmi Lakhal-Chaieb, Pascal Belleau and Arnaud Droit<br />
 Compilation date: `r Sys.Date()`
 
-## 1. Licensing and citing
+## Licensing and citing
 
 This package and the underlying RJMCMC code are distributed 
 under the Artistic license 2.0. You are free to use and redistribute 
@@ -28,20 +29,44 @@ this software.
 If you use this package for a publication, we would ask you to cite the
 following:
 
-> Samb R, Khadraoui K, Lakhal L, Belleau P et Droit A. Using informative 
-> Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation 
-> of nucleosome positions for genome-wide profiling. Submitted (2015). 
+> Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal L et Droit A.  
+> Using informative Multinomial-Dirichlet prior in a t-mixture with   
+> reversible jump estimation of nucleosome positions for genome-wide  
+> profiling.  
+> Submitted (2015). 
 
-## 2. Introduction
+
+## Introduction
 
 Global gene expression patterns are established and maintained by the 
 concerted actions of Transcription Factors (TFs) and the proteins that 
 constitute chromatin. The key structural element of chromatin is the 
 nucleosome, which consists of an octameric histone core wrapped by 146 bps 
 of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
-DNA (reference TODO).
+DNA [@Polishko2012].
 
-## 3. Loading the RJMCMC package
+The literature on nucleosome positioning commonly focuses on frequentist 
+inferences within parametric approaches (see for instance @Chen2010 and
+@Xi2010).  In those works, the detection of nucleosome positions is done 
+using a hidden Markov model with a known order by 
+assumption.  
+
+The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
+model for profiling of nucleosome positions based on high-throughput  
+short-read data (MNase-Seq data). 
+
+The implemantation is based on a strategy which 
+incorporates four aspects. First, it jointly models local concentrations
+of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
+construction of an informative prior distribution coupled to a t-mixture model 
+with unknown degrees of freedom. Third,the number of nucleosomes
+is considered to be a random variable and refers to a prior distribution. 
+Fourth, the unknown parameters are simultaneously using the reversible jump 
+Markov chain Monte Carlo (RJMCMC) simulation technique (see for instance 
+@Green1995 and @Richardson1997). 
+
+
+## Loading the RJMCMC package
 
 As with any R package, the **RJMCMC** package should first be loaded with 
 the following command:
@@ -50,22 +75,32 @@ the following command:
 library(rjmcmc)
 ```
 
-## 4. RJMCMC analysis
 
-```{r demo01 , collapse=TRUE} 
+## RJMCMC analysis
+
+```{r demo01 , warning=FALSE, collapse=TRUE} 
 ## Load the dataset containing forward and reverse reads
 data(reads_demo)
 
 ## Nucleosome positioning
 result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
             startPosReverseReads = reads_demo$readsReverse,
-            nbrIterations = 1000, lambda = 3, kmax = 30,
+            nbrIterations = 1000, lambda = 3, kMax = 30,
             minInterval = 140, maxInterval = 295, minReads = 5)
 
 # Print the resulting nucleosomes and the related information
 result
 ```
 
-## 5. References
 
-TODO
+## Session info
+
+Here is the output of `sessionInfo()` on the system on which this document was 
+compiled:
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+
+
+## References

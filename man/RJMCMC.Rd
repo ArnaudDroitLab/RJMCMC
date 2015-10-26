@@ -4,8 +4,9 @@
 \alias{RJMCMC}
 \title{Nucleosome positioning mapping}
 \usage{
-RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kmax, lambda,
-  minInterval, maxInterval, minReads)
+RJMCMC(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
+  minInterval, maxInterval, minReads, runSplitFunction = TRUE,
+  runMergeFunction = TRUE, adaptIterationsToReads = TRUE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -20,9 +21,9 @@ number of iterations. Non-integer values of
 \code{nbrIterations} will be casted to \code{integer} and truncated towards
 zero.}
 
-\item{kmax}{a positive \code{integer} or \code{numeric}, the maximum number
+\item{kMax}{a positive \code{integer} or \code{numeric}, the maximum number
 of nucleosomes per region. Non-integer values
-of \code{kmax} will be casted to \code{integer} and truncated towards zero.}
+of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
 of the Poisson distribution.}
@@ -37,6 +38,16 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
+
+\item{runSplitFunction}{a \code{logical} indicating if the split function
+is run or skipt. Default: \code{TRUE}.}
+
+\item{runMergeFunction}{a \code{logical} indicating if the merge function
+is run or skipt. Default: \code{TRUE}.}
+
+\item{adaptIterationsToReads}{a \code{logical} indicating if the number
+of iterations must be modified in function of the number of reads.
+Default: \code{TRUE}.}
 }
 \value{
 a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
@@ -60,9 +71,16 @@ position densities for each nucleosome.
 must be equal to \code{1}.
 \item \code{qmu} a \code{matrix} of \code{numerical} with a number of rows
 of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{mu}.
-\item \code{qsigmaf} TODO
-\item \code{qsigmar} TODO
-\item \code{qdelta} TODO
+\item \code{qsigmaf} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance of the
+forward reads for each nucleosome.
+\item \code{qsigmar} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the variance the
+reverse reads for each nucleosome.
+\item \code{qdelta} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
+the maxima of the forward and reverse reads
+position densities for each nucleosome.
 \item \code{qdl} TODO
 \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
 of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
@@ -77,10 +95,10 @@ data (MNase-Seq data).
 ## Loading dataset
 data(reads_demo)
 
-## Nucleosome positioning
+## Nucleosome positioning, running both merge and split functions
 result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
          startPosReverseReads = reads_demo$readsReverse,
-         nbrIterations = 1000, lambda = 2, kmax = 30,
+         nbrIterations = 1000, lambda = 2, kMax = 30,
          minInterval = 146, maxInterval = 292, minReads = 5)
 
 ## Print the number of nucleosomes
@@ -90,6 +108,6 @@ result$k
 result$mu
 }
 \author{
-Rawane Samb
+Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
 

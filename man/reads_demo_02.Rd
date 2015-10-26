@@ -28,7 +28,7 @@ data(reads_demo_02)
 ## Nucleosome positioning
 RJMCMC(startPosForwardReads = reads_demo_02$readsForward,
          startPosReverseReads = reads_demo_02$readsReverse,
-         nbrIterations = 150, lambda = 3, kmax = 30,
+         nbrIterations = 150, lambda = 3, kMax = 30,
          minInterval = 144, maxInterval = 290, minReads = 6)
 }
 \seealso{

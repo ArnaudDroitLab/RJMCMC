@@ -23,6 +23,7 @@ Author@R: c(person("Rawane", "Samb",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
 Depends: R (>= 3.0), BiocGenerics
 Imports: MCMCpack,
+    IRanges,
     stats
 Suggests: BiocStyle,
     knitr,
