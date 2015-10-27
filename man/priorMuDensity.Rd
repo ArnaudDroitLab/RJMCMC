@@ -39,7 +39,7 @@ mu <- c(10000L, 26700L, 45000L)
 density <- rjmcmc:::priorMuDensity(mu, readPositions)
 }
 \author{
-Rawane Samb, Astrid Louise Deschenes
+Rawane Samb, Astrid Deschenes
 }
 \references{
 Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using

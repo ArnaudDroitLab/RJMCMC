@@ -42,7 +42,7 @@ rjmcmc:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
 mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 }
 \author{
-Rawane Samb, Astrid Louise Deschenes
+Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
 

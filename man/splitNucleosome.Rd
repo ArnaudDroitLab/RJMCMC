@@ -4,7 +4,7 @@
 \alias{splitNucleosome}
 \title{Spliting a nucleosomal region into two regions}
 \usage{
-splitNucleosome(yf, yr, y, liste, minInterval, maxInterval, minReads)
+splitNucleosome(yf, yr, y, list, minInterval, maxInterval, minReads)
 }
 \arguments{
 \item{yf}{a \code{vector} of positive \code{numeric}
@@ -21,7 +21,7 @@ corresponding to the
 positions of all forward and reverse reads. The
 values inside \code{y} must be sorted.}
 
-\item{liste}{a \code{list} containing:
+\item{list}{a \code{list} containing:
 \itemize{
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of
@@ -30,7 +30,9 @@ the nucleosomes.
 \code{k}, the variance of the forward reads for each nucleosome.
     \item sigmar a \code{vector} of \code{numeric} of length
 \code{k}, the variance of the reverse reads for each nucleosome.
-    \item delta TODO
+    \item delta a \code{vector} of \code{numeric} of length
+\code{k}, the distance between the maxima of the forward and
+reverse reads position densities for each nucleosome.
     \item dl TODO
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -52,11 +54,13 @@ a \code{list} containing the updated values:
     \item k a \code{integer}, the number of nucleosomes.
     \item mu a \code{vector} of \code{numeric}, the positions of
 the nucleosomes.
-    \item sigmaf TODO
+    \item sigmaf a \code{vector} of \code{numeric} of length
+\code{k}, the variance of the forward reads for each nucleosome.
     \item sigmar a \code{vector} of \code{numeric} of length
 \code{k}, the variance of the reverse reads for each nucleosome.
     \item delta a \code{vector} of \code{numeric} of length
-\code{k}, the variance of the forward reads for each nucleosome.
+\code{k}, the distance between the maxima of the forward and
+reverse reads position densities for each nucleosome.
     \item dl TODO
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -68,7 +72,7 @@ Split a nucleosomal region into two regions with respect of
 the minimal and maximal intervals allowed.
 }
 \author{
-Rawane Samb, Astrid Louise Deschenes
+Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
 
