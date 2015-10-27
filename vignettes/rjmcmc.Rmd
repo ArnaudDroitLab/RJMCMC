@@ -14,11 +14,12 @@ vignette: >
 BiocStyle::markdown()
 ```
 
-</br>
-
-Author: Rawane Samb, Astrid Deschenes, Khader Khadraoui, 
-Lajmi Lakhal-Chaieb, Pascal Belleau and Arnaud Droit<br />
-Compilation date: `r Sys.Date()`
+<br />
+**Package**: `r Rpackage("RJMCMC")`<br />
+**Authors**: `r packageDescription("RJMCMC")[["Author"]]`<br />
+**Version**: `r packageDescription("RJMCMC")$Version`<br />
+**Compiled date**: `r Sys.Date()`<br />
+**License**: `r packageDescription("RJMCMC")[["License"]]`<br />
 
 ## Licensing and citing
 
@@ -33,7 +34,7 @@ following:
 > Using informative Multinomial-Dirichlet prior in a t-mixture with   
 > reversible jump estimation of nucleosome positions for genome-wide  
 > profiling.  
-> Submitted (2015). 
+> Accepted (2015). 
 
 
 ## Introduction
@@ -52,7 +53,7 @@ using a hidden Markov model with a known order by
 assumption.  
 
 The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
-model for profiling of nucleosome positions based on high-throughput  
+model for profiling of nucleosome positions based on high-throughput
 short-read data (MNase-Seq data). 
 
 The implemantation is based on a strategy which 
@@ -72,7 +73,7 @@ As with any R package, the **RJMCMC** package should first be loaded with
 the following command:
 
 ```{r loadingPackage, warning=FALSE, message=FALSE} 
-library(rjmcmc)
+library(RJMCMC)
 ```
 
 
@@ -83,7 +84,7 @@ library(rjmcmc)
 data(reads_demo)
 
 ## Nucleosome positioning
-result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
             startPosReverseReads = reads_demo$readsReverse,
             nbrIterations = 1000, lambda = 3, kMax = 30,
             minInterval = 140, maxInterval = 295, minReads = 5)

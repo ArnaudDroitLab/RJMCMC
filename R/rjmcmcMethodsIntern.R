@@ -19,13 +19,13 @@
 #' @examples
 #'
 #' ## Return the death submove probability
-#' rjmcmc:::Dk(k = 12L, lambda = 2L, kMax = 30L)
+#' RJMCMC:::Dk(k = 12L, lambda = 2L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Dk(k = 1L, lambda = 3L, kMax = 30L)
+#' RJMCMC:::Dk(k = 1L, lambda = 3L, kMax = 30L)
 #'
 #' ## Zerio is returned when k is superior to kMax
-#' rjmcmc:::Dk(k = 31L, lambda = 2L, kMax = 30L)
+#' RJMCMC:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -56,13 +56,13 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @examples
 #'
 #' ## Return the birth submove probability
-#' rjmcmc:::Bk(k = 14L, lambda = 1L, kMax = 30L)
+#' RJMCMC:::Bk(k = 14L, lambda = 1L, kMax = 30L)
 #'
 #' ## Zero is returned when k = 1
-#' rjmcmc:::Bk(k = 1L, lambda = 3L, kMax = 30L)
+#' RJMCMC:::Bk(k = 1L, lambda = 3L, kMax = 30L)
 #'
 #' ## Zero is returned when k is superior to kMax
-#' rjmcmc:::Bk(k = 31L, lambda = 2L, kMax = 30L)
+#' RJMCMC:::Bk(k = 31L, lambda = 2L, kMax = 30L)
 #'
 #' @author Rawane Samb
 #' @importFrom stats dpois
@@ -130,9 +130,9 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' variance for each nucleosome. The length of \code{sigma} must be equal
 #' to \code{k}.
 #'
-#' @param dfr a \code{vector} of \code{numeric} of length \code{k}, the degree
-#' of freedom for each nucleosome. The length of \code{dfr} must be equal
-#' to \code{k}.
+#' @param dfr a \code{vector} of \code{numeric} of length \code{k}, the degrees
+#' of freedom for each nucleosome. The length of \code{dfr} must
+#' be equal to \code{k}.
 #'
 #' @return a \code{numerical}, the value generated from a Student Mixture
 #' distribution.
@@ -140,7 +140,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #' @examples
 #'
 #' ## Return a value generated from a student mixture
-#' rjmcmc:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
+#' RJMCMC:::student.mixture(i = 1L, k = 4L, weight = c(0.1, 0.3, 0.34, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 #'
 #' @importFrom stats runif rt
@@ -163,7 +163,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #'
 #' @description Generation a value from a Normal Mixture distribution.
 #'
-#' @param i a \code{integer},  a count parameter.
+#' @param i a \code{integer}, a count parameter.
 #'
 #' @param k a positive \code{integer} value, the number of nucleosomes in the
 #' analyzed region.
@@ -185,7 +185,7 @@ student.mixture <- function(i, k, weight, mu, sigma, dfr) {
 #' @examples
 #'
 #' ## Return a value generated from a normal mixture
-#' rjmcmc:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
+#' RJMCMC:::normal.mixture(i = 1L, k = 4L, weight = c(0.2, 0.3, 0.24, 0.26),
 #' mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 #'
 #' @importFrom stats runif
@@ -223,7 +223,8 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' @return  a \code{numeric}, the exact prior density of \code{mu} given the
 #' number of nucleosomes.
 #'
-#' @references Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
+#' @references Samb R., Khadraoui K., Belleau P., Deschenes A., Lakhal L.
+#' and Droit A. Using
 #' informative Multinomial-Dirichlet prior in a t-mixture with
 #' reversible jump estimation of nucleosome positions for genome-wide
 #' profiling. Submitted (2015).
@@ -238,7 +239,7 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' mu <- c(10000L, 26700L, 45000L)
 #'
 #' ## Calculation of the exact prior density of mu
-#' density <- rjmcmc:::priorMuDensity(mu, readPositions)
+#' density <- RJMCMC:::priorMuDensity(mu, readPositions)
 #'
 #' @author Rawane Samb, Astrid Deschenes
 #' @keywords internal
@@ -290,10 +291,10 @@ priorMuDensity <- function(mu, readPositions) {
 #'
 #' ## Return the element with the hightest number of occurence
 #' data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-#' rjmcmc:::elementWithHighestMode(data01)
+#' RJMCMC:::elementWithHighestMode(data01)
 #'
 #' data02 <- c(3L, 6L, 4L, 3L, 6L)
-#' rjmcmc:::elementWithHighestMode(data02)
+#' RJMCMC:::elementWithHighestMode(data02)
 #'
 elementWithHighestMode <- function(sample) {
     tabsample <- tabulate(sample)
@@ -470,7 +471,8 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl TODO
+#'     \item dl a \code{vector} of \code{numeric} of length
+#' \code{k}, the degree of freedom for each nucloeosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -497,7 +499,8 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl TODO
+#'     \item dl a \code{vector} of \code{numeric} of length
+#' \code{k}, the degree of freedom for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -583,11 +586,11 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 }
 
 
-#' @title Parameters validation for the \code{\link{RJMCMC}}
+#' @title Parameters validation for the \code{\link{rjmcmc}}
 #' function
 #'
 #' @description Validation of all parameters needed by the public
-#' \code{\link{RJMCMC}} function.
+#' \code{\link{rjmcmc}} function.
 #'
 #' @param startPosForwardReads a \code{vector} of positive \code{integer}, the
 #' start position of all the forward reads.
@@ -709,16 +712,16 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 #' @examples
 #'
 #' ## Return TRUE because the input is an integer of length 1
-#' rjmcmc:::isInteger(33L)
+#' RJMCMC:::isInteger(33L)
 #'
 #' ## Return FALSE because the length of the input is not 1
-#' rjmcmc:::isInteger(c(21L, 33L))
+#' RJMCMC:::isInteger(c(21L, 33L))
 #'
 #' ## Return TRUE because the input is a numericalof length 1
-#' rjmcmc:::isInteger(323.21)
+#' RJMCMC:::isInteger(323.21)
 #'
 #' ## Return FALSE because the length of the input is not 1
-#' rjmcmc:::isInteger(c(444.2, 442.1))
+#' RJMCMC:::isInteger(c(444.2, 442.1))
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -800,7 +803,8 @@ isInteger <- function(value) {
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl TODO
+#'     \item dl a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the number of degrees of freedom.
 #'     \item a a \code{vector} of positive \code{numerical} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{numerical} of length
@@ -822,7 +826,7 @@ isInteger <- function(value) {
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
 #' ## Create a list containing the mandatory parameters
-#' rjmcmc:::birthMoveK1(paramValues = paramList, kValue = 1L,
+#' RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
 #' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
 #' deltaValue, wValue = c(1), dlValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
@@ -1077,7 +1081,8 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue TODO
+#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the number of degrees of freedom.
 #'
 #' @param aValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue + 1}, TODO
@@ -1099,7 +1104,8 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl TODO
+#'     \item dl a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated numbers of degrees of freedom.
 #'     \item a a \code{vector} of positive \code{numerical} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{numerical} of length
@@ -1121,7 +1127,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
 #' ## Create a list containing the mandatory parameters
-#' rjmcmc:::birthMove(paramValues = paramList, kValue = 1L,
+#' RJMCMC:::birthMove(paramValues = paramList, kValue = 1L,
 #' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
 #' deltaValue, wValue = c(1), dlValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
@@ -1454,7 +1460,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
-#' rjmcmc:::mhMoveK1(paramValues = paramList, kValue = 1L,
+#' RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
 #' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
 #' deltaValue, wValue = c(1), dlValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),

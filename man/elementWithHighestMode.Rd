@@ -25,10 +25,10 @@ When more than one \code{integer} have the highest number of occurences,
 \examples{
 ## Return the element with the hightest number of occurence
 data01 <- c(1L, 2L, 5L, 10L, 5L, 10L, 5L)
-rjmcmc:::elementWithHighestMode(data01)
+RJMCMC:::elementWithHighestMode(data01)
 
 data02 <- c(3L, 6L, 4L, 3L, 6L)
-rjmcmc:::elementWithHighestMode(data02)
+RJMCMC:::elementWithHighestMode(data02)
 }
 \author{
 Rawane Samb, Astrid Deschenes

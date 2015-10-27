@@ -1,5 +1,5 @@
 ###################################################
-# Created by Astrid Louise Deschenes
+# Created by Astrid Deschenes
 # 2015-06-30
 ###################################################
 
@@ -26,7 +26,7 @@ data(reads_demo_02)
 
 test.rjmcmc_good_result_01 <- function() {
     set.seed(101)
-    obs <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                         startPosReverseReads = reads_demo$readsReverse,
                         nbrIterations = 100, lambda = 2, kMax = 30,
                         minInterval = 146, maxInterval = 292, minReads = 5)
@@ -70,7 +70,7 @@ test.rjmcmc_good_result_01 <- function() {
 
 test.rjmcmc_good_result_02 <- function() {
     set.seed(101)
-    obs <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                     startPosReverseReads = reads_demo$readsReverse,
                     nbrIterations = 200, lambda = 3, kMax = 30,
                     minInterval = 146, maxInterval = 292, minReads = 5)
@@ -115,7 +115,7 @@ test.rjmcmc_good_result_02 <- function() {
 
 test.rjmcmc_good_result_03 <- function() {
     set.seed(101)
-    obs <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+    obs <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
                   startPosReverseReads = reads_demo$readsReverse,
                   nbrIterations = 110, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 335)
@@ -159,7 +159,7 @@ test.rjmcmc_good_result_03 <- function() {
 
 test.rjmcmc_good_result_04 <- function() {
     set.seed(331)
-    obs <- RJMCMC(startPosForwardReads = reads_demo_02$readsForward,
+    obs <- rjmcmc(startPosForwardReads = reads_demo_02$readsForward,
                   startPosReverseReads = reads_demo_02$readsReverse,
                   nbrIterations = 210, lambda = 3, kMax = 30,
                   minInterval = 100, maxInterval = 200, minReads = 10)

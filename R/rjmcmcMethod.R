@@ -86,7 +86,7 @@
 #' data(reads_demo)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+#' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
@@ -103,7 +103,7 @@
 #' @import BiocGenerics
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @export
-RJMCMC <- function(startPosForwardReads, startPosReverseReads,
+rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
                     runSplitFunction = TRUE,

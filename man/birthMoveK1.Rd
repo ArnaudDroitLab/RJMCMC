@@ -74,7 +74,8 @@ a \code{list} containing:
 reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
-    \item dl TODO
+    \item dl a \code{vector} of positive \code{numerical} of length
+\code{k}, the number of degrees of freedom.
     \item a a \code{vector} of positive \code{numerical} of length
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{numerical} of length
@@ -99,7 +100,7 @@ minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 
 ## Create a list containing the mandatory parameters
-rjmcmc:::birthMoveK1(paramValues = paramList, kValue = 1L,
+RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
 muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
 deltaValue, wValue = c(1), dlValue = c(3),
 aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
