@@ -74,8 +74,8 @@ a \code{list} containing:
 reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
-    \item dl a \code{vector} of positive \code{numerical} of length
-\code{k}, the updated numbers of degrees of freedom.
+    \item df a \code{vector} of positive \code{numerical} of length
+\code{k}, the updated degrees of freedom.
     \item a a \code{vector} of positive \code{numerical} of length
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{numerical} of length

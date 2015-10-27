@@ -335,7 +335,7 @@ elementWithHighestMode <- function(sample) {
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl TODO
+#'     \item df TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -362,7 +362,7 @@ elementWithHighestMode <- function(sample) {
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl TODO
+#'     \item df TODO
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -407,7 +407,7 @@ mergeNucleosomes <- function(yf, yr, y, list,
                 list$sigmaf    <- list$sigmaf[-p]
                 list$sigmar    <- list$sigmar[-p]
                 list$delta     <- list$delta[-p]
-                list$dl        <- list$dl[-p]
+                list$df        <- list$df[-p]
                 list$w         <- list$w[-p]/sum(list$w[-p])
 
                 # Downgrade the number of nucleosome
@@ -427,7 +427,7 @@ mergeNucleosomes <- function(yf, yr, y, list,
                             sigmaf = list$sigmaf,
                             sigmar = list$sigmar,
                             delta  = list$delta,
-                            dl     = list$dl,
+                            df     = list$df,
                             w      = list$w)
         } ### end of condition if (ecart.min < minInterval)
 
@@ -471,8 +471,8 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl a \code{vector} of \code{numeric} of length
-#' \code{k}, the degree of freedom for each nucloeosome.
+#'     \item df a \code{vector} of \code{numeric} of length
+#' \code{k}, the degrees of freedom for each nucloeosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -499,7 +499,7 @@ mergeNucleosomes <- function(yf, yr, y, list,
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item dl a \code{vector} of \code{numeric} of length
+#'     \item df a \code{vector} of \code{numeric} of length
 #' \code{k}, the degree of freedom for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -546,10 +546,10 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
                     new.delta[p + 1] <- (list$delta[p] + list$delta[p + 1])/2
                     new.delta[k + 1] <- list$delta[k]
 
-                    new.dl <- round(c(list$dl[1:k],
-                                        (list$dl[p] + list$dl[p + 1])/2))
-                    new.dl[p + 1]   <- (list$dl[p] + list$dl[p + 1])/2
-                    new.dl[k + 1]   <- list$dl[k]
+                    new.df <- round(c(list$df[1:k],
+                                        (list$df[p] + list$df[p + 1])/2))
+                    new.df[p + 1]   <- (list$df[p] + list$df[p + 1])/2
+                    new.df[k + 1]   <- list$df[k]
 
                     new.w           <- c(list$w[1:k], (list$w[p] +
                                                             list$w[p + 1])/2)
@@ -562,7 +562,7 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
                                     sigmaf  = new.sigmaf,
                                     sigmar  = new.sigmar,
                                     delta   = new.delta,
-                                    dl      = new.dl,
+                                    df      = new.df,
                                     w       = new.w/sum(new.w))
 
                     ## Update the vector of distance between nucleosomes
@@ -803,7 +803,7 @@ isInteger <- function(value) {
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl a \code{vector} of positive \code{numerical} of length
+#'     \item df a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the number of degrees of freedom.
 #'     \item a a \code{vector} of positive \code{numerical} of length
 #' \code{k + 1}, TODO
@@ -847,7 +847,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
                         sigmar = rep(0, paramValues$kmax),
                         delta = rep(0, paramValues$kmax),
                         w = rep(0, paramValues$kmax),
-                        dl = rep(3, paramValues$kmax),
+                        df = rep(3, paramValues$kmax),
                         a = rep(0, paramValues$kmax + 1L),
                         dim = rep(0, paramValues$kmax), rho = 0)
 
@@ -913,14 +913,14 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         ## End of iterations have been reached without meeting conditions
         varTilde$rho <- 0
     } else  {
-        varTilde$dl[j] <- sample(3:30, 1)
+        varTilde$df[j] <- sample(3:30, 1)
 
         varTilde$sigmaf[j] <- ifelse(Lf > 1,
-                                    var(classesf) * (varTilde$dl[ j] - 2)/
-                                    varTilde$dl[ j], sigmafValue[ j])
+                                    var(classesf) * (varTilde$df[ j] - 2)/
+                                    varTilde$df[ j], sigmafValue[ j])
         varTilde$sigmar[j] <- ifelse(Lr > 1,
-                                    var(classesr) * (varTilde$dl[ j] - 2)/
-                                    varTilde$dl[ j], sigmarValue[ j])
+                                    var(classesr) * (varTilde$df[ j] - 2)/
+                                    varTilde$df[ j], sigmarValue[ j])
 
         varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[ 1:kValue],
                                             varTilde$sigmaf[ j])
@@ -949,7 +949,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
             Kaf[ ,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
                         dt((paramValues$startPSF - varTilde$mu[m] +
                         varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                        varTilde$dl[m]))
+                        varTilde$df[m]))
             Kbf[ ,m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                         dt((paramValues$startPSF - muValue[m] +
                         deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
@@ -958,7 +958,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
                         (1/sqrt(varTilde$sigmaf[varTilde$k])) *
                         dt(( paramValues$startPSF - varTilde$mu[varTilde$k] +
                         varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),
-                        varTilde$dl[m]))
+                        varTilde$df[m]))
 
         for (s in 1:paramValues$nf) {
             Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
@@ -970,7 +970,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
             Kar[ ,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
                         dt((paramValues$startPSR - varTilde$mu[m] -
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbr[ ,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                         dt((paramValues$startPSR - muValue[m] -
                             deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
@@ -982,7 +982,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
                                 varTilde$mu[varTilde$k] -
                                 varTilde$delta[m]/2)/
                                 sqrt(varTilde$sigmar[varTilde$k]),
-                                varTilde$dl[m]))
+                                varTilde$df[m]))
 
         for (s in 1:paramValues$nr) {
             Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
@@ -1104,8 +1104,8 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl a \code{vector} of positive \code{numerical} of length
-#' \code{k}, the updated numbers of degrees of freedom.
+#'     \item df a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated degrees of freedom.
 #'     \item a a \code{vector} of positive \code{numerical} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{numerical} of length
@@ -1149,7 +1149,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                         sigmar = rep(0, paramValues$kmax),
                         delta = rep(0, paramValues$kmax),
                         w = rep(0, paramValues$kmax),
-                        dl = rep(3, paramValues$kmax),
+                        df = rep(3, paramValues$kmax),
                         a = rep(0, paramValues$kmax + 1L),
                         dim = rep(0, paramValues$kmax), rho = 0)
 
@@ -1229,12 +1229,12 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
         ## End of iterations have been reached without meeting conditions
         varTilde$rho <- 0
     } else {
-        varTilde$dl[j]     <- sample(3:30, 1)
+        varTilde$df[j]     <- sample(3:30, 1)
         varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                (varTilde$dl[j]-2)/varTilde$dl[j],
+                                (varTilde$df[j]-2)/varTilde$df[j],
                                 sigmafValue[j])
         varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                (varTilde$dl[j]-2)/varTilde$dl[j],
+                                (varTilde$df[j]-2)/varTilde$df[j],
                                 sigmarValue[j])
 
         if (j == 1) {
@@ -1283,7 +1283,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
             Kaf[, m]<- (varTilde$w[m] *(1/sqrt(varTilde$sigmaf[m])) *
                             dt((paramValues$startPSF - varTilde$mu[m] +
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbf[, m]<- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF - muValue[m] +
                             deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
@@ -1292,7 +1292,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                             (1/sqrt(varTilde$sigmaf[varTilde$k])) *
                             dt((paramValues$startPSF - varTilde$mu[varTilde$k] +
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[varTilde$k]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
 
         for (s in 1:paramValues$nf) {
             Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
@@ -1303,7 +1303,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
             Kar[,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
                             dt((paramValues$startPSR - varTilde$mu[m] -
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
                             deltaValue[m]/2)/sqrt(sigmarValue[m]),
@@ -1315,7 +1315,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                                 dt((paramValues$startPSR -
                                 varTilde$mu[varTilde$k] -
                                 varTilde$delta[m]/2)/sqrt(varTilde$sigmar[varTilde$k]),
-                                varTilde$dl[m]))
+                                varTilde$df[m]))
 
         for (s in 1:paramValues$nr) {
             Y1r[s] <-log(sum(Kar[s, 1:varTilde$k]))
@@ -1439,7 +1439,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl TODO
+#'     \item df TODO
 #'     \item a a \code{vector} of positive \code{integer} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
@@ -1481,7 +1481,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                         sigmar = rep(0, paramValues$kmax),
                         delta = rep(0, paramValues$kmax),
                         w = rep(0, paramValues$kmax),
-                        dl = rep(3, paramValues$kmax),
+                        df = rep(3, paramValues$kmax),
                         a = rep(0, paramValues$kmax + 1L),
                         dim = rep(0, paramValues$kmax), rho = 0)
 
@@ -1547,13 +1547,13 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
         varTilde$sigmaf[1:varTilde$k] <- sigmafValue[1:kValue]
         varTilde$sigmar[1:varTilde$k] <- sigmarValue[1:kValue]
 
-        varTilde$dl[j] <- sample(3:30, 1)
+        varTilde$df[j] <- sample(3:30, 1)
 
         varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                    (varTilde$dl[j] - 2)/varTilde$dl[j],
+                                    (varTilde$df[j] - 2)/varTilde$df[j],
                                     sigmafValue[j])
         varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                    (varTilde$dl[j] - 2)/varTilde$dl[j],
+                                    (varTilde$df[j] - 2)/varTilde$df[j],
                                     sigmarValue[j])
 
         varTilde$delta[1:varTilde$k] <- deltaValue[1:kValue]
@@ -1576,7 +1576,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
             Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
                         dt((paramValues$startPSF - varTilde$mu[m] +
                         varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                        varTilde$dl[m]))
+                        varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                         dt((paramValues$startPSF - muValue[m] +
                         deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
@@ -1590,7 +1590,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
             Kar[,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
                         dt((paramValues$startPSR -varTilde$mu[m] -
                         varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                        varTilde$dl[m]))
+                        varTilde$df[m]))
             Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                         dt((paramValues$startPSR - muValue[m] -
                         deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
@@ -1703,7 +1703,8 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl TODO
+#'     \item df a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated degrees of freedom for each nucleosome.
 #'     \item a a \code{vector} of positive \code{integer} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
@@ -1739,7 +1740,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             sigmar = rep(0, paramValues$kmax),
                             delta = rep(0, paramValues$kmax),
                             w = rep(0, paramValues$kmax),
-                            dl = rep(3, paramValues$kmax),
+                            df = rep(3, paramValues$kmax),
                             a = rep(0, paramValues$kmax + 1L),
                             dim = rep(0, paramValues$kmax), rho = 0)
 
@@ -1834,13 +1835,13 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         varTilde$sigmaf[1:varTilde$k] <- sigmafValue[1:kValue]
         varTilde$sigmar[1:varTilde$k] <- sigmarValue[1:kValue]
 
-        varTilde$dl[j]     <- sample(3:30, 1)
+        varTilde$df[j]     <- sample(3:30, 1)
 
         varTilde$sigmaf[j] <- ifelse(Lf > 1, var(classesf) *
-                                        (varTilde$dl[j] - 2)/varTilde$dl[j],
+                                        (varTilde$df[j] - 2)/varTilde$df[j],
                                         sigmafValue[j])
         varTilde$sigmar[j] <- ifelse(Lr > 1, var(classesr) *
-                                         (varTilde$dl[j] - 2)/varTilde$dl[j],
+                                         (varTilde$df[j] - 2)/varTilde$df[j],
                                         sigmarValue[j])
 
         varTilde$delta[1:varTilde$k] <- deltaValue[1:kValue]
@@ -1862,7 +1863,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
             Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
                             dt((paramValues$startPSF - varTilde$mu[m] +
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF -muValue[m] +
                             deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
@@ -1876,7 +1877,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
             Kar[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
                         dt((paramValues$startPSR - varTilde$mu[m] -
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
                             deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
@@ -1985,7 +1986,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item dl TODO
+#'     \item df TODO
 #'     \item a a \code{vector} of positive \code{integer} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
@@ -2022,7 +2023,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                         sigmar = rep(0, paramValues$kmax),
                         delta = rep(0, paramValues$kmax),
                         w = rep(0, paramValues$kmax),
-                        dl = rep(3, paramValues$kmax),
+                        df = rep(3, paramValues$kmax),
                         a = rep(0, paramValues$kmax + 1L),
                         dim = rep(0, paramValues$kmax), rho = 0)
 
@@ -2055,7 +2056,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         varTilde$delta[1:varTilde$k]    <- Delta[-j]
 
         Dl                              <- dlValue[1:kValue]
-        varTilde$dl[1:varTilde$k]       <- Dl[-j]
+        varTilde$df[1:varTilde$k]       <- Dl[-j]
 
         Z                               <- aValue[1:(kValue + 1)]
 
@@ -2116,7 +2117,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
             Kaf[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
                             dt((paramValues$startPSF -varTilde$mu[m] +
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmaf[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF - muValue[m] +
                             deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
@@ -2125,7 +2126,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         Kbf[, kValue] <- (wValue[kValue] * (1/sqrt(sigmafValue[kValue])) *
                             dt((paramValues$startPSF - muValue[kValue] +
                             deltaValue[m]/2)/sqrt(sigmafValue[kValue]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
 
         for (s in 1:paramValues$nf) {
             Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
@@ -2136,7 +2137,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
             Kar[, m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmar[m])) *
                             dt((paramValues$startPSR - varTilde$mu[m] -
                             varTilde$delta[m]/2)/sqrt(varTilde$sigmar[m]),
-                            varTilde$dl[m]))
+                            varTilde$df[m]))
             Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
                             deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))

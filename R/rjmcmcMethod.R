@@ -189,7 +189,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 
     w               <- matrix(0, nrow = nbrIterations, ncol = kMax)
 
-    dl              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
+    df              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
 
     k[1]            <- 1L
 
@@ -199,7 +199,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     sigmar[1, 1]    <- 1
     delta[1, 1]     <- runif(1, 0, 2*(mu[1, 1] - minReadPos))
     w[1, 1]         <- 1
-    dl[1, 1]        <- 3
+    df[1, 1]        <- 3
 
     kValue          <- as.integer(k[1])
 
@@ -209,7 +209,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     sigmarValue                     <- sigmar[1,]
     deltaValue                      <- delta[1,]
     wValue                          <- w[1,]
-    dlValue                         <- dl[1,]
+    dfValue                         <- df[1,]
     aValue                          <- rep(0, kMax + 1L)
     aValue[1]                       <- minReadPos
     aValue[as.integer(k[1]) + 1L]   <- maxReadPos
@@ -229,13 +229,13 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                 # Birth move in case k=1
                 varTilde <- birthMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue)
+                                        wValue, dfValue, aValue, dimValue)
             } ### end of B move in case k=1
             else {
                 ###Metropolis-Hastings move
                 varTilde <- mhMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue)
+                                        wValue, dfValue, aValue, dimValue)
 
             }    ### end of M-H move in case k=1
         }  ### end of test of k=1
@@ -247,7 +247,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                 ### Death move
                 varTilde <- deathMove(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue )
+                                        wValue, dfValue, aValue, dimValue )
 
             } ### end of Death move
             else {
@@ -257,7 +257,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     ### Birth move
                     varTilde <- birthMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dlValue,
+                                            deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
                 } ### end of Birth move
@@ -265,7 +265,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     ### Metropolis-Hastings move
                     varTilde <- mhMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dlValue,
+                                            deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
                 } ### end of Metropolis-Hastings move
@@ -283,7 +283,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
             sigmafValue     <- c(varTilde$sigmaf[1:maxValue], zeroVector)
             sigmarValue     <- c(varTilde$sigmar[1:maxValue], zeroVector)
             deltaValue      <- c(varTilde$delta[1:maxValue], zeroVector)
-            dlValue         <- c(varTilde$dl[1:maxValue], zeroVector)
+            dfValue         <- c(varTilde$df[1:maxValue], zeroVector)
             wValue          <- c(varTilde$w[1:maxValue], zeroVector)
             dimValue        <- c(varTilde$dim[1:maxValue], zeroVector)
             aValue          <- c(varTilde$a[1:(maxValue + 1)], zeroVector)
@@ -296,7 +296,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             sigmaf = sigmafValue[1:kVal],
                             sigmar = sigmarValue[1:kVal],
                             delta  = deltaValue[1:kVal],
-                            dl     = dlValue[1:kVal],
+                            df     = dfValue[1:kVal],
                             w      = wValue[1:kVal]
         )
 
@@ -323,7 +323,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         sigmar[i, ]   <- c(listUpdate$sigmar, naVector)
         delta[i, ]    <- c(listUpdate$delta, naVector)
         w[i, ]        <- c(listUpdate$w, naVector)
-        dl[i, ]       <- c(listUpdate$dl, naVector)
+        df[i, ]       <- c(listUpdate$df, naVector)
 
     } ###end of boucle RJMCMC
 
@@ -337,7 +337,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
     w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
     delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
-    df_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
+    df_hat     <- round(colMeans(df[kPositions, 1:km, drop = FALSE]))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
     qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
@@ -348,7 +348,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
     qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdf     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdf     <- t(apply(df[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
     qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
