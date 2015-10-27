@@ -59,7 +59,7 @@
 #' \item \code{delta} a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{dl} a \code{vector} of \code{numeric} of length
+#' \item \code{df} a \code{vector} of \code{numeric} of length
 #' \code{k}, the degrees of freedom for each nucleosome.
 #' \item \code{w} a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
@@ -76,7 +76,7 @@
 #' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
 #' the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{qdl} a \code{matrix} of \code{numerical} with a number of
+#' \item \code{qdf} a \code{matrix} of \code{numerical} with a number of
 #' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
 #' for each nucleosome.
 #' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
@@ -337,7 +337,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
     w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
     delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
-    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
+    df_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
     qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
@@ -348,7 +348,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
     qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdl     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdf     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
     qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
@@ -362,13 +362,13 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         sigmaf  = sigmaf_hat,
         sigmar  = sigmar_hat,
         delta   = delta_hat,
-        dl      = dl_hat,
+        df      = df_hat,
         w       = w_hat,
         qmu     = qmu,
         qsigmaf = qsigmaf,
         qsigmar = qsigmar,
         qdelta  = qdelta,
-        qdl     = qdl,
+        qdf     = qdf,
         qw      = qw
     )
 

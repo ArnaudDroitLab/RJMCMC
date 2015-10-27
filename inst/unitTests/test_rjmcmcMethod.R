@@ -35,7 +35,7 @@ test.rjmcmc_good_result_01 <- function() {
     exp.sigmaf  <- c(21509.940563849304, 4736.790424950710)
     exp.sigmar  <- c(12509.376406312418, 5617.742233704413)
     exp.delta   <- c(144.376399340025, 142.465706790323)
-    exp.dl      <- c(13, 3)
+    exp.df      <- c(13, 3)
     exp.w       <- c(0.617525448736, 0.382474551264)
     exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
                             72669.922485424002, 72898.810781247870),  nrow = 2)
@@ -45,7 +45,7 @@ test.rjmcmc_good_result_01 <- function() {
                             12509.376406312418, 5617.742233704413),  nrow = 2)
     exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
                             144.376399340025, 142.465706790323),  nrow = 2)
-    exp.qdl     <- matrix(c(13.000000000000, 3.000000000000,
+    exp.qdf     <- matrix(c(13.000000000000, 3.000000000000,
                             13.000000000000, 3.000000000000),  nrow = 2)
     exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
                             0.382474551264),  nrow = 2)
@@ -58,13 +58,13 @@ test.rjmcmc_good_result_01 <- function() {
     checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$dl, exp.dl, msg = message)
+    checkEqualsNumeric(obs$df, exp.df, msg = message)
     checkEqualsNumeric(obs$w, exp.w, msg = message)
     checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
     checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
     checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
     checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
+    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
@@ -79,7 +79,7 @@ test.rjmcmc_good_result_02 <- function() {
     exp.sigmaf  <- c(21509.94056384930, 4736.79042495071)
     exp.sigmar  <- c(12509.37640631242, 5617.74223370441)
     exp.delta   <- c(144.376399340025, 142.465706790323)
-    exp.dl      <- c(13, 3)
+    exp.df      <- c(13, 3)
     exp.w       <- c(0.617525448735973, 0.382474551264027)
     exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
                             72669.922485424002, 72898.810781247870),  nrow = 2)
@@ -89,7 +89,7 @@ test.rjmcmc_good_result_02 <- function() {
                             12509.376406312418, 5617.742233704413),  nrow = 2)
     exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
                             144.376399340025, 142.465706790323),  nrow = 2)
-    exp.qdl     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
+    exp.qdf     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
                             3.000000000000),  nrow = 2)
     exp.qw      <- matrix(c(0.617525448736, 0.382474551264,
                             0.617525448736, 0.382474551264),  nrow = 2)
@@ -102,13 +102,13 @@ test.rjmcmc_good_result_02 <- function() {
     checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$dl, exp.dl, msg = message)
+    checkEqualsNumeric(obs$df, exp.df, msg = message)
     checkEqualsNumeric(obs$w, exp.w, msg = message)
     checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
     checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
     checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
     checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
+    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
@@ -123,7 +123,7 @@ test.rjmcmc_good_result_03 <- function() {
     exp.sigmaf  <- c(21509.94056384930, 4736.79042495071)
     exp.sigmar  <- c(12509.37640631242, 5617.74223370441)
     exp.delta   <- c(144.376399340025, 142.465706790323)
-    exp.dl      <- c(13, 3)
+    exp.df      <- c(13, 3)
     exp.w       <- c(0.617525448735973, 0.382474551264027)
     exp.qmu     <- matrix(c(72669.922485424002, 72898.810781247870,
                             72669.922485424002, 72898.810781247870), nrow = 2)
@@ -133,7 +133,7 @@ test.rjmcmc_good_result_03 <- function() {
                             12509.376406312418, 5617.742233704413), nrow = 2)
     exp.qdelta  <- matrix(c(144.376399340025, 142.465706790323,
                             144.376399340025, 142.465706790323), nrow = 2)
-    exp.qdl     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
+    exp.qdf     <- matrix(c(13.00000000000, 3.000000000000, 13.000000000000,
                             3.000000000000),  nrow = 2)
     exp.qw      <- matrix(c(0.617525448736, 0.382474551264, 0.617525448736,
                             0.382474551264),  nrow = 2)
@@ -146,13 +146,13 @@ test.rjmcmc_good_result_03 <- function() {
     checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$dl, exp.dl, msg = message)
+    checkEqualsNumeric(obs$df, exp.df, msg = message)
     checkEqualsNumeric(obs$w, exp.w, msg = message)
     checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
     checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
     checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
     checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
+    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
@@ -175,7 +175,7 @@ test.rjmcmc_good_result_04 <- function() {
     exp.delta   <- c(151.637089900930, 148.427811353354, 147.120483906917,
                      143.613396554890, 143.726384903608, 143.726384903608,
                      143.726384903608)
-    exp.dl      <- c(3, 3, 7, 3, 3, 3, 3)
+    exp.df      <- c(3, 3, 7, 3, 3, 3, 3)
     exp.w       <- c(0.2808308442231622, 0.2452808306768512, 0.2049774378308375,
                      0.0569431136923228, 0.0706559245256088, 0.0706559245256088,
                      0.0706559245256088)
@@ -205,7 +205,7 @@ test.rjmcmc_good_result_04 <- function() {
                             148.427811353354, 149.869135532029,
                             143.900213132404, 143.900213132404,
                             143.900213132404, 143.900213132404), nrow = 2)
-    exp.qdl     <- matrix(c(3.000000000000, 3.000000000000, 3.000000000000,
+    exp.qdf     <- matrix(c(3.000000000000, 3.000000000000, 3.000000000000,
                             3.000000000000, 3.000000000000, 3.000000000000,
                             3.000000000000, 3.000000000000, 3.000000000000,
                             8.000000000000, 3.000000000000, 3.000000000000,
@@ -226,13 +226,13 @@ test.rjmcmc_good_result_04 <- function() {
     checkEqualsNumeric(obs$sigmaf, exp.sigmaf, msg = message)
     checkEqualsNumeric(obs$sigmar, exp.sigmar, msg = message)
     checkEqualsNumeric(obs$delta, exp.delta, msg = message)
-    checkEqualsNumeric(obs$dl, exp.dl, msg = message)
+    checkEqualsNumeric(obs$df, exp.df, msg = message)
     checkEqualsNumeric(obs$w, exp.w, msg = message)
     checkEqualsNumeric(obs$qmu, exp.qmu, msg = message)
     checkEqualsNumeric(obs$qsigmaf, exp.qsigmaf, msg = message)
     checkEqualsNumeric(obs$qsigmar, exp.qsigmar, msg = message)
     checkEqualsNumeric(obs$qdelta, exp.qdelta, msg = message)
-    checkEqualsNumeric(obs$qdl, exp.qdl, msg = message)
+    checkEqualsNumeric(obs$qdf, exp.qdf, msg = message)
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
