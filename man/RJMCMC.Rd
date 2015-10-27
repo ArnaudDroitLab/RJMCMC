@@ -65,7 +65,8 @@ the nucleosomes for each iteration.
 \item \code{delta} a \code{vector} of \code{numeric} of length
 \code{k}, the distance between the maxima of the forward and reverse reads
 position densities for each nucleosome.
-\item \code{dl} TODO
+\item \code{dl} a \code{vector} of \code{numeric} of length
+\code{k}, the degrees of freedom for each nucleosome.
 \item \code{w} a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 must be equal to \code{1}.
@@ -81,9 +82,12 @@ reverse reads for each nucleosome.
 rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
 the maxima of the forward and reverse reads
 position densities for each nucleosome.
-\item \code{qdl} TODO
+\item \code{qdl} a \code{matrix} of \code{numerical} with a number of
+rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
+for each nucleosome.
 \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
-of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
+of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
+nucleosome.
 }
 }
 \description{

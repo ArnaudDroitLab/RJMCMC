@@ -59,7 +59,8 @@
 #' \item \code{delta} a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{dl} TODO
+#' \item \code{dl} a \code{vector} of \code{numeric} of length
+#' \code{k}, the degrees of freedom for each nucleosome.
 #' \item \code{w} a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -75,9 +76,12 @@
 #' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
 #' the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{qdl} TODO
+#' \item \code{qdl} a \code{matrix} of \code{numerical} with a number of
+#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
+#' for each nucleosome.
 #' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
+#' of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
+#' nucleosome.
 #' }
 #'
 #' @examples
@@ -336,31 +340,17 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
-    qmu     <- t(apply(mu[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmaf <- t(apply(sigmaf[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmar <- t(apply(sigmar[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qdelta  <- t(apply(delta[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qdl     <- t(apply(dl[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qw      <- t(apply(w[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-
-    # Getting 2.5% and 97.5% quantiles for each important data type
-    qmuNew     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmafNew <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qsigmaf <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmarNew <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qsigmar <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdeltaNew  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdlNew     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdl     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qwNew      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
 
     # Create the final list
@@ -379,13 +369,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         qsigmar = qsigmar,
         qdelta  = qdelta,
         qdl     = qdl,
-        qw      = qw,
-        qmuNew     = qmuNew,
-        qsigmafNew = qsigmafNew,
-        qsigmarNew = qsigmarNew,
-        qdeltaNew  = qdeltaNew,
-        qdlNew     = qdlNew,
-        qwNew      = qwNew
+        qw      = qw
     )
 
     class(result)<-"rjmcmcNucleosomes"
