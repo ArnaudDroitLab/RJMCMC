@@ -158,7 +158,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 
     # Adapt the number of iterations
     if (adaptIterationsToReads) {
-        nbrIterations <- ifelse(nbrReads <= 10, 1000, nbrIterations)
+        nbrIterations <- ifelse(nbrReads <= 12, 1000, nbrIterations)
     }
 
     # List of fixed parameters
