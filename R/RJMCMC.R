@@ -1,4 +1,4 @@
-#' RJMCMC: Nucleosome Positioning
+#' RJMCMC: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)
 #'
 #' This package does nucleosome positioning using informative
 #' Multinomial-Dirichlet prior in a t-mixture with reversible jump
@@ -22,7 +22,7 @@
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+#'     \item \code{\link{rjmcmc}} { for profiling of nucleosome positions}
 #' }
 #'
 #' @keywords package
@@ -51,7 +51,7 @@ NULL
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+#'     \item \code{\link{rjmcmc}} {for profiling of nucleosome positions}
 #' }
 #'
 #' @usage data(reads_demo)
@@ -95,7 +95,7 @@ NULL
 #'
 #' @seealso
 #' \itemize{
-#'     \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+#'     \item \code{\link{rjmcmc}} {for profiling of nucleosome positions}
 #' }
 #'
 #' @usage data(reads_demo_02)

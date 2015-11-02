@@ -4,7 +4,7 @@
 \name{RJMCMC-package}
 \alias{RJMCMC}
 \alias{RJMCMC-package}
-\title{RJMCMC: Nucleosome Positioning}
+\title{RJMCMC: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)}
 \description{
 This package does nucleosome positioning using informative
 Multinomial-Dirichlet prior in a t-mixture with reversible jump
@@ -23,7 +23,7 @@ Astrid Deschenes <astrid-louise.deschenes@crchudequebec.ulaval.ca>
 }
 \seealso{
 \itemize{
-    \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+    \item \code{\link{rjmcmc}} { for profiling of nucleosome positions}
 }
 }
 \keyword{package}

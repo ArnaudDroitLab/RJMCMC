@@ -1,7 +1,7 @@
 Package: RJMCMC
 Version: 0.99.0
 Date: 2015-05-01
-Title: Nucleosome Positioning
+Title: Bayesian hierarchical model for genome-wide profiling of nucleosome positions based on high-throughput short-read data (MNase-Seq data)
 Description: This package does nucleosome positioning using informative
     Multinomial-Dirichlet prior in a t-mixture with reversible jump
     estimation of nucleosome positions for genome-wide profiling.

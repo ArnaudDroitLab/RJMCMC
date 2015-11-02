@@ -32,7 +32,7 @@ rjmcmc(startPosForwardReads = reads_demo$readsForward,
 }
 \seealso{
 \itemize{
-    \item \code{\link{RJMCMC}} {for doing nucleosomes positioning.}
+    \item \code{\link{rjmcmc}} {for profiling of nucleosome positions}
 }
 }
 \keyword{datasets}
