@@ -21,7 +21,7 @@ BiocStyle::markdown()
 **Compiled date**: `r Sys.Date()`<br />
 **License**: `r packageDescription("RJMCMC")[["License"]]`<br />
 
-## Licensing and citing
+# Licensing and citing
 
 This package and the underlying RJMCMC code are distributed 
 under the Artistic license 2.0. You are free to use and redistribute 
@@ -30,17 +30,16 @@ this software.
 If you use this package for a publication, we would ask you to cite the
 following:
 
-> Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal L et Droit A.  
-> Using informative Multinomial-Dirichlet prior in a t-mixture with   
-> reversible jump estimation of nucleosome positions for genome-wide  
-> profiling.  
+> Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal-Chaieb L et Droit A.  
+> Using informative Multinomial-Dirichlet prior in a t-mixture with reversible 
+> jump estimation of nucleosome positions for genome-wide profiling.  
 > Accepted (2015). 
 
 
-## Introduction
+# Introduction
 
 Global gene expression patterns are established and maintained by the 
-concerted actions of Transcription Factors (TFs) and the proteins that 
+concerted actions of transcription factors (TFs) and the proteins that 
 constitute chromatin. The key structural element of chromatin is the 
 nucleosome, which consists of an octameric histone core wrapped by 146 bps 
 of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
@@ -67,7 +66,7 @@ Markov chain Monte Carlo (RJMCMC) simulation technique (see for instance
 @Green1995 and @Richardson1997). 
 
 
-## Loading the RJMCMC package
+# Loading the RJMCMC package
 
 As with any R package, the **RJMCMC** package should first be loaded with 
 the following command:
@@ -77,7 +76,7 @@ library(RJMCMC)
 ```
 
 
-## RJMCMC analysis
+# RJMCMC analysis
 
 ```{r demo01 , warning=FALSE, collapse=TRUE} 
 ## Load the dataset containing forward and reverse reads
@@ -94,7 +93,14 @@ result
 ```
 
 
-## Session info
+# Genome segmentation
+
+A genome can be pre-processed and segmented into candidate regions to 
+accelerate the analysis. Genome segmentation
+can be done using the `segmentPING()` function from the `r Biocpkg("PING")` 
+package.
+
+# Session info
 
 Here is the output of `sessionInfo()` on the system on which this document was 
 compiled:
@@ -104,4 +110,4 @@ sessionInfo()
 ```
 
 
-## References
+# References
