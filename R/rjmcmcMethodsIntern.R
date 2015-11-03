@@ -335,7 +335,8 @@ elementWithHighestMode <- function(sample) {
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item df TODO
+#'     \item df a \code{vector} of \code{numeric} of length
+#' \code{k}, the degrees of freedom for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -362,7 +363,8 @@ elementWithHighestMode <- function(sample) {
 #'     \item delta a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and
 #' reverse reads position densities for each nucleosome.
-#'     \item df TODO
+#'     \item df a \code{vector} of \code{numeric} of length
+#' \code{k}, the degrees of freedom for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -1417,7 +1419,8 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue TODO
+#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the weight for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{integer} of length
 #' \code{kValue + 1}, TODO
@@ -1439,7 +1442,8 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item df TODO
+#'     \item df a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated degrees of freedom for each nucleosome.
 #'     \item a a \code{vector} of positive \code{integer} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length
@@ -1681,7 +1685,8 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue TODO
+#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the degrees of freedom for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{integer} of length
 #' \code{kValue + 1}, TODO
@@ -1986,7 +1991,8 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' reverse reads position densities for each nucleosome.
 #'     \item w a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated weight for each nucleosome.
-#'     \item df TODO
+#'     \item df a \code{vector} of positive \code{numerical} of length
+#' \code{k}, the updated degrees of freedom for each nucleosome.
 #'     \item a a \code{vector} of positive \code{integer} of length
 #' \code{k + 1}, TODO
 #'     \item dim a \code{vector} of positive \code{integer} of length

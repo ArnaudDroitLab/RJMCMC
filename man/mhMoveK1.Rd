@@ -50,7 +50,8 @@ reverse reads position densities for each nucleosome.}
 \item{wValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{TODO}
+\item{dlValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue}, the weight for each nucleosome.}
 
 \item{aValue}{a \code{vector} of positive \code{integer} of length
 \code{kValue + 1}, TODO}
@@ -73,7 +74,8 @@ a \code{list} containing:
 reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
-    \item df TODO
+    \item df a \code{vector} of positive \code{numerical} of length
+\code{k}, the updated degrees of freedom for each nucleosome.
     \item a a \code{vector} of positive \code{integer} of length
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{integer} of length

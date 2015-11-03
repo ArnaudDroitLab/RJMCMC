@@ -34,7 +34,8 @@ the nucleosomes.
     \item delta a \code{vector} of \code{numeric} of length
 \code{k}, the distance between the maxima of the forward and
 reverse reads position densities for each nucleosome.
-    \item df TODO
+    \item df a \code{vector} of \code{numeric} of length
+\code{k}, the degrees of freedom for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 must be equal to \code{1}.
@@ -62,7 +63,8 @@ the nucleosomes.
     \item delta a \code{vector} of \code{numeric} of length
 \code{k}, the distance between the maxima of the forward and
 reverse reads position densities for each nucleosome.
-    \item df TODO
+    \item df a \code{vector} of \code{numeric} of length
+\code{k}, the degrees of freedom for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 must be equal to \code{1}.
