@@ -32,5 +32,5 @@ License: Artistic-2.0 | file LICENSE
 VignetteBuilder: knitr
 NeedsCompilation: no
 biocViews: BiologicalQuestion, ChIPSeq, NucleosomePositioning,
-    Software, StatisticalMethod
-Maintainer: Rawane Samb <rawane.samb.1@ulaval.ca>
+    Software, StatisticalMethod, Bayesian
+Maintainer: Astrid Deschenes <Astrid-Louise.Deschenes@crchudequebec.ulaval.ca>
