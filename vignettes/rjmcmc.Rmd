@@ -32,7 +32,8 @@ following:
 
 > Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal-Chaieb L et Droit A.  
 > Using informative Multinomial-Dirichlet prior in a t-mixture with reversible 
-> jump estimation of nucleosome positions for genome-wide profiling.  
+> jump estimation of nucleosome positions for genome-wide profiling. Statistical 
+> Applications in Genetics and Molecular Biology.
 > Accepted (2015). 
 
 
