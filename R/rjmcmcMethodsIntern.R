@@ -1428,8 +1428,8 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue}, the weight for each nucleosome.
+#' @param dfValue a \code{vector} of positive \code{numerical} of length
+#' \code{kValue}, the degrees of freedom for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{integer} of length
 #' \code{kValue + 1}, TODO
@@ -1475,7 +1475,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #'
 #' RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
 #' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue, wValue = c(1), dlValue = c(3),
+#' deltaValue, wValue = c(1), dfValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
 #' dimValue = c(length(reads_demo$readsForward) +
@@ -1487,7 +1487,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @keywords internal
 #'
 mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
-                            deltaValue, wValue, dlValue, aValue, dimValue) {
+                            deltaValue, wValue, dfValue, aValue, dimValue) {
     #Create list that will be returned
     varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
                         sigmaf = rep(0, paramValues$kmax),
@@ -1592,7 +1592,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                         varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                         dt((paramValues$startPSF - muValue[m] +
-                        deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
+                        deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
         }
         for (s in 1:paramValues$nf) {
             Y1f[s] <-log(sum(Kaf[s, 1:varTilde$k]))
@@ -1606,7 +1606,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                         varTilde$df[m]))
             Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                         dt((paramValues$startPSR - muValue[m] -
-                        deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
+                        deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
         }
         for (s in 1:paramValues$nr) {
             Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
