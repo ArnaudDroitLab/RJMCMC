@@ -248,7 +248,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                 ## Death move
                 varTilde <- deathMove(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dfValue, aValue, dimValue )
+                                        wValue, dfValue, aValue, dimValue)
 
             } ## end of Death move
             else {
