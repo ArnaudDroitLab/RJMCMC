@@ -167,7 +167,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     }
 
     # List of fixed parameters
-    paramValues <- list(startPSF =  startPosForwardReads,
+    paramValues <- list(startPSF = startPosForwardReads,
                         startPSR = startPosReverseReads,
                         kmax = kMax,
                         lambda = lambda,
@@ -189,7 +189,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     delta           <- matrix(0, nrow = nbrIterations, ncol = kMax)
 
     w               <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
+    # Vector of the degrees of freedom of the nucleosomes
     df              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
 
     k[1]            <- 1L
@@ -227,30 +227,30 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
             u <- runif(1)
 
             if (u <= 0.5) {
-                # Birth move in case k=1
+                ## Birth move in case k=1
                 varTilde <- birthMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
                                         wValue, dfValue, aValue, dimValue)
-            } ### end of B move in case k=1
+            } ## end of Birth move in case k=1
             else {
-                ###Metropolis-Hastings move
+                ## Metropolis-Hastings move
                 varTilde <- mhMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
                                         wValue, dfValue, aValue, dimValue)
 
-            }    ### end of M-H move in case k=1
-        }  ### end of test of k=1
+            } ## end Metropolis-Hastings move
+        }  ## end CASE : Number of nucleosomes equal to 1
         else {
             ## CASE : Number of nucleosomes larger than 1
             u<-runif(1)
 
             if (u <= Dk(kValue, lambda, kMax)) {
-                ### Death move
+                ## Death move
                 varTilde <- deathMove(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
                                         wValue, dfValue, aValue, dimValue )
 
-            } ### end of Death move
+            } ## end of Death move
             else {
 
                 if (u <= (Dk(kValue, lambda, kMax) +
@@ -261,17 +261,17 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                                             deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
-                } ### end of Birth move
+                } ## end of Birth move
                 else {
-                    ### Metropolis-Hastings move
+                    ## Metropolis-Hastings move
                     varTilde <- mhMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
                                             deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
-                } ### end of Metropolis-Hastings move
-            } #end of else of Birth move and Metropolis-Hastings move
-        } ###end of moves in case larger than 1
+                } ## end of Metropolis-Hastings move
+            } ## end of else
+        } ## end of moves in case larger than 1
 
         v <- runif(1)      #Acceptation/rejet
 
