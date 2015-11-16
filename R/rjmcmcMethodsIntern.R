@@ -1696,7 +1696,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' @param dfValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the degrees of freedom for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{integer} of length
@@ -1749,7 +1749,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' @keywords internal
 #'
 mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
-                   deltaValue, wValue, dlValue, aValue, dimValue) {
+                   deltaValue, wValue, dfValue, aValue, dimValue) {
     ## Create returned list
     varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
                             sigmaf = rep(0, paramValues$kmax),
@@ -1882,7 +1882,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF -muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
+                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
         }
         for (s in 1:paramValues$nf) {
             Y1f[s] <- log(sum(Kaf[s, 1:varTilde$k]))
@@ -1896,7 +1896,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             varTilde$df[m]))
             Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
+                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
         }
         for (s in 1:paramValues$nr) {
             Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
@@ -1982,7 +1982,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' @param dfValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the degrees of freedom for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{integer} of length
@@ -2036,7 +2036,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' @keywords internal
 #'
 deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
-                        deltaValue, wValue, dlValue, aValue, dimValue) {
+                        deltaValue, wValue, dfValue, aValue, dimValue) {
     ### Death move
     varTilde <- list(k = 0L, mu = rep(0,paramValues$kmax),
                         sigmaf = rep(0, paramValues$kmax),
@@ -2075,7 +2075,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         Delta                           <- deltaValue[1:kValue]
         varTilde$delta[1:varTilde$k]    <- Delta[-j]
 
-        Dl                              <- dlValue[1:kValue]
+        Dl                              <- dfValue[1:kValue]
         varTilde$df[1:varTilde$k]       <- Dl[-j]
 
         Z                               <- aValue[1:(kValue + 1)]
@@ -2140,7 +2140,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             varTilde$df[m]))
             Kbf[, m] <- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF - muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
+                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
         }
 
         Kbf[, kValue] <- (wValue[kValue] * (1/sqrt(sigmafValue[kValue])) *
@@ -2160,12 +2160,12 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
                             varTilde$df[m]))
             Kbr[, m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
-                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dlValue[m]))
+                            deltaValue[m]/2)/sqrt(sigmarValue[m]), dfValue[m]))
         }
         Kbr[, kValue] <- (wValue[kValue] * (1/sqrt(sigmarValue[kValue])) *
                             dt((paramValues$startPSR - muValue[kValue] -
                             deltaValue[m]/2)/sqrt(sigmarValue[kValue]),
-                            dlValue[m]))
+                            dfValue[m]))
 
         for (s in 1:paramValues$nr) {
             Y1r[s] <- log(sum(Kar[s, 1:varTilde$k]))
