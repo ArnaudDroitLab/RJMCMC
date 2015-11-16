@@ -828,18 +828,23 @@ isInteger <- function(value) {
 #' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
 #' nr = length(reads_demo$readsReverse),
 #' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' zeta = 147, deltamin = 142, deltamax = 142,
+#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
+#' startPSF = reads_demo$readsForward,
+#' startPSR = reads_demo$readsReverse, lambda = 2,
+#' zeta = 147, deltamin = 142, deltamax = 152,
 #' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
 #' ## Create a list containing the mandatory parameters
 #' RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
-#' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue, wValue = c(1), dfValue = c(3),
+#' muValue = c(73008.53, rep(0, 29)), sigmafValue = c(1, rep(0, 29)),
+#' sigmarValue = c(1, rep(0 ,29)),
+#' deltaValue = c(61.03185, rep(0, 29)), wValue = c(1, rep(0, 29)),
+#' dfValue = c(3, rep(0, 29)),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+#' max(c(reads_demo$readsReverse, reads_demo$readsForward)), rep(0, 29)),
 #' dimValue = c(length(reads_demo$readsForward) +
-#' length(reads_demo$readsReverse)))
+#' length(reads_demo$readsReverse), rep(0, 29)))
 #'
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
