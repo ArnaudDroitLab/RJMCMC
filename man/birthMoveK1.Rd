@@ -5,7 +5,7 @@
 \title{Birth move in the case that only one nucleosome is present}
 \usage{
 birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
-  wValue, dlValue, aValue, dimValue)
+  wValue, dfValue, aValue, dimValue)
 }
 \arguments{
 \item{paramValues}{a \code{list} containing:
@@ -53,7 +53,8 @@ reverse reads position densities for each nucleosome.}
 \item{wValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{TODO}
+\item{dfValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue}, the degrees of freedom for each nucleosome.}
 
 \item{aValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue + 1}, TODO}
@@ -104,7 +105,7 @@ maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 ## Create a list containing the mandatory parameters
 RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
 muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-deltaValue, wValue = c(1), dlValue = c(3),
+deltaValue, wValue = c(1), dfValue = c(3),
 aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 max(c(reads_demo$readsReverse, reads_demo$readsForward))),
 dimValue = c(length(reads_demo$readsForward) +
