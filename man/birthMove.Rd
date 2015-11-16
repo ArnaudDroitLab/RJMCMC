@@ -5,7 +5,7 @@
 \title{Birth move}
 \usage{
 birthMove(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
-  wValue, dlValue, aValue, dimValue)
+  wValue, dfValue, aValue, dimValue)
 }
 \arguments{
 \item{paramValues}{a \code{list} containing:
@@ -52,7 +52,7 @@ reverse reads position densities for each nucleosome.}
 \item{wValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{a \code{vector} of positive \code{numerical} of length
+\item{dfValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the number of degrees of freedom.}
 
 \item{aValue}{a \code{vector} of positive \code{numerical} of length
@@ -103,7 +103,7 @@ maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 ## Create a list containing the mandatory parameters
 RJMCMC:::birthMove(paramValues = paramList, kValue = 1L,
 muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-deltaValue, wValue = c(1), dlValue = c(3),
+deltaValue, wValue = c(1), dfValue = c(3),
 aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 max(c(reads_demo$readsReverse, reads_demo$readsForward))),
 dimValue = c(length(reads_demo$readsForward) +

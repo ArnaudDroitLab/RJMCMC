@@ -1090,7 +1090,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' @param wValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the weight for each nucleosome.
 #'
-#' @param dlValue a \code{vector} of positive \code{numerical} of length
+#' @param dfValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the number of degrees of freedom.
 #'
 #' @param aValue a \code{vector} of positive \code{numerical} of length
@@ -1138,7 +1138,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' ## Create a list containing the mandatory parameters
 #' RJMCMC:::birthMove(paramValues = paramList, kValue = 1L,
 #' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue, wValue = c(1), dlValue = c(3),
+#' deltaValue, wValue = c(1), dfValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
 #' dimValue = c(length(reads_demo$readsForward) +
@@ -1149,7 +1149,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' @keywords internal
 #'
 birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
-                            deltaValue, wValue, dlValue,
+                            deltaValue, wValue, dfValue,
                             aValue, dimValue){
     #Birth move
 
@@ -1295,7 +1295,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                             varTilde$df[m]))
             Kbf[, m]<- (wValue[m] * (1/sqrt(sigmafValue[m])) *
                             dt((paramValues$startPSF - muValue[m] +
-                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dlValue[m]))
+                            deltaValue[m]/2)/sqrt(sigmafValue[m]), dfValue[m]))
         }
         Kaf[, varTilde$k]<- (varTilde$w[varTilde$k] *
                             (1/sqrt(varTilde$sigmaf[varTilde$k])) *
@@ -1316,7 +1316,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
             Kbr[,m] <- (wValue[m] * (1/sqrt(sigmarValue[m])) *
                             dt((paramValues$startPSR - muValue[m] -
                             deltaValue[m]/2)/sqrt(sigmarValue[m]),
-                            dlValue[m]))
+                            dfValue[m]))
         }
 
         Kar[, varTilde$k] <- (varTilde$w[varTilde$k] *
