@@ -877,7 +877,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         varTilde$a[j + 1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
         varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[ 1:varTilde$k],
                                                 varTilde$a[ j+1]))
-        varTilde$a[1]                <- paramValues$minReadPos
+        varTilde$a[1]                 <- paramValues$minReadPos
         varTilde$a[(varTilde$k+1)]    <- paramValues$maxReadPos
 
         varTilde$dim[1] <- length(paramValues$y[varTilde$a[1] <= paramValues$y &
