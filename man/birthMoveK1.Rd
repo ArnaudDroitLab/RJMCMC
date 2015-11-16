@@ -26,8 +26,10 @@ including forward and reverse reads).
     \item nbrReads a \code{integer}, the total number of reads (including
 forward and reverse reads).
     \item zeta TODO
-    \item deltamin TODO
-    \item deltamax TODO
+    \item deltamin a \code{integer}, the minimum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
+    \item deltamax a \code{integer}, the maximum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
     \item minReadPos a \code{numeric}, the minimum position of the reads.
     \item maxReadPos a \code{numeric}, the maximum position of the reads.
     \item nbrIterations a \code{integer}, the number of iterations.

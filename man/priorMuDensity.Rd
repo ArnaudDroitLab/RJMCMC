@@ -46,7 +46,8 @@ Samb R., Khadraoui K., Belleau P., Deschenes A., Lakhal L.
 and Droit A. Using
 informative Multinomial-Dirichlet prior in a t-mixture with
 reversible jump estimation of nucleosome positions for genome-wide
-profiling. Submitted (2015).
+profiling. Statistical Applications in Genetics and Molecular Biology.
+Accepted (2015).
 }
 \keyword{internal}
 

@@ -86,11 +86,11 @@ Bk <- function(k, lambda, kMax = 30) {
 #' distribution.
 #'
 #' @param minValue a \code{numeric} value, the inferior boundary of the
-#' range in which the output value must be located. The output value has to be
+#' range in which the output value must be located. The returned value has to be
 #' superior to \code{minValue}.
 #'
 #' @param maxValue a \code{numeric} value, the superior boundary of the range
-#' in which the output value must be located. The output value has to be
+#' in which the output value must be located. The returned value has to be
 #' inferior to \code{maxValue}.
 #'
 #' @return a \code{numeric} which is superior to \code{minValue} and inferior
@@ -227,7 +227,9 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' and Droit A. Using
 #' informative Multinomial-Dirichlet prior in a t-mixture with
 #' reversible jump estimation of nucleosome positions for genome-wide
-#' profiling. Submitted (2015).
+#' profiling. Statistical Applications in Genetics and Molecular Biology.
+#' Accepted (2015).
+#'
 #' @examples
 #'
 #' ## Sorted vector of read positions, including forward and reverse
@@ -758,8 +760,10 @@ isInteger <- function(value) {
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
 #'     \item zeta TODO
-#'     \item deltamin TODO
-#'     \item deltamax TODO
+#'     \item deltamin a \code{integer}, the minimum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
+#'     \item deltamax a \code{integer}, the maximum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
 #'     \item minReadPos a \code{numeric}, the minimum position of the reads.
 #'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 #'     \item nbrIterations a \code{integer}, the number of iterations.
@@ -918,19 +922,19 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         varTilde$df[j] <- sample(3:30, 1)
 
         varTilde$sigmaf[j] <- ifelse(Lf > 1,
-                                    var(classesf) * (varTilde$df[ j] - 2)/
-                                    varTilde$df[ j], sigmafValue[ j])
+                                    var(classesf) * (varTilde$df[j] - 2)/
+                                    varTilde$df[j], sigmafValue[j])
         varTilde$sigmar[j] <- ifelse(Lr > 1,
-                                    var(classesr) * (varTilde$df[ j] - 2)/
-                                    varTilde$df[ j], sigmarValue[ j])
+                                    var(classesr) * (varTilde$df[j] - 2)/
+                                    varTilde$df[j], sigmarValue[j])
 
         varTilde$sigmaf[1:varTilde$k] <- c(sigmafValue[ 1:kValue],
-                                            varTilde$sigmaf[ j])
+                                            varTilde$sigmaf[j])
         varTilde$sigmar[1:varTilde$k] <- c(sigmarValue[ 1:kValue],
-                                            varTilde$sigmar[ j])
+                                            varTilde$sigmar[j])
 
         varTilde$delta[j] <- tnormale(paramValues$zeta,
-                                        1/(varTilde$sigmaf[ j]^{-1} +
+                                        1/(varTilde$sigmaf[j]^{-1} +
                                         varTilde$sigmar[j]^{-1}),
                                         paramValues$deltamin,
                                         paramValues$deltamax)
@@ -1059,8 +1063,10 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
 #'     \item zeta TODO
-#'     \item deltamin TODO
-#'     \item deltamax TODO
+#'     \item deltamin a \code{integer}, the minimum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
+#'     \item deltamax a \code{integer}, the maximum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
 #'     \item minReadPos a \code{numeric}, the minimum position of the reads.
 #'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 #' }
@@ -1395,8 +1401,10 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
 #'     \item zeta TODO
-#'     \item deltamin TODO
-#'     \item deltamax TODO
+#'     \item deltamin a \code{integer}, the minimum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
+#'     \item deltamax a \code{integer}, the maximum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
 #'     \item minReadPos a \code{numeric}, the minimum position of the reads.
 #'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 #' }
@@ -1661,8 +1669,10 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
 #'     \item zeta TODO
-#'     \item deltamin TODO
-#'     \item deltamax TODO
+#'     \item deltamin a \code{integer}, the minimum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
+#'     \item deltamax a \code{integer}, the maximum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
 #'     \item minReadPos a \code{numeric}, the minimum position of the reads.
 #'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 #' }
@@ -1945,8 +1955,10 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
 #'     \item zeta TODO
-#'     \item deltamin TODO
-#'     \item deltamax TODO
+#'     \item deltamin a \code{integer}, the minimum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
+#'     \item deltamax a \code{integer}, the maximum distance between the maxima
+#' of the forward and reverse reads position densities for each nucleosome.
 #'     \item minReadPos a \code{numeric}, the minimum position of the reads.
 #'     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 #' }
