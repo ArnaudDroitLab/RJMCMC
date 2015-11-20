@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{validateParameters}
 \alias{validateParameters}
-\title{Parameters validation for the \code{\link{RJMCMC}}
+\title{Parameters validation for the \code{\link{rjmcmc}}
 function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
@@ -55,7 +55,7 @@ successful.
 }
 \description{
 Validation of all parameters needed by the public
-\code{\link{RJMCMC}} function.
+\code{\link{rjmcmc}} function.
 }
 \author{
 Astrid Deschenes

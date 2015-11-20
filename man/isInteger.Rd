@@ -20,16 +20,16 @@ of 1. The type of value can be a \code{integer} or \code{numerical}.
 }
 \examples{
 ## Return TRUE because the input is an integer of length 1
-rjmcmc:::isInteger(33L)
+RJMCMC:::isInteger(33L)
 
 ## Return FALSE because the length of the input is not 1
-rjmcmc:::isInteger(c(21L, 33L))
+RJMCMC:::isInteger(c(21L, 33L))
 
 ## Return TRUE because the input is a numericalof length 1
-rjmcmc:::isInteger(323.21)
+RJMCMC:::isInteger(323.21)
 
 ## Return FALSE because the length of the input is not 1
-rjmcmc:::isInteger(c(444.2, 442.1))
+RJMCMC:::isInteger(c(444.2, 442.1))
 }
 \author{
 Astrid Deschenes

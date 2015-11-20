@@ -13,11 +13,11 @@ tnormale(mu, sigma, minValue, maxValue)
 distribution.}
 
 \item{minValue}{a \code{numeric} value, the inferior boundary of the
-range in which the output value must be located. The output value has to be
+range in which the output value must be located. The returned value has to be
 superior to \code{minValue}.}
 
 \item{maxValue}{a \code{numeric} value, the superior boundary of the range
-in which the output value must be located. The output value has to be
+in which the output value must be located. The returned value has to be
 inferior to \code{maxValue}.}
 }
 \value{

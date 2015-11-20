@@ -36,16 +36,18 @@ readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
 mu <- c(10000L, 26700L, 45000L)
 
 ## Calculation of the exact prior density of mu
-density <- rjmcmc:::priorMuDensity(mu, readPositions)
+density <- RJMCMC:::priorMuDensity(mu, readPositions)
 }
 \author{
 Rawane Samb, Astrid Deschenes
 }
 \references{
-Samb R., Khadraoui K., Lakhal L., Belleau P. and Droit A. Using
+Samb R., Khadraoui K., Belleau P., Deschenes A., Lakhal L.
+and Droit A. Using
 informative Multinomial-Dirichlet prior in a t-mixture with
 reversible jump estimation of nucleosome positions for genome-wide
-profiling. Submitted (2015).
+profiling. Statistical Applications in Genetics and Molecular Biology.
+Accepted (2015).
 }
 \keyword{internal}
 

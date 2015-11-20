@@ -47,9 +47,10 @@
 #' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
 #' \itemize{
 #' \item \code{call} the matched call.
-#' \item \code{K} a \code{vector} of \code{integer}, the number of
-#' the nucleosomes for each iteration.
-#' \item \code{k} a \code{integer}, the number of nucleosomes.
+#' \item \code{K} a \code{vector} of \code{integer}, the estimation of the
+#' number of the nucleosomes for each iteration.
+#' \item \code{k} a \code{integer}, the final estimation of the number
+#' of nucleosomes.
 #' \item \code{mu} a \code{vector} of \code{numeric} of length
 #' \code{k}, the positions of the nucleosomes.
 #' \item \code{sigmaf} a \code{vector} of \code{numeric} of length
@@ -59,7 +60,8 @@
 #' \item \code{delta} a \code{vector} of \code{numeric} of length
 #' \code{k}, the distance between the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{dl} TODO
+#' \item \code{df} a \code{vector} of \code{numeric} of length
+#' \code{k}, the degrees of freedom for each nucleosome.
 #' \item \code{w} a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the weight for each nucleosome. The sum of all \code{w} values
 #' must be equal to \code{1}.
@@ -75,9 +77,12 @@
 #' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the distance between
 #' the maxima of the forward and reverse reads
 #' position densities for each nucleosome.
-#' \item \code{qdl} TODO
+#' \item \code{qdf} a \code{matrix} of \code{numerical} with a number of
+#' rows of \code{k}, the 2.5\% and 97.5\% quantiles of the degrees of freedom
+#' for each nucleosome.
 #' \item \code{qw} a \code{matrix} of \code{numerical} with a number of rows
-#' of \code{k}, the 2.5\% and 97.5\% quantiles of each \code{w}.
+#' of \code{k}, the 2.5\% and 97.5\% quantiles of the weight for each
+#' nucleosome.
 #' }
 #'
 #' @examples
@@ -86,12 +91,12 @@
 #' data(reads_demo)
 #'
 #' ## Nucleosome positioning, running both merge and split functions
-#' result <- RJMCMC(startPosForwardReads = reads_demo$readsForward,
+#' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 #'          startPosReverseReads = reads_demo$readsReverse,
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
 #'
-#' ## Print the number of nucleosomes
+#' ## Print the final estimation of the number of nucleosomes
 #' result$k
 #'
 #' ## Print the position of nucleosomes
@@ -103,7 +108,7 @@
 #' @import BiocGenerics
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @export
-RJMCMC <- function(startPosForwardReads, startPosReverseReads,
+rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
                     runSplitFunction = TRUE,
@@ -158,11 +163,11 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
 
     # Adapt the number of iterations
     if (adaptIterationsToReads) {
-        nbrIterations <- ifelse(nbrReads <= 10, 1000, nbrIterations)
+        nbrIterations <- ifelse(nbrReads <= 12, 1000, nbrIterations)
     }
 
     # List of fixed parameters
-    paramValues <- list(startPSF =  startPosForwardReads,
+    paramValues <- list(startPSF = startPosForwardReads,
                         startPSR = startPosReverseReads,
                         kmax = kMax,
                         lambda = lambda,
@@ -184,8 +189,8 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     delta           <- matrix(0, nrow = nbrIterations, ncol = kMax)
 
     w               <- matrix(0, nrow = nbrIterations, ncol = kMax)
-
-    dl              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
+    # Vector of the degrees of freedom of the nucleosomes
+    df              <- matrix(0L, nrow = nbrIterations, ncol = kMax)
 
     k[1]            <- 1L
 
@@ -195,7 +200,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     sigmar[1, 1]    <- 1
     delta[1, 1]     <- runif(1, 0, 2*(mu[1, 1] - minReadPos))
     w[1, 1]         <- 1
-    dl[1, 1]        <- 3
+    df[1, 1]        <- 3
 
     kValue          <- as.integer(k[1])
 
@@ -205,7 +210,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     sigmarValue                     <- sigmar[1,]
     deltaValue                      <- delta[1,]
     wValue                          <- w[1,]
-    dlValue                         <- dl[1,]
+    dfValue                         <- df[1,]
     aValue                          <- rep(0, kMax + 1L)
     aValue[1]                       <- minReadPos
     aValue[as.integer(k[1]) + 1L]   <- maxReadPos
@@ -222,30 +227,30 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             u <- runif(1)
 
             if (u <= 0.5) {
-                # Birth move in case k=1
+                ## Birth move in case k=1
                 varTilde <- birthMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue)
-            } ### end of B move in case k=1
+                                        wValue, dfValue, aValue, dimValue)
+            } ## end of Birth move in case k=1
             else {
-                ###Metropolis-Hastings move
+                ## Metropolis-Hastings move
                 varTilde <- mhMoveK1(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue)
+                                        wValue, dfValue, aValue, dimValue)
 
-            }    ### end of M-H move in case k=1
-        }  ### end of test of k=1
+            } ## end Metropolis-Hastings move
+        }  ## end CASE : Number of nucleosomes equal to 1
         else {
             ## CASE : Number of nucleosomes larger than 1
             u<-runif(1)
 
             if (u <= Dk(kValue, lambda, kMax)) {
-                ### Death move
+                ## Death move
                 varTilde <- deathMove(paramValues, kValue, muValue,
                                         sigmafValue, sigmarValue, deltaValue,
-                                        wValue, dlValue, aValue, dimValue )
+                                        wValue, dfValue, aValue, dimValue)
 
-            } ### end of Death move
+            } ## end of Death move
             else {
 
                 if (u <= (Dk(kValue, lambda, kMax) +
@@ -253,20 +258,20 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                     ### Birth move
                     varTilde <- birthMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dlValue,
+                                            deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
-                } ### end of Birth move
+                } ## end of Birth move
                 else {
-                    ### Metropolis-Hastings move
+                    ## Metropolis-Hastings move
                     varTilde <- mhMove(paramValues, kValue, muValue,
                                             sigmafValue, sigmarValue,
-                                            deltaValue, wValue, dlValue,
+                                            deltaValue, wValue, dfValue,
                                             aValue, dimValue)
 
-                } ### end of Metropolis-Hastings move
-            } #end of else of Birth move and Metropolis-Hastings move
-        } ###end of moves in case larger than 1
+                } ## end of Metropolis-Hastings move
+            } ## end of else
+        } ## end of moves in case larger than 1
 
         v <- runif(1)      #Acceptation/rejet
 
@@ -279,7 +284,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
             sigmafValue     <- c(varTilde$sigmaf[1:maxValue], zeroVector)
             sigmarValue     <- c(varTilde$sigmar[1:maxValue], zeroVector)
             deltaValue      <- c(varTilde$delta[1:maxValue], zeroVector)
-            dlValue         <- c(varTilde$dl[1:maxValue], zeroVector)
+            dfValue         <- c(varTilde$df[1:maxValue], zeroVector)
             wValue          <- c(varTilde$w[1:maxValue], zeroVector)
             dimValue        <- c(varTilde$dim[1:maxValue], zeroVector)
             aValue          <- c(varTilde$a[1:(maxValue + 1)], zeroVector)
@@ -292,7 +297,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
                             sigmaf = sigmafValue[1:kVal],
                             sigmar = sigmarValue[1:kVal],
                             delta  = deltaValue[1:kVal],
-                            dl     = dlValue[1:kVal],
+                            df     = dfValue[1:kVal],
                             w      = wValue[1:kVal]
         )
 
@@ -319,7 +324,7 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         sigmar[i, ]   <- c(listUpdate$sigmar, naVector)
         delta[i, ]    <- c(listUpdate$delta, naVector)
         w[i, ]        <- c(listUpdate$w, naVector)
-        dl[i, ]       <- c(listUpdate$dl, naVector)
+        df[i, ]       <- c(listUpdate$df, naVector)
 
     } ###end of boucle RJMCMC
 
@@ -333,34 +338,20 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
     sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
     w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
     delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
-    dl_hat     <- round(colMeans(dl[kPositions, 1:km, drop = FALSE]))
+    df_hat     <- round(colMeans(df[kPositions, 1:km, drop = FALSE]))
 
     # Getting 2.5% and 97.5% quantiles for each important data type
-    qmu     <- t(apply(mu[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmaf <- t(apply(sigmaf[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qsigmar <- t(apply(sigmar[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qdelta  <- t(apply(delta[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qdl     <- t(apply(dl[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-    qw      <- t(apply(w[, 1:km, drop = FALSE], MARGIN = 2,
-                    FUN = quantile, probs=c(0.025, 0.975), na.rm = TRUE))
-
-    # Getting 2.5% and 97.5% quantiles for each important data type
-    qmuNew     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmafNew <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qsigmaf <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmarNew <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qsigmar <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdeltaNew  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdlNew     <- t(apply(dl[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qdf     <- t(apply(df[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qwNew      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+    qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
                         FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
 
     # Create the final list
@@ -372,20 +363,14 @@ RJMCMC <- function(startPosForwardReads, startPosReverseReads,
         sigmaf  = sigmaf_hat,
         sigmar  = sigmar_hat,
         delta   = delta_hat,
-        dl      = dl_hat,
+        df      = df_hat,
         w       = w_hat,
         qmu     = qmu,
         qsigmaf = qsigmaf,
         qsigmar = qsigmar,
         qdelta  = qdelta,
-        qdl     = qdl,
-        qw      = qw,
-        qmuNew     = qmuNew,
-        qsigmafNew = qsigmafNew,
-        qsigmarNew = qsigmarNew,
-        qdeltaNew  = qdeltaNew,
-        qdlNew     = qdlNew,
-        qwNew      = qwNew
+        qdf     = qdf,
+        qw      = qw
     )
 
     class(result)<-"rjmcmcNucleosomes"

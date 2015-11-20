@@ -5,7 +5,7 @@
 \title{Death move}
 \usage{
 deathMove(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
-  wValue, dlValue, aValue, dimValue)
+  wValue, dfValue, aValue, dimValue)
 }
 \arguments{
 \item{paramValues}{a \code{list} containing:
@@ -26,8 +26,10 @@ including forward and reverse reads).
     \item nbrReads a \code{integer}, the total number of reads (including
 forward and reverse reads).
     \item zeta TODO
-    \item deltamin TODO
-    \item deltamax TODO
+    \item deltamin a \code{integer}, the minimum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
+    \item deltamax a \code{integer}, the maximum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
     \item minReadPos a \code{numeric}, the minimum position of the reads.
     \item maxReadPos a \code{numeric}, the maximum position of the reads.
 }}
@@ -50,7 +52,8 @@ reverse reads position densities for each nucleosome.}
 \item{wValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{TODO}
+\item{dfValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue}, the degrees of freedom for each nucleosome.}
 
 \item{aValue}{a \code{vector} of positive \code{integer} of length
 \code{kValue + 1}, TODO}
@@ -73,7 +76,8 @@ a \code{list} containing:
 reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
-    \item dl TODO
+    \item df a \code{vector} of positive \code{numerical} of length
+\code{k}, the updated degrees of freedom for each nucleosome.
     \item a a \code{vector} of positive \code{integer} of length
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{integer} of length

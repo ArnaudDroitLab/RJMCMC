@@ -5,7 +5,7 @@
 \title{Birth move in the case that only one nucleosome is present}
 \usage{
 birthMoveK1(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
-  wValue, dlValue, aValue, dimValue)
+  wValue, dfValue, aValue, dimValue)
 }
 \arguments{
 \item{paramValues}{a \code{list} containing:
@@ -26,8 +26,10 @@ including forward and reverse reads).
     \item nbrReads a \code{integer}, the total number of reads (including
 forward and reverse reads).
     \item zeta TODO
-    \item deltamin TODO
-    \item deltamax TODO
+    \item deltamin a \code{integer}, the minimum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
+    \item deltamax a \code{integer}, the maximum distance between the maxima
+of the forward and reverse reads position densities for each nucleosome.
     \item minReadPos a \code{numeric}, the minimum position of the reads.
     \item maxReadPos a \code{numeric}, the maximum position of the reads.
     \item nbrIterations a \code{integer}, the number of iterations.
@@ -51,7 +53,8 @@ reverse reads position densities for each nucleosome.}
 \item{wValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the weight for each nucleosome.}
 
-\item{dlValue}{TODO}
+\item{dfValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue}, the degrees of freedom for each nucleosome.}
 
 \item{aValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue + 1}, TODO}
@@ -74,7 +77,8 @@ a \code{list} containing:
 reverse reads position densities for each nucleosome.
     \item w a \code{vector} of positive \code{numerical} of length
 \code{k}, the updated weight for each nucleosome.
-    \item dl TODO
+    \item df a \code{vector} of positive \code{numerical} of length
+\code{k}, the number of degrees of freedom.
     \item a a \code{vector} of positive \code{numerical} of length
 \code{k + 1}, TODO
     \item dim a \code{vector} of positive \code{numerical} of length
@@ -94,18 +98,23 @@ data(reads_demo)
 paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
 nr = length(reads_demo$readsReverse),
 nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-zeta = 147, deltamin = 142, deltamax = 142,
+y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
+startPSF = reads_demo$readsForward,
+startPSR = reads_demo$readsReverse, lambda = 2,
+zeta = 147, deltamin = 142, deltamax = 152,
 minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 
 ## Create a list containing the mandatory parameters
-rjmcmc:::birthMoveK1(paramValues = paramList, kValue = 1L,
-muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-deltaValue, wValue = c(1), dlValue = c(3),
+RJMCMC:::birthMoveK1(paramValues = paramList, kValue = 1L,
+muValue = c(73008.53, rep(0, 29)), sigmafValue = c(1, rep(0, 29)),
+sigmarValue = c(1, rep(0 ,29)),
+deltaValue = c(61.03185, rep(0, 29)), wValue = c(1, rep(0, 29)),
+dfValue = c(3, rep(0, 29)),
 aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+max(c(reads_demo$readsReverse, reads_demo$readsForward)), rep(0, 29)),
 dimValue = c(length(reads_demo$readsForward) +
-length(reads_demo$readsReverse)))
+length(reads_demo$readsReverse), rep(0, 29)))
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes
