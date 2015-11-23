@@ -34,9 +34,6 @@
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @param runSplitFunction a \code{logical} indicating if the split function
-#' is run or skipt. Default: \code{TRUE}.
-#'
 #' @param runMergeFunction a \code{logical} indicating if the merge function
 #' is run or skipt. Default: \code{TRUE}.
 #'
@@ -111,7 +108,6 @@
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
-                    runSplitFunction = TRUE,
                     runMergeFunction = TRUE,
                     adaptIterationsToReads = TRUE) {
 
@@ -127,7 +123,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             minInterval = minInterval,
                             maxInterval = maxInterval,
                             minReads = minReads,
-                            runSplitFunction = runSplitFunction,
                             runMergeFunction = runMergeFunction,
                             adaptIterationsToReads = adaptIterationsToReads)
 
@@ -304,13 +299,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         ## Run merging function if activated
         if (runMergeFunction) {
             listUpdate <- mergeNucleosomes(startPosForwardReads,
-                                    startPosReverseReads, y, listUpdate,
-                                    minInterval, maxInterval, minReads)
-        }
-
-        ## Run split function if activated
-        if (runSplitFunction) {
-            listUpdate <- splitNucleosome(startPosForwardReads,
                                     startPosReverseReads, y, listUpdate,
                                     minInterval, maxInterval, minReads)
         }

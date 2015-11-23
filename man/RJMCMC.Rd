@@ -5,8 +5,8 @@
 \title{Nucleosome positioning mapping}
 \usage{
 rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
-  minInterval, maxInterval, minReads, runSplitFunction = TRUE,
-  runMergeFunction = TRUE, adaptIterationsToReads = TRUE)
+  minInterval, maxInterval, minReads, runMergeFunction = TRUE,
+  adaptIterationsToReads = TRUE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -38,9 +38,6 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
-
-\item{runSplitFunction}{a \code{logical} indicating if the split function
-is run or skipt. Default: \code{TRUE}.}
 
 \item{runMergeFunction}{a \code{logical} indicating if the merge function
 is run or skipt. Default: \code{TRUE}.}
