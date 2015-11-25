@@ -267,7 +267,7 @@ test.isInteger_with_list_of_integers <- function() {
     obs <- tryCatch(RJMCMC:::isInteger(value = list(a=444L, b=333L)),
                     error=conditionMessage)
     message <- paste0(" isInteger_with_list_of_integers() ",
-                      "- A list did not generated FALSE.")
+                    "- A list did not generated FALSE.")
     checkEquals(obs, FALSE, msg = message)
 }
 
@@ -290,7 +290,6 @@ test.validateParameters_empty_startPosForwardReads<- function() {
                     startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                             72429.24, 72426.08),
                     nbrIterations = 10, kMax = 11, lambda = 72400,
-                    runMergeFunction = TRUE,
                     minInterval = 142, maxInterval = 200, minReads = 5),
                     error=conditionMessage)
     exp <- paste0("startPosForwardReads must be a non-empty vector ",
@@ -309,7 +308,6 @@ test.validateParameters_number_for_adaptIterationsToReads<- function() {
                         72429.24, 72426.08),
                         nbrIterations = 10, kMax = 11, lambda = 72400,
                         minInterval = 142, maxInterval = 200, minReads = 5,
-                        runMergeFunction = TRUE,
                         adaptIterationsToReads = 32),
                         error=conditionMessage)
     exp <- "adaptIterationsToReads must be a logical."

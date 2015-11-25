@@ -626,9 +626,6 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @param runMergeFunction a \code{logical} indicating if the merge function
-#' is run or skipt.
-#'
 #' @param adaptIterationsToReads a \code{logical} indicating if the number
 #' of iterations must be modified in function of the number of reads.
 #'
@@ -640,7 +637,6 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kMax, lambda,
                                     minInterval, maxInterval, minReads,
-                                    runMergeFunction,
                                     adaptIterationsToReads) {
     ## Validate the nbrIterations parameter
     if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
@@ -678,11 +674,6 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
     {
         stop(paste0("startPosReverseReads must be a non-empty vector of ",
                     "numeric values."))
-    }
-
-    ## Validate that runMergeFunction is a logical
-    if (!is.logical(runMergeFunction)) {
-        stop("runMergeFunction must be a logical.")
     }
 
     ## Validate that adaptIterationsToReads is a logical

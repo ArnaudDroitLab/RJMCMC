@@ -6,8 +6,7 @@
 function}
 \usage{
 validateParameters(startPosForwardReads, startPosReverseReads, nbrIterations,
-  kMax, lambda, minInterval, maxInterval, minReads, runMergeFunction,
-  adaptIterationsToReads)
+  kMax, lambda, minInterval, maxInterval, minReads, adaptIterationsToReads)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -39,9 +38,6 @@ nucleosomes.}
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
 zero.}
-
-\item{runMergeFunction}{a \code{logical} indicating if the merge function
-is run or skipt.}
 
 \item{adaptIterationsToReads}{a \code{logical} indicating if the number
 of iterations must be modified in function of the number of reads.}

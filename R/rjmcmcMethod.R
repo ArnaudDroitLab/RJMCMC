@@ -34,9 +34,6 @@
 #' of \code{minReads} will be casted to \code{integer} and truncated towards
 #' zero.
 #'
-#' @param runMergeFunction a \code{logical} indicating if the merge function
-#' is run or skipt. Default: \code{TRUE}.
-#'
 #' @param adaptIterationsToReads a \code{logical} indicating if the number
 #' of iterations must be modified in function of the number of reads.
 #' Default: \code{TRUE}.
@@ -108,7 +105,6 @@
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
                     minInterval, maxInterval, minReads,
-                    runMergeFunction = TRUE,
                     adaptIterationsToReads = TRUE) {
 
     # Get call information
@@ -123,7 +119,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             minInterval = minInterval,
                             maxInterval = maxInterval,
                             minReads = minReads,
-                            runMergeFunction = runMergeFunction,
                             adaptIterationsToReads = adaptIterationsToReads)
 
     # Casting specific inputs as integer
@@ -295,13 +290,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                             df     = dfValue[1:kVal],
                             w      = wValue[1:kVal]
         )
-
-        ## Run merging function if activated
-        if (runMergeFunction) {
-            listUpdate <- mergeNucleosomes(startPosForwardReads,
-                                    startPosReverseReads, y, listUpdate,
-                                    minInterval, maxInterval, minReads)
-        }
 
         ## Assign resulting values for this iteration
         kVal          <- listUpdate$k
