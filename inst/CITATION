@@ -1,0 +1,17 @@
+citEntry(entry="article",
+        title = "Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling",
+        author = personList( as.person("Rawane Samb" ),
+           as.person("Khader Khadraoui" ),
+           as.person("Pascal Belleau" ),
+           as.person("Astrid Desch\\^enes" ),
+           as.person("Lajmi Lakhal-Chaieb" ),
+           as.person("Arnaud Droit" )),
+        year = 2015,
+        journal = "Statistical Applications in Genetics and Molecular Biology",
+        volume = "14",
+        issue = "6",
+        doi = "10.1515/sagmb-2014-0098",
+        url = "http://www.degruyter.com/view/j/sagmb.ahead-of-print/sagmb-2014-0098/sagmb-2014-0098.xml",
+        textVersion =
+         "Samb R, Khadraoui K, Belleau P, et al. (2015) Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling. Statistical Applications in Genetics and Molecular Biology. Published online before print December 10, 2015. doi:10.1515/sagmb-2014-0098"
+        )

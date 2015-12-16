@@ -30,11 +30,7 @@ this software.
 If you use this package for a publication, we would ask you to cite the
 following:
 
-> Samb R, Khadraoui K, Belleau P, Deschenes A, Lakhal-Chaieb L et Droit A.  
-> Using informative Multinomial-Dirichlet prior in a t-mixture with reversible 
-> jump estimation of nucleosome positions for genome-wide profiling. Statistical 
-> Applications in Genetics and Molecular Biology.
-> Accepted (2015). 
+>Samb R, Khadraoui K, Belleau P, et al. (2015) Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling. Statistical Applications in Genetics and Molecular Biology. Published online before print December 10, 2015. <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi:10.1515/sagmb-2014-0098</a>
 
 
 # Introduction
@@ -54,9 +50,7 @@ assumption.
 
 The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
 model for profiling of nucleosome positions based on high-throughput
-short-read data (MNase-Seq data). 
-
-The implemantation is based on a strategy which 
+short-read data (MNase-Seq data). The implemantation is based on a strategy which 
 incorporates four aspects. First, it jointly models local concentrations
 of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
 construction of an informative prior distribution coupled to a t-mixture model 
