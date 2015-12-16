@@ -353,3 +353,111 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 
     return(result)
 }
+
+
+#' @title Merge nucleosome information from all RDS files present
+#' in a same directory.
+#'
+#' @description TODO
+#'
+#' @param directory a \code{character}, the
+#' name of the directory (relative or absolute path) containing RDS files. The
+#' RDS files must
+#' contain R object of \code{class} "rjmcmcNucleosomes" or
+#' "rjmcmcNucleosomesMerge".
+#'
+#' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes.
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#' }
+#'
+#' @examples
+#'
+#' ## Use a directory present in the RJMCMC package
+#' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
+#'
+#' ## Merge nucleosomes info from RDS files present in directory
+#' result <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
+#'
+#' ## Print the number and the position of the nucleosomes
+#' result$k
+#' result$mu
+#'
+#' ## Class of the output object
+#' class(result)
+#'
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @export
+mergeAllRDSFilesFromDirectory <- function(directory) {
+
+    ## Validate that the directory exist
+    validateDirectoryParameters(directory)
+
+    ## Get the list of all RDS files present in the directory
+    fileList <- dir(directory, pattern = ".rds", full.names = TRUE,
+                     ignore.case = TRUE)
+
+    ## Extract information from each file
+    return(mergeAllRDSFiles(fileList))
+}
+
+
+#' @title Merge nucleosome information for selected RDS files.
+#'
+#' @description TODO
+#'
+#' @param RDSFiles a \code{array}, the
+#' names of all RDS used to merge nucleosome information. The files must
+#' contain R object of \code{class} "rjmcmcNucleosomes" or
+#' "rjmcmcNucleosomesMerge".
+#'
+#' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes.
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#' }
+#'
+#' @examples
+#'
+#' ## Use RDS files present in the RJMCMC package
+#' RDSFiles <- dir(system.file("extdata", package = "RJMCMC"), full.names = TRUE)
+#'
+#' ## Merge nucleosomes info from RDS files present in directory
+#' result <- mergeRDSFiles(RDSFiles)
+#'
+#' ## Print the number and the position of the nucleosomes
+#' result$k
+#' result$mu
+#'
+#' ## Class of the output object
+#' class(result)
+#'
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @export
+mergeRDSFiles <- function(RDSFiles) {
+
+    ## Validate parameters
+    validateRDSFilesParameters(RDSFiles)
+
+    ## Return merge information provided by each file
+    return(mergeAllRDSFiles(RDSFiles))
+}

@@ -2209,3 +2209,131 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
+#' @title Merge nucleosome information
+#'
+#' @description Merge nucleosome information present in multiple RDS files.
+#'
+#' @param arrayOfFiles a \code{array}, the name of each file that must be
+#' used to merge nucleosome information.
+#'
+#' @return a \code{list} of \code{class} "rjmcmcNucleosomesMerge" containing:
+#' \itemize{
+#'     \item k a \code{integer}, the number of nucleosomes.
+#'     \item mu a \code{vector} of \code{numeric} of length
+#' \code{k}, the positions of the nucleosomes.
+#'     \item sigmaf a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the forward reads for each nucleosome.
+#'     \item sigmar a \code{vector} of \code{numeric} of length
+#' \code{k}, the variance of the reverse reads for each nucleosome.
+#'     \item delta a \code{vector} of \code{numeric} of length
+#' \code{k}, the distance between the maxima of the forward and
+#' reverse reads position densities for each nucleosome.
+#' }
+#'
+#' @examples
+#'
+#' ## TODO
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @keywords internal
+#'
+mergeAllRDSFiles <- function(arrayOfFiles) {
+
+    ## Create list that will contain data from all files
+    result        <- list()
+    result$k      <- 0
+    result$mu     <- array(dim = c(0))
+    result$sigmaf <- array(dim = c(0))
+    result$sigmar <- array(dim = c(0))
+    result$delta  <- array(dim = c(0))
+    result$df     <- array(dim = c(0))
+
+    ## Extract information from each file
+    for (fileName in arrayOfFiles) {
+        data <- readRDS(file = fileName)
+        ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
+        if (class(data) %in% c("rjmcmcNucleosomes", "rjmcmcNucleosomesMerge")) {
+            result$k <- result$k + data$k
+            result$mu <- c(result$mu, data$mu)
+            result$sigmaf <- c(result$sigmaf, data$sigmaf)
+            result$sigmar <- c(result$sigmar, data$sigmar)
+            result$delta <- c(result$delta, data$delta)
+            result$df <- c(result$df, data$df)
+        }
+    }
+
+    ## Ensure that all values are ordered in ascending order of mu
+    newOrder <- order(result$mu)
+    result$mu <- result$mu[newOrder]
+    result$sigmaf <- result$sigmaf[newOrder]
+    result$sigmar <- result$sigmar[newOrder]
+    result$delta <- result$delta[newOrder]
+    result$df <- result$df[newOrder]
+
+    ## Assign class type to list
+    class(result)<-"rjmcmcNucleosomesMerge"
+
+    return(result)
+}
+
+
+
+#' @title Parameters validation for the \code{\link{mergeRDSFiles}}
+#' function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{mergeRDSFiles}} function.
+#'
+#' @param RDSFiles a \code{array}, the names of all RDS used to merge
+#' nucleosome information. The files must contain R object of \code{class}
+#' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge".
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+#'
+validateRDSFilesParameters <- function(RDSFiles) {
+
+    ## Validate the RDSFiles parameters
+    if (is.na(RDSFiles) || is.null(RDSFiles)) {
+        stop("RDSFiles must be a list of valid RDS files")
+    }
+
+    ## Validate that all files exist
+    for (fileName in RDSFiles) {
+        if (!file.exists(fileName)) {
+            stop("The file \'", fileName, "\' does not exist.")
+        }
+    }
+
+    return(0)
+}
+
+
+#' @title Parameters validation for the
+#' \code{\link{mergeAllRDSFilesFromDirectory}} function
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{mergeAllRDSFilesFromDirectory}} function.
+#'
+#' @param directory a \code{character}, the
+#' name of the directory (relative or absolute path) containing RDS files.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @author Astrid Deschenes
+#' @keywords internal
+#'
+validateDirectoryParameters <- function(directory) {
+
+    ## Validate that the directory exist
+    if (!file.exists(directory)) {
+        stop("The directory \'", directory, "\' does not exist.")
+    }
+
+    return(0)
+}
+

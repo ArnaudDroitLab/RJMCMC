@@ -19,6 +19,20 @@ if(FALSE) {
 data(reads_demo)
 data(reads_demo_02)
 
+DIRECTORY <- system.file("extdata", package = "RJMCMC")
+
+file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+                        pattern = "yeastRes_Chr1_Seg_002.rds",
+                        full.names = TRUE)
+
+file_101 <- dir(system.file("extdata", package = "RJMCMC"),
+                pattern = "yeastRes_Chr1_Seg_101.rds",
+                full.names = TRUE)
+
+file_100 <- dir(system.file("extdata", package = "RJMCMC"),
+                pattern = "yeastRes_Chr1_Seg_100.rds",
+                full.names = TRUE)
+
 
 ###########################################################
 ## RJMCMC() function
@@ -230,3 +244,122 @@ test.rjmcmc_good_result_04 <- function() {
     checkEqualsNumeric(obs$qw, exp.qw, msg = message)
 }
 
+
+
+###########################################################
+## mergeAllRDSFilesFromDirectory() function
+###########################################################
+
+
+test.mergeAllRDSFilesFromDirectory_notExisting <- function() {
+    dir_01 <- "/toto1/toto2/toto3/toto4/toto5/"
+    dir_02 <- "/toto5/toto4/toto3/toto2/toto1/"
+
+    dir <- NULL
+    if (!file.exists(dir_01)) {
+        dir <- dir_01
+    } else {
+        if (!file.exists(dir_02)) {
+            dir <- dir_02
+        }
+    }
+
+    if (!is.null(dir)) {
+        obs <- tryCatch(mergeAllRDSFilesFromDirectory(dir),
+                    error=conditionMessage)
+        exp <- paste0("The directory \'", dir,
+                  "\' does not exist.")
+        message <- paste0(" test.mergeResultFilesInDirectory_notExisting() ",
+                      "- A not existing directory did not generated ",
+                      "expected message.")
+        checkEquals(obs, exp, msg = message)
+    }
+}
+
+test.mergeAllRDSFilesFromDirectory_good <- function() {
+
+    obs <- mergeAllRDSFilesFromDirectory(DIRECTORY)
+    exp <- list()
+    exp$k <- 12
+    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
+                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
+                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
+    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
+                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
+                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
+    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
+                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
+                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
+    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
+                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
+                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
+    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+
+    class(exp) <- "rjmcmcNucleosomesMerge"
+
+    message <- paste0(" test.mergeAllRDSFilesFromDirectory_good() ",
+                      "- The mergeAllRDSFilesFromDirectory() did not generated ",
+                      "expected output.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+
+###########################################################
+## mergeRDSFiles() function
+###########################################################
+
+
+test.mergeRDSFiles_notExisting <- function() {
+    file_01 <- "/toto1/toto2/toto3/toto4/toto5/improbable_file_01335320111.RDS"
+    file_02 <- "/toto5/toto4/toto3/toto2/toto1/improbable_file_01335320111.RDS"
+
+    fileName <- array(dim = c(0))
+    if (!file.exists(file_01)) {
+        fileName <- c(file_01)
+    }
+    if (!file.exists(file_02)) {
+        fileName <- c(fileName, file_02)
+    }
+
+    if (length(fileName) > 0) {
+        obs <- tryCatch(mergeRDSFiles(fileName),
+                        error=conditionMessage)
+        exp <- paste0("The file \'", fileName[1],
+                      "\' does not exist.")
+        message <- paste0(" test.mergeRDSFiles_notExisting() ",
+                          "- A not existing file did not generated ",
+                          "expected message.")
+        checkEquals(obs, exp, msg = message)
+    }
+}
+
+test.mergeRDSFiles_good <- function() {
+
+    files <- c(file_002, file_101, file_100)
+
+    obs <- mergeRDSFiles(files)
+    exp <- list()
+    exp$k <- 12
+    exp$mu <- c(65495.93096152, 65635.15873971, 65667.09919056, 65731.46018451,
+                65821.77378456, 65849.37480950, 65877.86273165, 66073.60889425,
+                66121.93114271, 66262.62007435, 66339.89317112, 66409.08499401)
+    exp$sigmaf <- c(1327.56410971, 8.26040846, 1910.63319069, 255.22104538,
+                    37.99635976, 758.69274593, 45.74932385, 3535.27508195,
+                    127.77101262, 1059.08821048, 47.90158118, 252.71961235)
+    exp$sigmar <- c(1220.14774153, 56.00340185, 1908.17853436, 71.47109077,
+                    43.89666079, 263.40271305, 74.05517743, 1542.90232618,
+                    114.08280263, 1197.75017003, 51.42856782, 83.87224549)
+    exp$delta  <- c(146.80383296, 145.21285124, 151.95220401, 145.59756968,
+                    145.64481509, 145.84496473, 145.80370401, 143.37237392,
+                    145.68833105, 147.52411842, 147.44254377, 150.25053506)
+    exp$df <- c(3, 15, 3, 3, 3, 3, 6, 3, 14, 3, 8, 3)
+
+    class(exp) <- "rjmcmcNucleosomesMerge"
+
+    message <- paste0(" test.mergeRDSFiles_good() ",
+                      "- The mergeRDSFiles() did not generated ",
+                      "expected output.")
+
+    checkEquals(obs, exp, msg = message)
+}
