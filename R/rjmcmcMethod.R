@@ -1,8 +1,9 @@
 #' @title Nucleosome positioning mapping
 #'
-#' @description Use of a fully Bayesian hierarchical model for genome-wide
+#' @description Use of a fully Bayesian hierarchical model for chromosome-wide
 #' profiling of nucleosome positions based on high-throughput short-read
-#' data (MNase-Seq data).
+#' data (MNase-Seq data). Beware that for a genome-wide profiling, each
+#' chromosome must be treated separatly.
 #'
 #' @param startPosForwardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
@@ -356,7 +357,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 
 
 #' @title Merge nucleosome information from all RDS files present
-#' in a same directory.
+#' in a same directory. Beware that only nucleosome information from same
+#' chromosome should be merged together.
 #'
 #' @description TODO
 #'
@@ -386,6 +388,8 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
+#' ## It is asumed that all files present in the direcotry are nucleosomes
+#' ## result for the same chromosome
 #' result <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
 #'
 #' ## Print the number and the position of the nucleosomes
@@ -461,3 +465,64 @@ mergeRDSFiles <- function(RDSFiles) {
     ## Return merge information provided by each file
     return(mergeAllRDSFiles(RDSFiles))
 }
+
+
+#' @title A post treatment function to merge closely positioned nucleosomes
+#' , from the same chromosome,
+#' identified by the \code{\link{rjmcmc}} function..
+#'
+#' @description A helper function which merges closely positioned nucleosomes
+#' to rectify the over splitting and provide a more conservative approach.
+#' Beware that each chromosome must be treated separatly.
+#'
+#' @param startPosForwardReads a \code{vector} of \code{numeric}, the
+#' start position of all the forward reads.
+#'
+#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
+#' start position of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
+#'
+#' @param resultRJMCMC TODO
+#'
+#' @param nbBase a positive \code{numeric} or a positive \code{integer}
+#' indicating TODO. The numeric will be treated as an integer.
+#'
+#' @param chrLength a positive \code{numeric} or a positive \code{integer}
+#' indicating the lenght of the current chromosome. The length of the
+#' chromosome is used to ensure that the consensus positions are all
+#' located inside the chromosome.
+#'
+#' @return a \code{array} of \code{numeric}, the updated values of the
+#' nucleosome positions.
+#'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(reads_demo)
+#'
+#' ## Nucleosome positioning, running both merge and split functions
+#' result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse,
+#'          nbrIterations = 1000, lambda = 2, kMax = 30,
+#'          minInterval = 146, maxInterval = 292, minReads = 5)
+#'
+#' ##
+#' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+#'          startPosReverseReads = reads_demo$readsReverse, result, 1, 73500)
+#'
+#' postResult
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @export
+postTreatment <- function(startPosForwardReads, startPosReverseReads,
+                           resultRJMCMC, nbBase, chrLength) {
+
+    ## Validate parameters
+    validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
+                                         resultRJMCMC, nbBase, chrLength)
+
+    ## Run post merging function and return results
+    return(postMerge(startPosForwardReads, startPosReverseReads,
+              resultRJMCMC, nbBase, chrLength))
+}
+

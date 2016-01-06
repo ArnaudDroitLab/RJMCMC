@@ -2209,6 +2209,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
+
 #' @title Merge nucleosome information
 #'
 #' @description Merge nucleosome information present in multiple RDS files.
@@ -2232,7 +2233,18 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'
 #' @examples
 #'
-#' ## TODO
+#' ## Loading two files containing nucleosomes informations for two sections of
+#' ## the same chromosome
+#' file_100 <- dir(system.file("extdata", package = "RJMCMC"),
+#'                 pattern = "yeastRes_Chr1_Seg_100.rds",
+#'                 full.names = TRUE)
+#'
+#' file_101 <- dir(system.file("extdata", package = "RJMCMC"),
+#'                 pattern = "yeastRes_Chr1_Seg_101.rds",
+#'                 full.names = TRUE)
+#'
+#' ## Merging nucleosomes informations from the two files
+#' result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
@@ -2252,30 +2264,30 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
     for (fileName in arrayOfFiles) {
         data <- readRDS(file = fileName)
         ## Only use data from rjmcmcNucleosomes or rjmcmcNucleosomesMerge class
-        if (class(data) %in% c("rjmcmcNucleosomes", "rjmcmcNucleosomesMerge")) {
-            result$k <- result$k + data$k
-            result$mu <- c(result$mu, data$mu)
+        if (is(data, "rjmcmcNucleosomesMerge") ||
+                is(data, "rjmcmcNucleosomes")) {
+            result$k      <- result$k + data$k
+            result$mu     <- c(result$mu, data$mu)
             result$sigmaf <- c(result$sigmaf, data$sigmaf)
             result$sigmar <- c(result$sigmar, data$sigmar)
-            result$delta <- c(result$delta, data$delta)
-            result$df <- c(result$df, data$df)
+            result$delta  <- c(result$delta, data$delta)
+            result$df     <- c(result$df, data$df)
         }
     }
 
     ## Ensure that all values are ordered in ascending order of mu
-    newOrder <- order(result$mu)
-    result$mu <- result$mu[newOrder]
+    newOrder      <- order(result$mu)
+    result$mu     <- result$mu[newOrder]
     result$sigmaf <- result$sigmaf[newOrder]
     result$sigmar <- result$sigmar[newOrder]
-    result$delta <- result$delta[newOrder]
-    result$df <- result$df[newOrder]
+    result$delta  <- result$delta[newOrder]
+    result$df     <- result$df[newOrder]
 
     ## Assign class type to list
     class(result)<-"rjmcmcNucleosomesMerge"
 
     return(result)
 }
-
 
 
 #' @title Parameters validation for the \code{\link{mergeRDSFiles}}
@@ -2335,5 +2347,189 @@ validateDirectoryParameters <- function(directory) {
     }
 
     return(0)
+}
+
+
+#' @title Parameters validation for the \code{\link{postMerge}} function.
+#'
+#' @description Validation of all parameters needed by the public
+#' \code{\link{postMerge}} function.
+#'
+#' @param startPosForwardReads a \code{vector} of positive \code{integer}, the
+#' start position of all the forward reads.
+#'
+#' @param startPosReverseReads a \code{vector} of positive \code{integer}, the
+#' positions of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end position.
+#'
+#' @param resultRJMCMC an object of \code{class}
+#' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
+#'  about nucleosome positioning for an entire chromosome.
+#'
+#' @param nbBase a positive \code{numeric} or a positive \code{integer}
+#' indicating TODO. The numeric will be treated as an integer.
+#'
+#' @param chrLength a positive \code{numeric} or a positive \code{integer}
+#' indicating the lenght of the current chromosome. The length of the
+#' chromosome is used to ensure that the consensus positions are all
+#' located inside the chromosome.
+#'
+#' @return \code{0} indicating that all parameters validations have been
+#' successful.
+#'
+#' @author Astrid Deschenes
+#' @importFrom GenomeInfoDb Seqinfo
+#' @keywords internal
+#'
+validatePrepMergeParameters <- function(startPosForwardReads,
+                                            startPosReverseReads,
+                                            resultRJMCMC, nbBase, chrLength) {
+
+    ## Validate that the startPosForwardReads has at least one read
+    ## and that the values are integer
+    if (!is.vector(startPosForwardReads) || !is.numeric(startPosForwardReads)
+        || length(startPosForwardReads) < 1)
+    {
+        stop(paste0("startPosForwardReads must be a non-empty vector of ",
+                    "numeric values."))
+    }
+
+    ## Validate that the startPosReverseReads has at least one read
+    ## and that the values are integer
+    if (!is.vector(startPosReverseReads) || !is.numeric(startPosReverseReads)
+        || length(startPosReverseReads) < 1)
+    {
+        stop(paste0("startPosReverseReads must be a non-empty vector of ",
+                    "numeric values."))
+    }
+
+    ## Validate the resultRJMCMC parameter
+    if (!is(resultRJMCMC, "rjmcmcNucleosomesMerge") &&
+                !is(resultRJMCMC, "rjmcmcNucleosomes")) {
+        stop(paste0("resultRJMCMC must be an object of class",
+                        "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'."))
+    }
+
+    ## Validate the nbBase parameter
+    if (!isInteger(nbBase) || as.integer(nbBase) < 1) {
+        stop("nbBase must be a positive integer or numeric")
+    }
+
+    ## Validate the chrLength parameter
+    if (!isInteger(chrLength) || as.integer(chrLength) < 1) {
+        stop("chrLength must be a positive integer or numeric")
+    }
+
+    return(0)
+}
+
+#' @title A internal post treatment function to merge closely positioned
+#' nucleosomes, from the same chromosome,
+#' identified by the \code{\link{rjmcmc}} function.
+#'
+#' @description A internal helper function which merges closely positioned
+#' nucleosomes to rectify the over splitting and provide a more conservative
+#' approach. Beware that each chromosome must be treated separatly.
+#'
+#' @param startPosFrowardReads a \code{vector} of \code{numeric}, the
+#' start position of all the forward reads.
+#'
+#' @param startPosReverseReads a \code{vector} of \code{numeric}, the
+#' start position of all the reverse reads. Beware that the start position of
+#' a reverse read is always higher that the end positition.
+#'
+#' @param resultRJMCMC an object of class 'rjmcmcNucleosomes' or
+#' 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.
+#'
+#' @param nbBase a positive \code{numeric} or a positive \code{integer}
+#' indicating TODO. The numeric will be treated as an integer.
+#'
+#' @param chrLength a positive \code{numeric} or a positive \code{integer}
+#' indicating the lenght of the current chromosome. The length of the
+#' chromosome is used to ensure that the consensus positions are all
+#' located inside the chromosome.
+#'
+#' @return a \code{array} of \code{numeric}, the updated values of the
+#' nucleosome positions.
+#'
+#' @author Pascal Belleau, Astrid Deschenes
+#' @importFrom consensusSeekeR findConsensusPeakRegions
+#' @importFrom GenomicRanges GRanges findOverlaps
+#' @importFrom IRanges IRanges
+#' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
+#' @keywords internal
+#'
+postMerge <- function(startPosForwardReads, startPosReverseReads,
+                                resultRJMCMC, nbBase, chrLength)
+{
+
+    ## Prepare information about reads
+    segReads <- list(yF = numeric(), yR = numeric())
+    segReads$yF <- startPosForwardReads
+    segReads$yR <- startPosReverseReads
+
+    ## Prepare Seqinfo object using chromosome length
+    seqinfo <- Seqinfo(c("chrI"), c(chrLength), FALSE, "mock1")
+
+    ## Prepare first GRanges using nucleosome positions
+    nbMu <- length(resultRJMCMC$mu)
+    rjmcmc_peak <- GRanges(seqnames = rep('chrI', nbMu),
+                        IRanges(resultRJMCMC$mu, resultRJMCMC$mu),
+                        seqinfo = seqinfo)
+    nbPeaks <- length(rjmcmc_peak)
+    names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
+    rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
+
+    ## Prepare second GRanges using same nucleosome positions
+    rjmcmc_peak1 <- rjmcmc_peak
+    names(rjmcmc_peak1) <- rep("RJMCMC1", nbPeaks)
+    rjmcmc_peak1$name   <- paste0("RJMCMC1_", 1:nbPeaks)
+
+
+    ## Find nucleosomes present in same region
+    result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak, rjmcmc_peak1),
+                                        chrInfo = seqinfo,
+                                        extendingSize = nbBase,
+                                        expandToFitPeakRegion = FALSE,
+                                        shrinkToFitPeakRegion = FALSE,
+                                        minNbrExp = 2)
+
+    overlapsPeak <- findOverlaps(query = result$consensusRanges,
+                        subject =  rjmcmc_peak)
+
+    uniqueOverlap <- unique(overlapsPeak@queryHits)
+    nbOverlap <- length(uniqueOverlap)
+
+    ## Treat each overlapping region separatly
+    newMu <- numeric(nbOverlap)
+    cpt <- 1L
+    for(position in 1:nbOverlap){
+        ## Extract nucleosomes present in the current overlapping region
+        current <- overlapsPeak@subjectHits[overlapsPeak@queryHits == uniqueOverlap[position]]
+        if(length(current) > 1) {
+            ## When more than one nucleosome present, use mean position
+            valCentral <- mean(resultRJMCMC$mu[current])
+            a <- min(resultRJMCMC$mu[current]) # - (74 + nbBase)
+            b <- max(resultRJMCMC$mu[current]) # + (74 - nbBase)
+            maxLimit <- 74 + nbBase
+            minLimit <- 74 - nbBase
+            if(length(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit)]) > 4 &
+                length(segReads$yR[segReads$yR >= (a + minLimit) & segReads$yR <= (b + maxLimit)]) > 4) {
+                ## Calculate the new position of the nucleosome
+                newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit)]) +
+                                (mean(segReads$yR[segReads$yR >= (a + minLimit) & segReads$yR <= (b + maxLimit)]) -
+                                mean(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit) ]))/2)
+                cpt <- cpt + 1L
+            }
+
+            ## ASTRID : et si on ne respecte pas la condition, qu'advient-il du nucleosome
+        } else{
+            newMu[cpt] <- resultRJMCMC$mu[current]
+            cpt <- cpt + 1L
+        }
+
+    }
+
+    return(newMu)
 }
 
