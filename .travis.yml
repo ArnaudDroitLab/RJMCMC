@@ -29,7 +29,7 @@ bioc_packages:
 # Package dependencies from github
 r_github_packages:
   - jimhester/covr
-  - ArnaudDroitLab/consensusSeekeR
+  - arnauddroitlab/consensusseeker
 
 after_success:
   - Rscript -e 'library(covr);codecov()'
