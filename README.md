@@ -1,15 +1,25 @@
-rjmcmc : nucleosome positioning
+RJMCMC : Nucleosome Positioning
 ==============================================================
+
+[![Build Status](https://travis-ci.org/ArnaudDroitLab/RJMCMC.svg?branch=master)](https://travis-ci.org/ArnaudDroitLab/RJMCMC?branch=master)
 
 This package uses informative Multinomial-Dirichlet prior in a t-mixture with 
 reversible jump estimation of nucleosome positions for genome-wide profiling.
+
+
+## Citing ##
+
+If you use this package for a publication, we would ask you to cite the following:
+
+> Samb R, Khadraoui K, Belleau P, et al. (2015). "Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling." Statistical Applications in Genetics and Molecular Biology. Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115, ISSN (Print) 2194-6302, December 2015, <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi: 10.1515/sagmb-2014-0098</a>
+
 
 ## Authors ##
 
 [Rawane Samb](https://ca.linkedin.com/in/rawanesamb "Rawane Samb"), 
 [Khader Khadraoui](http://archimede.mat.ulaval.ca/pages/khaderk/ "Khader Khadraoui"), 
 [Pascal Belleau](http://ca.linkedin.com/in/pascalbelleau "Pascal Belleau"),
-[Astrid Deschenes](http://ca.linkedin.com/in/astriddeschenes "Astrid Louise Deschenes"),
+[Astrid Desch&ecirc;nes](http://ca.linkedin.com/in/astriddeschenes "Astrid Deschenes"),
 [Lajmi Lakhal-Chaieb](https://www.researchgate.net/profile/Lajmi_Lakhal-Chaieb "Lajmi Lakhal-Chaieb")
 and [Arnaud Droit](http://ca.linkedin.com/in/drarnaud "Arnaud Droit").
 
