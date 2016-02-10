@@ -1,0 +1,36 @@
+language: r
+sudo: required
+
+# Packages from Bioconductor needed
+bioc_required: true
+
+env:
+  global:
+    - BIOC_USE_DEVEL="TRUE"
+
+# Be strict when checking package
+warnings_are_errors: true
+
+# Package dependencies from CRAN
+r_binary_packages:
+  - RUnit
+  - knitr
+  - rmarkdown
+  - MCMCpack
+
+# Package dependencies from Bioconductor
+bioc_packages:
+  - BiocGenerics
+  - GenomeInfoDb
+  - IRanges
+  - BiocStyle
+  - GenomicRanges
+  - consensusSeekeR
+
+# Package dependencies from github
+r_github_packages:
+  - jimhester/covr
+  - ArnaudDroitLab/consensusSeekeR
+
+after_success:
+  - Rscript -e 'library(covr);codecov()'
