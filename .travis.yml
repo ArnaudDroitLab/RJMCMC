@@ -25,7 +25,6 @@ bioc_packages:
   - IRanges
   - BiocStyle
   - GenomicRanges
-  - consensusSeekeR
 
 # Package dependencies from github
 r_github_packages:
