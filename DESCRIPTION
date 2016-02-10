@@ -15,7 +15,7 @@ Author@R: c(person("Rawane", "Samb",
     email="Khader.Khadraoui@mat.ulaval.ca", role=c("aut")),
     person("Pascal", "Belleau",
     email="pascal.belleau@crchuq.ulaval.ca", role=c("aut")),
-    person("Astrid", "Deschenes",
+    person("Astrid", "Deschênes",
     email="Astrid-Louise.Deschenes@crchudequebec.ulaval.ca",
     person("Lajmi", "Lakhal-Chaieb",
     email="Lajmi.Lakhal@mat.ulaval.ca;", role=c("aut")),
@@ -36,6 +36,7 @@ Suggests:
     knitr,
     rmarkdown,
     RUnit
+Encoding: UTF-8
 License: Artistic-2.0
 VignetteBuilder: knitr
 NeedsCompilation: no
