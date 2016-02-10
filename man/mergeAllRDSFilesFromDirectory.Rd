@@ -39,7 +39,7 @@ TODO
 directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
 
 ## Merge nucleosomes info from RDS files present in directory
-## It is asumed that all files present in the direcotry are nucleosomes
+## It is assumed that all files present in the directory are nucleosomes
 ## result for the same chromosome
 result <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
 
@@ -53,6 +53,6 @@ class(result)
 
 }
 \author{
-Pascal Belleau, Astrid Deschenes
+Pascal Belleau, Astrid Deschênes
 }
 

@@ -86,8 +86,8 @@ Bk <- function(k, lambda, kMax = 30) {
 #' distribution.
 #'
 #' @param minValue a \code{numeric} value, the inferior boundary of the
-#' range in which the output value must be located. The returned value has to be
-#' superior to \code{minValue}.
+#' range in which the output value must be located. The returned value has to
+#' be superior to \code{minValue}.
 #'
 #' @param maxValue a \code{numeric} value, the superior boundary of the range
 #' in which the output value must be located. The returned value has to be
@@ -228,7 +228,8 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #' informative Multinomial-Dirichlet prior in a t-mixture with
 #' reversible jump estimation of nucleosome positions for genome-wide
 #' profiling. Statistical Applications in Genetics and Molecular Biology.
-#' Accepted (2015).
+#' Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115,
+#' ISSN (Print) 2194-6302, DOI: 10.1515/sagmb-2014-0098, December 2015
 #'
 #' @examples
 #'
@@ -537,7 +538,8 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 
                     new.sigmaf <- c(list$sigmaf[1:k],
                                     (list$sigmaf[p] + list$sigmaf[p + 1])/2)
-                    new.sigmaf[p + 1] <- (list$sigmaf[p] + list$sigmaf[p + 1])/2
+                    new.sigmaf[p + 1] <- (list$sigmaf[p] +
+                                                        list$sigmaf[p + 1])/2
                     new.sigmaf[k + 1] <- list$sigmaf[k]
 
                     new.sigmar <- c(list$sigmar[1:k],
@@ -865,7 +867,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         j <- sample(1:kValue, 1)
         varTilde$mu[j] <- runif(1, paramValues$minReadPos, muValue[ j])
         varTilde$mu[ 1:varTilde$k] <- sort(c(muValue[ 1:kValue],
-                                             varTilde$mu[j]))
+                                                varTilde$mu[j]))
 
         varTilde$a[j + 1] <- runif(1, varTilde$mu[j], varTilde$mu[j+1])
         varTilde$a[1:(varTilde$k + 1)] <- sort(c(aValue[ 1:varTilde$k],
@@ -2303,6 +2305,15 @@ mergeAllRDSFiles <- function(arrayOfFiles) {
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
 #'
+#' @examples
+#'
+#' ## Loading a file
+#' file_test <- dir(system.file("extdata", package = "RJMCMC"),
+#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#'
+#' ## Testing using a real file
+#' RJMCMC:::validateRDSFilesParameters(c(file_test))
+#'
 #' @author Astrid Deschenes
 #' @keywords internal
 #'
@@ -2335,6 +2346,14 @@ validateRDSFilesParameters <- function(RDSFiles) {
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
+#'
+#' @examples
+#'
+#' ## Load an existing directory
+#' directory <- system.file("extdata", package = "RJMCMC")
+#'
+#' ## Testing using a real directory
+#' RJMCMC:::validateDirectoryParameters(directory)
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2376,6 +2395,13 @@ validateDirectoryParameters <- function(directory) {
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
+#'
+#' @examples
+#'
+#' ## Load dataset containing forward and reverse reads
+#' data(reads_demo)
+#'
+#' ## TODO
 #'
 #' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
@@ -2505,7 +2531,8 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     cpt <- 1L
     for(position in 1:nbOverlap){
         ## Extract nucleosomes present in the current overlapping region
-        current <- overlapsPeak@subjectHits[overlapsPeak@queryHits == uniqueOverlap[position]]
+        current <- overlapsPeak@subjectHits[overlapsPeak@queryHits ==
+                                                    uniqueOverlap[position]]
         if(length(current) > 1) {
             ## When more than one nucleosome present, use mean position
             valCentral <- mean(resultRJMCMC$mu[current])
@@ -2513,17 +2540,23 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
             b <- max(resultRJMCMC$mu[current]) # + (74 - nbBase)
             maxLimit <- 74 + nbBase
             minLimit <- 74 - nbBase
-            if(length(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit)]) > 4 &
-                length(segReads$yR[segReads$yR >= (a + minLimit) & segReads$yR <= (b + maxLimit)]) > 4) {
+            if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
+                                    segReads$yF <= (b - minLimit)]) > 4 &
+                length(segReads$yR[segReads$yR >= (a + minLimit) &
+                                    segReads$yR <= (b + maxLimit)]) > 4) {
                 ## Calculate the new position of the nucleosome
-                newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit)]) +
-                                (mean(segReads$yR[segReads$yR >= (a + minLimit) & segReads$yR <= (b + maxLimit)]) -
-                                mean(segReads$yF[segReads$yF >= (a - maxLimit) & segReads$yF <= (b - minLimit) ]))/2)
+                newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
+                                    segReads$yF <= (b - minLimit)]) +
+                            (mean(segReads$yR[segReads$yR >= (a + minLimit) &
+                                    segReads$yR <= (b + maxLimit)]) -
+                            mean(segReads$yF[segReads$yF >= (a - maxLimit) &
+                                    segReads$yF <= (b - minLimit) ]))/2)
                 cpt <- cpt + 1L
             }
 
-            ## ASTRID : et si on ne respecte pas la condition, qu'advient-il du nucleosome
-        } else{
+            ## ASTRID : et si on ne respecte pas la condition,
+            ## qu'advient-il du nucleosome
+        } else {
             newMu[cpt] <- resultRJMCMC$mu[current]
             cpt <- cpt + 1L
         }

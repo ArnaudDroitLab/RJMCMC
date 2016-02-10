@@ -39,7 +39,7 @@
 #' of iterations must be modified in function of the number of reads.
 #' Default: \code{TRUE}.
 #'
-#' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+#' @return a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 #' \itemize{
 #' \item \code{call} the matched call.
 #' \item \code{K} a \code{vector} of \code{integer}, the estimation of the
@@ -101,7 +101,7 @@
 #' @importFrom stats dmultinom dpois var rmultinom dt quantile
 #' @importFrom IRanges IRanges
 #' @import BiocGenerics
-#' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
+#' @author Rawane Samb, Pascal Belleau, Astrid Deschênes
 #' @export
 rjmcmc <- function(startPosForwardReads, startPosReverseReads,
                     nbrIterations, kMax, lambda,
@@ -388,7 +388,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' directoryWithRDSFiles <- system.file("extdata", package = "RJMCMC")
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
-#' ## It is asumed that all files present in the direcotry are nucleosomes
+#' ## It is assumed that all files present in the directory are nucleosomes
 #' ## result for the same chromosome
 #' result <- mergeAllRDSFilesFromDirectory(directoryWithRDSFiles)
 #'
@@ -400,7 +400,7 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' class(result)
 #'
 #'
-#' @author Pascal Belleau, Astrid Deschenes
+#' @author Pascal Belleau, Astrid Deschênes
 #' @export
 mergeAllRDSFilesFromDirectory <- function(directory) {
 
@@ -442,7 +442,8 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 #' @examples
 #'
 #' ## Use RDS files present in the RJMCMC package
-#' RDSFiles <- dir(system.file("extdata", package = "RJMCMC"), full.names = TRUE)
+#' RDSFiles <- dir(system.file("extdata", package = "RJMCMC"),
+#' full.names = TRUE)
 #'
 #' ## Merge nucleosomes info from RDS files present in directory
 #' result <- mergeRDSFiles(RDSFiles)
@@ -485,7 +486,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #' @param resultRJMCMC TODO
 #'
 #' @param nbBase a positive \code{numeric} or a positive \code{integer}
-#' indicating TODO. The numeric will be treated as an integer.
+#' indicating TODO. The numeric will be treated as an integer. Default : 74.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
 #' indicating the lenght of the current chromosome. The length of the
@@ -515,7 +516,7 @@ mergeRDSFiles <- function(RDSFiles) {
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
-                           resultRJMCMC, nbBase, chrLength) {
+                           resultRJMCMC, nbBase = 74L, chrLength) {
 
     ## Validate parameters
     validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,

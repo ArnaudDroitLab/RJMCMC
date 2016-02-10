@@ -35,6 +35,14 @@ successful.
 Validation of all parameters needed by the public
 \code{\link{postMerge}} function.
 }
+\examples{
+
+## Load dataset containing forward and reverse reads
+data(reads_demo)
+
+## TODO
+
+}
 \author{
 Astrid Deschenes
 }

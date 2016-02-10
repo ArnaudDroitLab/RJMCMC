@@ -5,8 +5,8 @@ output:
     toc: true
 bibliography: rjmcmc.bibtex
 vignette: >
-  %\VignetteIndexEntry{Detection of consensus peak regions inside a group of experiences using narrowPeak files}
-  %\VignettePackage{consensusSeekeR}
+  %\VignetteIndexEntry{Nucleosome Positioning}
+  %\VignettePackage{RJMCMC}
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
@@ -23,14 +23,14 @@ BiocStyle::markdown()
 
 # Licensing and citing
 
-This package and the underlying RJMCMC code are distributed 
+The **RJMCMC** package and the underlying **RJMCMC** code are distributed 
 under the Artistic license 2.0. You are free to use and redistribute 
 this software. 
 
 If you use this package for a publication, we would ask you to cite the
 following:
 
->Samb R, Khadraoui K, Belleau P, et al. (2015) Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling. Statistical Applications in Genetics and Molecular Biology. Published online before print December 10, 2015. <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi:10.1515/sagmb-2014-0098</a>
+>Samb R, Khadraoui K, Belleau P, et al. (2015) Using informative Multinomial-Dirichlet prior in a t-mixture with reversible jump estimation of nucleosome positions for genome-wide profiling. Statistical Applications in Genetics and Molecular Biology. Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115, ISSN (Print) 2194-6302, December 2015, <a href="http://dx.doi.org/10.1515/sagmb-2014-0098">doi:10.1515/sagmb-2014-0098</a>
 
 
 # Introduction
@@ -50,8 +50,8 @@ assumption.
 
 The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
 model for profiling of nucleosome positions based on high-throughput
-short-read data (MNase-Seq data). The implemantation is based on a strategy which 
-incorporates four aspects. First, it jointly models local concentrations
+short-read data (MNase-Seq data). The implemantation is based on a strategy 
+which incorporates four aspects. First, it jointly models local concentrations
 of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
 construction of an informative prior distribution coupled to a t-mixture model 
 with unknown degrees of freedom. Third,the number of nucleosomes

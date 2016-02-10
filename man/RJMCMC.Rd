@@ -43,7 +43,7 @@ of iterations must be modified in function of the number of reads.
 Default: \code{TRUE}.}
 }
 \value{
-a \code{list} of \code{class} "rjmcmcNucleosomes" containing :
+a \code{list} of \code{class} "rjmcmcNucleosomes" containing:
 \itemize{
 \item \code{call} the matched call.
 \item \code{K} a \code{vector} of \code{integer}, the estimation of the
@@ -109,6 +109,6 @@ result$mu
 
 }
 \author{
-Rawane Samb, Pascal Belleau, Astrid Deschenes
+Rawane Samb, Pascal Belleau, Astrid Deschênes
 }
 

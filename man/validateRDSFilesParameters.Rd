@@ -20,6 +20,16 @@ successful.
 Validation of all parameters needed by the public
 \code{\link{mergeRDSFiles}} function.
 }
+\examples{
+
+## Loading a file
+file_test <- dir(system.file("extdata", package = "RJMCMC"),
+pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+
+## Testing using a real file
+RJMCMC:::validateRDSFilesParameters(c(file_test))
+
+}
 \author{
 Astrid Deschenes
 }

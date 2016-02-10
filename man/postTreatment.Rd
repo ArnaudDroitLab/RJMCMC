@@ -6,8 +6,8 @@
 , from the same chromosome,
 identified by the \code{\link{rjmcmc}} function..}
 \usage{
-postTreatment(startPosForwardReads, startPosReverseReads, resultRJMCMC, nbBase,
-  chrLength)
+postTreatment(startPosForwardReads, startPosReverseReads, resultRJMCMC,
+  nbBase = 74L, chrLength)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -20,7 +20,7 @@ a reverse read is always higher that the end positition.}
 \item{resultRJMCMC}{TODO}
 
 \item{nbBase}{a positive \code{numeric} or a positive \code{integer}
-indicating TODO. The numeric will be treated as an integer.}
+indicating TODO. The numeric will be treated as an integer. Default : 74.}
 
 \item{chrLength}{a positive \code{numeric} or a positive \code{integer}
 indicating the lenght of the current chromosome. The length of the

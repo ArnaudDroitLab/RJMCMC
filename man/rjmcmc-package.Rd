@@ -14,7 +14,7 @@ estimation of nucleosome positions for genome-wide profiling.
 Rawane Samb,
 Khader Khadraoui,
 Pascal Belleau,
-Astrid Deschenes,
+Astrid Deschênes,
 Lajmi Lakhal and
 Arnaud Droit
 

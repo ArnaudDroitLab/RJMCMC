@@ -19,6 +19,15 @@ successful.
 Validation of all parameters needed by the public
 \code{\link{mergeAllRDSFilesFromDirectory}} function.
 }
+\examples{
+
+## Load an existing directory
+directory <- system.file("extdata", package = "RJMCMC")
+
+## Testing using a real directory
+RJMCMC:::validateDirectoryParameters(directory)
+
+}
 \author{
 Astrid Deschenes
 }

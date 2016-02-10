@@ -33,7 +33,8 @@ TODO
 \examples{
 
 ## Use RDS files present in the RJMCMC package
-RDSFiles <- dir(system.file("extdata", package = "RJMCMC"), full.names = TRUE)
+RDSFiles <- dir(system.file("extdata", package = "RJMCMC"),
+full.names = TRUE)
 
 ## Merge nucleosomes info from RDS files present in directory
 result <- mergeRDSFiles(RDSFiles)

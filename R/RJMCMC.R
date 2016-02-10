@@ -13,7 +13,7 @@
 #' @author  Rawane Samb,
 #' Khader Khadraoui,
 #' Pascal Belleau,
-#' Astrid Deschenes,
+#' Astrid Deschênes,
 #' Lajmi Lakhal and
 #' Arnaud Droit
 #'

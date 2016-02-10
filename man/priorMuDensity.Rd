@@ -49,7 +49,8 @@ and Droit A. Using
 informative Multinomial-Dirichlet prior in a t-mixture with
 reversible jump estimation of nucleosome positions for genome-wide
 profiling. Statistical Applications in Genetics and Molecular Biology.
-Accepted (2015).
+Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115,
+ISSN (Print) 2194-6302, DOI: 10.1515/sagmb-2014-0098, December 2015
 }
 \keyword{internal}
 
