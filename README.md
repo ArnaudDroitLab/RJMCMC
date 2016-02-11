@@ -2,6 +2,7 @@ RJMCMC : Nucleosome Positioning
 ==============================================================
 
 [![Build Status](https://travis-ci.org/ArnaudDroitLab/RJMCMC.svg?branch=master)](https://travis-ci.org/ArnaudDroitLab/RJMCMC?branch=master)
+[![codecov.io](https://codecov.io/github/ArnaudDroitLab/RJMCMC/coverage.svg?branch=master)](https://codecov.io/github/ArnaudDroitLab/RJMCMC?branch=master)
 
 This package uses informative Multinomial-Dirichlet prior in a t-mixture with 
 reversible jump estimation of nucleosome positions for genome-wide profiling.
