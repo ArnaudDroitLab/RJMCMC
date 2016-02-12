@@ -744,7 +744,7 @@ isInteger <- function(value) {
 #'     \item nf a \code{integer}, the number of forward reads.
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
-#'     \item zeta TODO
+#'     \item zeta \code{integer}, the length of a nucleosome.
 #'     \item deltamin a \code{integer}, the minimum distance between the maxima
 #' of the forward and reverse reads position densities for each nucleosome.
 #'     \item deltamax a \code{integer}, the maximum distance between the maxima
@@ -1053,7 +1053,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #'     \item nf a \code{integer}, the number of forward reads.
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
-#'     \item zeta TODO
+#'     \item zeta \code{integer}, the length of a nucleosome.
 #'     \item deltamin a \code{integer}, the minimum distance between the maxima
 #' of the forward and reverse reads position densities for each nucleosome.
 #'     \item deltamax a \code{integer}, the maximum distance between the maxima
@@ -1391,7 +1391,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nf a \code{integer}, the number of forward reads.
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
-#'     \item zeta TODO
+#'     \item zeta \code{integer}, the length of a nucleosome.
 #'     \item deltamin a \code{integer}, the minimum distance between the maxima
 #' of the forward and reverse reads position densities for each nucleosome.
 #'     \item deltamax a \code{integer}, the maximum distance between the maxima
@@ -1659,7 +1659,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nf a \code{integer}, the number of forward reads.
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
-#'     \item zeta TODO
+#'     \item zeta \code{integer}, the length of a nucleosome.
 #'     \item deltamin a \code{integer}, the minimum distance between the maxima
 #' of the forward and reverse reads position densities for each nucleosome.
 #'     \item deltamax a \code{integer}, the maximum distance between the maxima
@@ -1945,7 +1945,7 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #'     \item nf a \code{integer}, the number of forward reads.
 #'     \item nbrReads a \code{integer}, the total number of reads (including
 #' forward and reverse reads).
-#'     \item zeta TODO
+#'     \item zeta \code{integer}, the length of a nucleosome.
 #'     \item deltamin a \code{integer}, the minimum distance between the maxima
 #' of the forward and reverse reads position densities for each nucleosome.
 #'     \item deltamax a \code{integer}, the maximum distance between the maxima
