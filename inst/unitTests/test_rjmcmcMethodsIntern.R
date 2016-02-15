@@ -335,7 +335,7 @@ test.validatePrepMergeParameters_startPosForwardReads_NA <- function() {
                         startPosForwardReads = NA,
                         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                         72429.24, 72426.08),
-                        resultRJMCMC = data_002, nbBase = 11,
+                        resultRJMCMC = data_002, extendingSize = 11,
                         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosForwardReads must be a non-empty vector of ",
                     "numeric values.")
@@ -351,7 +351,7 @@ test.validatePrepMergeParameters_startPosForwardReads_empty <- function() {
         startPosForwardReads = c(),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = 11,
+        resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosForwardReads must be a non-empty vector of ",
                   "numeric values.")
@@ -367,7 +367,7 @@ test.validatePrepMergeParameters_startPosForwardReads_not_number <- function() {
         startPosForwardReads = c("A", "B"),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = 11,
+        resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosForwardReads must be a non-empty vector of ",
                   "numeric values.")
@@ -383,7 +383,7 @@ test.validatePrepMergeParameters_startPosReverseReads_NA <- function() {
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = NA,
-        resultRJMCMC = data_002, nbBase = 11,
+        resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosReverseReads must be a non-empty vector of ",
                   "numeric values.")
@@ -400,7 +400,7 @@ test.validatePrepMergeParameters_startPosReverseReads_empty <- function() {
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(),
-        resultRJMCMC = data_002, nbBase = 11,
+        resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosReverseReads must be a non-empty vector of ",
                   "numeric values.")
@@ -416,7 +416,7 @@ test.validatePrepMergeParameters_startPosReverseReads_not_number <- function() {
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c("A", "B"),
-        resultRJMCMC = data_002, nbBase = 11,
+        resultRJMCMC = data_002, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("startPosReverseReads must be a non-empty vector of ",
                   "numeric values.")
@@ -433,7 +433,7 @@ test.validatePrepMergeParameters_resultRJMCMC_NA <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = NA, nbBase = 11,
+        resultRJMCMC = NA, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("resultRJMCMC must be an object of class",
                   "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'.")
@@ -450,7 +450,7 @@ test.validatePrepMergeParameters_resultRJMCMC_number <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = 33, nbBase = 11,
+        resultRJMCMC = 33, extendingSize = 11,
         chrLength = 1000000), error=conditionMessage)
     exp <- paste0("resultRJMCMC must be an object of class",
                   "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'.")
@@ -467,9 +467,9 @@ test.validatePrepMergeParameters_nbBase_string <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = "ALLO",
+        resultRJMCMC = data_002, extendingSize = "ALLO",
         chrLength = 1000000), error=conditionMessage)
-    exp <- "nbBase must be a positive integer or numeric"
+    exp <- "extendingSize must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_number() ",
                       "- string nbBase did not  ",
                       "generated expected message.")
@@ -483,9 +483,9 @@ test.validatePrepMergeParameters_nbBase_array <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = c(10, 11),
+        resultRJMCMC = data_002, extendingSize = c(10, 11),
         chrLength = 1000000), error=conditionMessage)
-    exp <- "nbBase must be a positive integer or numeric"
+    exp <- "extendingSize must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_string() ",
                       "- array nbBase did not  ",
                       "generated expected message.")
@@ -499,7 +499,7 @@ test.validatePrepMergeParameters_chrLength_string <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = 74,
+        resultRJMCMC = data_002, extendingSize = 74,
         chrLength = "5000"), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",
@@ -515,7 +515,7 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = 74,
+        resultRJMCMC = data_002, extendingSize = 74,
         chrLength = c(100, 200)), error=conditionMessage)
     exp <- "chrLength must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",

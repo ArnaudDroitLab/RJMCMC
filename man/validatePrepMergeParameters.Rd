@@ -5,7 +5,7 @@
 \title{Parameters validation for the \code{\link{postMerge}} function.}
 \usage{
 validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
-  resultRJMCMC, nbBase, chrLength)
+  resultRJMCMC, extendingSize, chrLength)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of positive \code{integer}, the
@@ -19,8 +19,11 @@ a reverse read is always higher that the end position.}
 "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
  about nucleosome positioning for an entire chromosome.}
 
-\item{nbBase}{a positive \code{numeric} or a positive \code{integer}
-indicating TODO. The numeric will be treated as an integer.}
+\item{extendingSize}{a positive \code{numeric} or a positive \code{integer}
+indicating the size of the consensus region used to group closeley
+positioned nucleosomes.The minimum size of the consensus region is equal to
+twice the value of the \code{extendingSize} parameter. The numeric will
+be treated as an integer.}
 
 \item{chrLength}{a positive \code{numeric} or a positive \code{integer}
 indicating the lenght of the current chromosome. The length of the
@@ -40,7 +43,15 @@ Validation of all parameters needed by the public
 ## Load dataset containing forward and reverse reads
 data(reads_demo)
 
-## TODO
+## Load dataset containing nucleosome information
+file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+nucleosome_info <- readRDS(file_002)
+
+## Parameters validation
+RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
+reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 
 }
 \author{

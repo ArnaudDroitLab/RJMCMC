@@ -30,8 +30,8 @@ see Proposotion 1 and equation (11) of the cited article.
 
 ## Sorted vector of read positions, including forward and reverse
 readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
-             26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
-             44924L, 44931L, 44935L, 44942L, 44946L)
+26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
+44924L, 44931L, 44935L, 44942L, 44946L)
 
 ## Position of the group of nucleosomes
 mu <- c(10000L, 26700L, 45000L)

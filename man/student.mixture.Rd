@@ -7,7 +7,7 @@
 student.mixture(i, k, weight, mu, sigma, dfr)
 }
 \arguments{
-\item{i}{a \code{integer}, a count parameter.}
+\item{i}{an \code{integer}, a count parameter.}
 
 \item{k}{a positive \code{integer} value, the number of nucleosomes in the
 analyzed region.}

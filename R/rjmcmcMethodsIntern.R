@@ -69,7 +69,7 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @keywords internal
 Bk <- function(k, lambda, kMax = 30) {
     ifelse((k >= kMax), 0,
-           0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
+            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
 
@@ -112,7 +112,7 @@ tnormale <- function(mu, sigma, minValue, maxValue) {
 #'
 #' @description Generation a value from a Student Mixture distribution.
 #'
-#' @param i a \code{integer}, a count parameter.
+#' @param i an \code{integer}, a count parameter.
 #'
 #' @param k a positive \code{integer} value, the number of nucleosomes in the
 #' analyzed region.
@@ -235,8 +235,8 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 #'
 #' ## Sorted vector of read positions, including forward and reverse
 #' readPositions <- c(9909L, 9928L, 9935L, 26603L, 26616L, 26632L, 26636L,
-#'              26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
-#'              44924L, 44931L, 44935L, 44942L, 44946L)
+#' 26640L, 44900L, 44902L, 44909L,  44910L, 44910L, 44918L,
+#' 44924L, 44931L, 44935L, 44942L, 44946L)
 #'
 #' ## Position of the group of nucleosomes
 #' mu <- c(10000L, 26700L, 45000L)
@@ -2385,8 +2385,11 @@ validateDirectoryParameters <- function(directory) {
 #' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge" that contain information
 #'  about nucleosome positioning for an entire chromosome.
 #'
-#' @param nbBase a positive \code{numeric} or a positive \code{integer}
-#' indicating TODO. The numeric will be treated as an integer.
+#' @param extendingSize a positive \code{numeric} or a positive \code{integer}
+#' indicating the size of the consensus region used to group closeley
+#' positioned nucleosomes.The minimum size of the consensus region is equal to
+#' twice the value of the \code{extendingSize} parameter. The numeric will
+#' be treated as an integer.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
 #' indicating the lenght of the current chromosome. The length of the
@@ -2401,7 +2404,15 @@ validateDirectoryParameters <- function(directory) {
 #' ## Load dataset containing forward and reverse reads
 #' data(reads_demo)
 #'
-#' ## TODO
+#' ## Load dataset containing nucleosome information
+#' file_002 <- dir(system.file("extdata", package = "RJMCMC"),
+#' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
+#' nucleosome_info <- readRDS(file_002)
+#'
+#' ## Parameters validation
+#' RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
+#' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+#' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
 #'
 #' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
@@ -2409,7 +2420,8 @@ validateDirectoryParameters <- function(directory) {
 #'
 validatePrepMergeParameters <- function(startPosForwardReads,
                                             startPosReverseReads,
-                                            resultRJMCMC, nbBase, chrLength) {
+                                            resultRJMCMC, extendingSize,
+                                            chrLength) {
 
     ## Validate that the startPosForwardReads has at least one read
     ## and that the values are integer
@@ -2436,9 +2448,9 @@ validatePrepMergeParameters <- function(startPosForwardReads,
                         "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'."))
     }
 
-    ## Validate the nbBase parameter
-    if (!isInteger(nbBase) || as.integer(nbBase) < 1) {
-        stop("nbBase must be a positive integer or numeric")
+    ## Validate the extendingSize parameter
+    if (!isInteger(extendingSize) || as.integer(extendingSize) < 1) {
+        stop("extendingSize must be a positive integer or numeric")
     }
 
     ## Validate the chrLength parameter
