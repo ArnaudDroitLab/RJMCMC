@@ -7,7 +7,7 @@
 identified by the \code{\link{rjmcmc}} function..}
 \usage{
 postTreatment(startPosForwardReads, startPosReverseReads, resultRJMCMC,
-  nbBase = 74L, chrLength)
+  extendingSize = 74L, chrLength)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -22,8 +22,11 @@ a reverse read is always higher that the end positition.}
  about nucleosome positioning for an entire chromosome or a region that must
  be treated as one unit.}
 
-\item{nbBase}{a positive \code{numeric} or a positive \code{integer}
-indicating TODO. The numeric will be treated as an integer. Default : 74.}
+\item{extendingSize}{a positive \code{numeric} or a positive \code{integer}
+indicating the size of the consensus region used to group closeley
+positioned nucleosomes.The minimum size of the consensus region is equal to
+twice the value of the \code{extendingSize} parameter. The numeric will
+be treated as an integer. Default: 74.}
 
 \item{chrLength}{a positive \code{numeric} or a positive \code{integer}
 indicating the lenght of the current chromosome. The length of the
@@ -50,9 +53,9 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
          nbrIterations = 1000, lambda = 2, kMax = 30,
          minInterval = 146, maxInterval = 292, minReads = 5)
 
-##
+## Post-treatment function which merged closely positioned nucleosomes
 postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-         startPosReverseReads = reads_demo$readsReverse, result, 1, 73500)
+         startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 
 postResult
 

@@ -491,8 +491,11 @@ mergeRDSFiles <- function(RDSFiles) {
 #'  about nucleosome positioning for an entire chromosome or a region that must
 #'  be treated as one unit.
 #'
-#' @param nbBase a positive \code{numeric} or a positive \code{integer}
-#' indicating TODO. The numeric will be treated as an integer. Default : 74.
+#' @param extendingSize a positive \code{numeric} or a positive \code{integer}
+#' indicating the size of the consensus region used to group closeley
+#' positioned nucleosomes.The minimum size of the consensus region is equal to
+#' twice the value of the \code{extendingSize} parameter. The numeric will
+#' be treated as an integer. Default: 74.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
 #' indicating the lenght of the current chromosome. The length of the
@@ -513,23 +516,23 @@ mergeRDSFiles <- function(RDSFiles) {
 #'          nbrIterations = 1000, lambda = 2, kMax = 30,
 #'          minInterval = 146, maxInterval = 292, minReads = 5)
 #'
-#' ##
+#' ## Post-treatment function which merged closely positioned nucleosomes
 #' postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
-#'          startPosReverseReads = reads_demo$readsReverse, result, 1, 73500)
+#'          startPosReverseReads = reads_demo$readsReverse, result, 74, 73500)
 #'
 #' postResult
 #'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @export
 postTreatment <- function(startPosForwardReads, startPosReverseReads,
-                           resultRJMCMC, nbBase = 74L, chrLength) {
+                           resultRJMCMC, extendingSize = 74L, chrLength) {
 
     ## Validate parameters
     validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
-                                         resultRJMCMC, nbBase, chrLength)
+                                         resultRJMCMC, extendingSize, chrLength)
 
     ## Run post merging function and return results
     return(postMerge(startPosForwardReads, startPosReverseReads,
-              resultRJMCMC, nbBase, chrLength))
+              resultRJMCMC, extendingSize, chrLength))
 }
 
