@@ -44,6 +44,9 @@ Beware that each chromosome must be treated separatly.
 }
 \examples{
 
+## Fix seed
+set.seed(1132)
+
 ## Loading dataset
 data(reads_demo)
 
