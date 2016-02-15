@@ -476,18 +476,50 @@ test.validatePrepMergeParameters_nbBase_string <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
-## Test the result when nbBase is a string
-test.validatePrepMergeParameters_nbBase_string <- function() {
+## Test the result when nbBase is an array
+test.validatePrepMergeParameters_nbBase_array <- function() {
     obs <- tryCatch(RJMCMC:::validatePrepMergeParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
-        resultRJMCMC = data_002, nbBase = "ALLO",
+        resultRJMCMC = data_002, nbBase = c(10, 11),
         chrLength = 1000000), error=conditionMessage)
     exp <- "nbBase must be a positive integer or numeric"
     message <- paste0(" test.validatePrepMergeParameters_nbBase_string() ",
-                      "- string nbBase did not  ",
+                      "- array nbBase did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when chrLength is a string
+test.validatePrepMergeParameters_chrLength_string <- function() {
+    obs <- tryCatch(RJMCMC:::validatePrepMergeParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        resultRJMCMC = data_002, nbBase = 74,
+        chrLength = "5000"), error=conditionMessage)
+    exp <- "chrLength must be a positive integer or numeric"
+    message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",
+                      "- string chrLength did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when chrLength is an array
+test.validatePrepMergeParameters_chrLength_array <- function() {
+    obs <- tryCatch(RJMCMC:::validatePrepMergeParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        resultRJMCMC = data_002, nbBase = 74,
+        chrLength = c(100, 200)), error=conditionMessage)
+    exp <- "chrLength must be a positive integer or numeric"
+    message <- paste0(" test.validatePrepMergeParameters_chrLength_string() ",
+                      "- array chrLength did not  ",
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
