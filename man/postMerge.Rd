@@ -6,8 +6,8 @@
 nucleosomes, from the same chromosome,
 identified by the \code{\link{rjmcmc}} function.}
 \usage{
-postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC, nbBase,
-  chrLength)
+postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC,
+  extendingSize, chrLength)
 }
 \arguments{
 \item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
@@ -17,8 +17,11 @@ a reverse read is always higher that the end positition.}
 \item{resultRJMCMC}{an object of class 'rjmcmcNucleosomes' or
 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.}
 
-\item{nbBase}{a positive \code{numeric} or a positive \code{integer}
-indicating TODO. The numeric will be treated as an integer.}
+\item{extendingSize}{a positive \code{numeric} or a positive \code{integer}
+indicating the size of the consensus region used to group closeley
+positioned nucleosomes.The minimum size of the consensus region is equal to
+twice the value of the \code{extendingSize} parameter. The numeric will
+be treated as an integer.}
 
 \item{chrLength}{a positive \code{numeric} or a positive \code{integer}
 indicating the lenght of the current chromosome. The length of the
@@ -36,6 +39,9 @@ nucleosome positions.
 A internal helper function which merges closely positioned
 nucleosomes to rectify the over splitting and provide a more conservative
 approach. Beware that each chromosome must be treated separatly.
+
+The function uses the Bioconductor \code{package} \code{consensusSeeker} to
+group closely positioned nucleosomes.
 }
 \author{
 Pascal Belleau, Astrid Deschenes

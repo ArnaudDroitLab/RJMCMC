@@ -360,7 +360,9 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
 #' in a same directory. Beware that only nucleosome information from same
 #' chromosome should be merged together.
 #'
-#' @description TODO
+#' @description Merge nucleosome information, from all RDS files present
+#' in a same directory, into one
+#' object of \code{class} "rjmcmcNucleosomesMerge".
 #'
 #' @param directory a \code{character}, the
 #' name of the directory (relative or absolute path) containing RDS files. The
@@ -418,7 +420,8 @@ mergeAllRDSFilesFromDirectory <- function(directory) {
 
 #' @title Merge nucleosome information for selected RDS files.
 #'
-#' @description TODO
+#' @description Merge nucleosome information present in RDS files into one
+#' object of \code{class} "rjmcmcNucleosomesMerge".
 #'
 #' @param RDSFiles a \code{array}, the
 #' names of all RDS used to merge nucleosome information. The files must
@@ -483,7 +486,10 @@ mergeRDSFiles <- function(RDSFiles) {
 #' start position of all the reverse reads. Beware that the start position of
 #' a reverse read is always higher that the end positition.
 #'
-#' @param resultRJMCMC TODO
+#' @param resultRJMCMC an object of \code{class}
+#' "rjmcmcNucleosomes" or "rjmcmcNucleosomesMerge", the information
+#'  about nucleosome positioning for an entire chromosome or a region that must
+#'  be treated as one unit.
 #'
 #' @param nbBase a positive \code{numeric} or a positive \code{integer}
 #' indicating TODO. The numeric will be treated as an integer. Default : 74.

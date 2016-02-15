@@ -2457,6 +2457,9 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' nucleosomes to rectify the over splitting and provide a more conservative
 #' approach. Beware that each chromosome must be treated separatly.
 #'
+#' The function uses the Bioconductor \code{package} \code{consensusSeeker} to
+#' group closely positioned nucleosomes.
+#'
 #' @param startPosFrowardReads a \code{vector} of \code{numeric}, the
 #' start position of all the forward reads.
 #'
@@ -2467,8 +2470,11 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @param resultRJMCMC an object of class 'rjmcmcNucleosomes' or
 #' 'rjmcmcNucleosomesMerge' containing informations about nucleosomes.
 #'
-#' @param nbBase a positive \code{numeric} or a positive \code{integer}
-#' indicating TODO. The numeric will be treated as an integer.
+#' @param extendingSize a positive \code{numeric} or a positive \code{integer}
+#' indicating the size of the consensus region used to group closeley
+#' positioned nucleosomes.The minimum size of the consensus region is equal to
+#' twice the value of the \code{extendingSize} parameter. The numeric will
+#' be treated as an integer.
 #'
 #' @param chrLength a positive \code{numeric} or a positive \code{integer}
 #' indicating the lenght of the current chromosome. The length of the
@@ -2486,7 +2492,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
-                                resultRJMCMC, nbBase, chrLength)
+                                resultRJMCMC, extendingSize, chrLength)
 {
 
     ## Prepare information about reads
@@ -2515,7 +2521,7 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     ## Find nucleosomes present in same region
     result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak, rjmcmc_peak1),
                                         chrInfo = seqinfo,
-                                        extendingSize = nbBase,
+                                        extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
                                         shrinkToFitPeakRegion = FALSE,
                                         minNbrExp = 2)
@@ -2536,10 +2542,10 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
         if(length(current) > 1) {
             ## When more than one nucleosome present, use mean position
             valCentral <- mean(resultRJMCMC$mu[current])
-            a <- min(resultRJMCMC$mu[current]) # - (74 + nbBase)
-            b <- max(resultRJMCMC$mu[current]) # + (74 - nbBase)
-            maxLimit <- 74 + nbBase
-            minLimit <- 74 - nbBase
+            a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
+            b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
+            maxLimit <- 74 + extendingSize
+            minLimit <- 74 - extendingSize
             if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
                                     segReads$yF <= (b - minLimit)]) > 4 &
                 length(segReads$yR[segReads$yR >= (a + minLimit) &
@@ -2554,7 +2560,7 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
                 cpt <- cpt + 1L
             }
 
-            ## ASTRID : et si on ne respecte pas la condition,
+            ## QUESTION : et si on ne respecte pas la condition,
             ## qu'advient-il du nucleosome
         } else {
             newMu[cpt] <- resultRJMCMC$mu[current]
