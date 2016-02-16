@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{deathMove}
 \alias{deathMove}
-\title{Death move}
+\title{Death move when more than one nucleosome are present}
 \usage{
 deathMove(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
   wValue, dfValue, aValue, dimValue)
@@ -86,24 +86,8 @@ reverse reads position densities for each nucleosome.
 }
 }
 \description{
-Attempt to randomly delete the position of one nucleosome.
-}
-\examples{
-
-## Load dataset
-data(reads_demo)
-
-## Create a list containing the mandatory parameters
-paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-    nr = length(reads_demo$readsReverse),
-    nbrReads = length(reads_demo$readsForward) +
-    length(reads_demo$readsReverse),
-    zeta = 147, deltamin = 142, deltamax = 142,
-    minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-    maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-
-## TODO
-
+Attempt to randomly delete the position of one nucleosome. The
+function is only used when more than one nucleosome are present.
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes

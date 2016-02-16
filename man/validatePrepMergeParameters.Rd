@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{validatePrepMergeParameters}
 \alias{validatePrepMergeParameters}
-\title{Parameters validation for the \code{\link{postMerge}} function.}
+\title{Parameters validation for the \code{\link{postMerge}} function}
 \usage{
 validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
   resultRJMCMC, extendingSize, chrLength)

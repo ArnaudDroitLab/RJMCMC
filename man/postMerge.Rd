@@ -4,7 +4,7 @@
 \alias{postMerge}
 \title{A internal post treatment function to merge closely positioned
 nucleosomes, from the same chromosome,
-identified by the \code{\link{rjmcmc}} function.}
+identified by the \code{\link{rjmcmc}} function}
 \usage{
 postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC,
   extendingSize, chrLength)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{mhMove}
 \alias{mhMove}
-\title{Metropolis-Hastings move}
+\title{Metropolis-Hastings move when more than one nucleosomes are present}
 \usage{
 mhMove(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
   wValue, dfValue, aValue, dimValue)
@@ -89,22 +89,6 @@ reverse reads position densities for each nucleosome.
 Attempt to randomly change the position of one nucleosome.
 This move is given by the usual Metropolis-Hastings move, see for instance
 Tierney (1994).
-}
-\examples{
-
-## Load dataset
-data(reads_demo)
-
-## Create a list containing the mandatory parameters
-paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-nr = length(reads_demo$readsReverse),
-nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-zeta = 147, deltamin = 142, deltamax = 142,
-minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-
-## TODO
-
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes

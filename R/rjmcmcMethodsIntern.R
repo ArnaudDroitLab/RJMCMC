@@ -1032,9 +1032,11 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
     return(varTilde)
 }
 
-#' @title Birth move
+#' @title Birth move when the current number of nucleosomes is superior to 1
 #'
-#' @description Attempt to add a component for a new nucleosome.
+#' @description Attempt to add a component for a new nucleosome. The function
+#' is specific to the case when when the current number of nucleosomes is
+#' superior to 1.
 #'
 #' @param paramValues a \code{list} containing:
 #' \itemize{
@@ -1111,29 +1113,6 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #' \code{k}, the updated number of reads associated to each nucleosome.
 #'     \item rho a \code{numeric}, the acceptance probability.
 #' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' zeta = 147, deltamin = 142, deltamax = 142,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## Create a list containing the mandatory parameters
-#' RJMCMC:::birthMove(paramValues = paramList, kValue = 1L,
-#' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue, wValue = c(1), dfValue = c(3),
-#' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-#' dimValue = c(length(reads_demo$readsForward) +
-#' length(reads_demo$readsReverse)))
-#'
 #'
 #' @author Rawane Samb, Pascal Belleau, Astrid Deschenes
 #' @keywords internal
@@ -1636,7 +1615,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
-#' @title Metropolis-Hastings move
+#' @title Metropolis-Hastings move when more than one nucleosomes are present
 #'
 #' @description Attempt to randomly change the position of one nucleosome.
 #' This move is given by the usual Metropolis-Hastings move, see for instance
@@ -1717,21 +1696,6 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' \code{k}, the updated number of reads associated to each nucleosome.
 #'     \item rho a \code{numeric}, the acceptance probability.
 #' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-#' nr = length(reads_demo$readsReverse),
-#' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' zeta = 147, deltamin = 142, deltamax = 142,
-#' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## TODO
 #'
 #' @importFrom stats runif dmultinom dt
 #' @importFrom MCMCpack rdirichlet ddirichlet
@@ -1924,9 +1888,10 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
     return(varTilde)
 }
 
-#' @title Death move
+#' @title Death move when more than one nucleosome are present
 #'
-#' @description Attempt to randomly delete the position of one nucleosome.
+#' @description Attempt to randomly delete the position of one nucleosome. The
+#' function is only used when more than one nucleosome are present.
 #'
 #' @param paramValues a \code{list} containing:
 #' \itemize{
@@ -2003,22 +1968,6 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' \code{k}, the updated number of reads associated to each nucleosome.
 #'     \item rho a \code{numeric}, the acceptance probability.
 #' }
-#'
-#' @examples
-#'
-#' ## Load dataset
-#' data(reads_demo)
-#'
-#' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-#'     nr = length(reads_demo$readsReverse),
-#'     nbrReads = length(reads_demo$readsForward) +
-#'     length(reads_demo$readsReverse),
-#'     zeta = 147, deltamin = 142, deltamax = 142,
-#'     minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-#'     maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-#'
-#' ## TODO
 #'
 #' @importFrom stats runif dmultinom dpois
 #' @importFrom MCMCpack rdirichlet ddirichlet
@@ -2369,7 +2318,7 @@ validateDirectoryParameters <- function(directory) {
 }
 
 
-#' @title Parameters validation for the \code{\link{postMerge}} function.
+#' @title Parameters validation for the \code{\link{postMerge}} function
 #'
 #' @description Validation of all parameters needed by the public
 #' \code{\link{postMerge}} function.
@@ -2463,7 +2412,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 
 #' @title A internal post treatment function to merge closely positioned
 #' nucleosomes, from the same chromosome,
-#' identified by the \code{\link{rjmcmc}} function.
+#' identified by the \code{\link{rjmcmc}} function
 #'
 #' @description A internal helper function which merges closely positioned
 #' nucleosomes to rectify the over splitting and provide a more conservative

@@ -2,7 +2,7 @@
 % Please edit documentation in R/rjmcmcMethodsIntern.R
 \name{birthMove}
 \alias{birthMove}
-\title{Birth move}
+\title{Birth move when the current number of nucleosomes is superior to 1}
 \usage{
 birthMove(paramValues, kValue, muValue, sigmafValue, sigmarValue, deltaValue,
   wValue, dfValue, aValue, dimValue)
@@ -86,31 +86,9 @@ reverse reads position densities for each nucleosome.
 }
 }
 \description{
-Attempt to add a component for a new nucleosome.
-}
-\examples{
-
-## Load dataset
-data(reads_demo)
-
-## Create a list containing the mandatory parameters
-paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
-nr = length(reads_demo$readsReverse),
-nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-zeta = 147, deltamin = 142, deltamax = 142,
-minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
-
-## Create a list containing the mandatory parameters
-RJMCMC:::birthMove(paramValues = paramList, kValue = 1L,
-muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-deltaValue, wValue = c(1), dfValue = c(3),
-aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
-max(c(reads_demo$readsReverse, reads_demo$readsForward))),
-dimValue = c(length(reads_demo$readsForward) +
-length(reads_demo$readsReverse)))
-
-
+Attempt to add a component for a new nucleosome. The function
+is specific to the case when when the current number of nucleosomes is
+superior to 1.
 }
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes
