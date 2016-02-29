@@ -25,6 +25,7 @@ bioc_packages:
   - IRanges
   - BiocStyle
   - GenomicRanges
+  - PICS
   - PING
 
 # Package dependencies from github
