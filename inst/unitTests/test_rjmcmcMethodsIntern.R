@@ -288,44 +288,6 @@ test.isInteger_with_vector_of_integers <- function() {
 }
 
 #########################################################
-## validateParameters() function
-#########################################################
-
-## Test the result when startPosForwardReads is null
-test.validateParameters_empty_startPosForwardReads<- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters(startPosForwardReads = NULL,
-                    startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                                            72429.24, 72426.08),
-                    nbrIterations = 10, kMax = 11, lambda = 72400,
-                    minInterval = 142, maxInterval = 200, minReads = 5),
-                    error=conditionMessage)
-    exp <- paste0("startPosForwardReads must be a non-empty vector ",
-                  "of numeric values.")
-    message <- paste0(" test.validateParameters_empty_startPosForwardReads() ",
-                      "- A empty startPosForwardReads did not generated ",
-                      "expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-## Test the result when adaptIterationsToReads is number
-test.validateParameters_number_for_adaptIterationsToReads<- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters(startPosForwardReads = c(72424.14,
-                        72411.49, 72408.21, 723260.24, 72326.08),
-                        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
-                        72429.24, 72426.08),
-                        nbrIterations = 10, kMax = 11, lambda = 72400,
-                        minInterval = 142, maxInterval = 200, minReads = 5,
-                        adaptIterationsToReads = 32),
-                        error=conditionMessage)
-    exp <- "adaptIterationsToReads must be a logical."
-    message <- paste0(" test.validateParameters_number_for_adaptIterationsToReads() ",
-                      "- A number for adaptIterationsToReads did not  ",
-                      "generated expected message.")
-    checkEquals(obs, exp, msg = message)
-}
-
-
-#########################################################
 ## validatePrepMergeParameters() function
 #########################################################
 
@@ -530,7 +492,7 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
 
 ## Test the result when nbrIterations is NA
 test.validateParameters_nbrIterations_NA <- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters (
+    obs <- tryCatch(RJMCMC:::validateParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                     72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -548,7 +510,7 @@ test.validateParameters_nbrIterations_NA <- function() {
 
 ## Test the result when nbrIterations is zero
 test.validateParameters_nbrIterations_zero <- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters (
+    obs <- tryCatch(RJMCMC:::validateParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -566,7 +528,7 @@ test.validateParameters_nbrIterations_zero <- function() {
 
 ## Test the result when nbrIterations is negative
 test.validateParameters_nbrIterations_negative <- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters (
+    obs <- tryCatch(RJMCMC:::validateParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -584,7 +546,7 @@ test.validateParameters_nbrIterations_negative <- function() {
 
 ## Test the result when kMax is NA
 test.validateParameters_kMax_NA <- function() {
-    obs <- tryCatch(RJMCMC:::validateParameters (
+    obs <- tryCatch(RJMCMC:::validateParameters(
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
         startPosReverseReads = c(72424.14, 72431.49, 72428.21,
@@ -601,7 +563,7 @@ test.validateParameters_kMax_NA <- function() {
 }
 
 ## Test the result when kMax is zero
-test.validateParameters_kMax_NA <- function() {
+test.validateParameters_kMax_zero <- function() {
     obs <- tryCatch(RJMCMC:::validateParameters (
         startPosForwardReads = c(72424.14, 72431.49, 72428.21,
                                  72429.24, 72426.08),
@@ -635,3 +597,247 @@ test.validateParameters_kMax_negative <- function() {
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
+
+## Test the result when minReads is NA
+test.validateParameters_minReads_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = NA, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "minReads must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_minReads_NA() ",
+                      "- NA value for minReads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when minReads is zero
+test.validateParameters_minReads_zero <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 0, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "minReads must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_minReads_zero() ",
+                      "- Zero value for minReads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when minReads is negative
+test.validateParameters_minReads_negative <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 3, lambda = 1, minReads = -1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "minReads must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_minReads_negative() ",
+                      "- Negative value for minReads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when lambda is NA
+test.validateParameters_lambda_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = NA, minReads = 2, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "lambda must be a positive numeric"
+    message <- paste0(" test.validateParameters_minReads_NA() ",
+                      "- NA value for lambda did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when lambda is zero
+test.validateParameters_lambda_zero <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 0, minReads = 3, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "lambda must be a positive numeric"
+    message <- paste0(" test.validateParameters_minReads_zero() ",
+                      "- Zero value for lambda did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when lambda is negative
+test.validateParameters_lambda_negative <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = -1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "lambda must be a positive numeric"
+    message <- paste0(" test.validateParameters_minReads_negative() ",
+                      "- Negative value for lambda did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when startPosForwardReads is NA
+test.validateParameters_startPosForwardReads_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = NA,
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
+                  "numeric values.")
+    message <- paste0(" test.validateParameters_startPosForwardReads_NA() ",
+                      "- NA value for startPosForwardReads did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when startPosForwardReads is empty array
+test.validateParameters_startPosForwardReads_empty <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("startPosForwardReads must be a non-empty vector of ",
+                  "numeric values.")
+    message <- paste0(" test.validateParameters_startPosForwardReads_empty() ",
+                        "- Empty array for startPosForwardReads did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when startPosReverseReads is NA
+test.validateParameters_startPosReverseReads_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = NA,
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
+                  "numeric values.")
+    message <- paste0(" test.validateParameters_startPosReverseReads_NA() ",
+                        "- NA value for startPosReverseReads did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when startPosReverseReads is empty array
+test.validateParameters_startPosReverseReads_empty_array <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- paste0("startPosReverseReads must be a non-empty vector of ",
+                  "numeric values.")
+    message <- paste0(" test.validateParameters_startPosReverseReads_empty_array() ",
+                        "- Empty array for startPosReverseReads did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when adaptIterationsToReads is string
+test.validateParameters_adaptIterationsToReads_string <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = "allo"), error=conditionMessage)
+    exp <- "adaptIterationsToReads must be a logical."
+    message <- paste0(" test.validateParameters_adaptIterationsToReads_string() ",
+                        "- String for adaptIterationsToReads did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when adaptIterationsToReads is number
+test.validateParameters_adaptIterationsToReads_number <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = 33), error=conditionMessage)
+    exp <- "adaptIterationsToReads must be a logical."
+    message <- paste0(" test.validateParameters_adaptIterationsToReads_number() ",
+                        "- Number value for adaptIterationsToReads did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
+#########################################################
+## validateRDSFilesParameters() function
+#########################################################
+
+## Test the result when RDSFiles is NA
+test.validateRDSFilesParameters_RDSFiles_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateRDSFilesParameters(
+        RDSFiles = NA), error=conditionMessage)
+    exp <- "RDSFiles must be a list of valid RDS files"
+    message <- paste0(" test.validateRDSFilesParameters_RDSFiles_NA() ",
+                        "- NA for RDSFiles did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when RDSFiles is empty array
+test.validateRDSFilesParameters_RDSFiles_empty_array <- function() {
+    obs <- tryCatch(RJMCMC:::validateRDSFilesParameters(
+        RDSFiles = c()), error=conditionMessage)
+    exp <- "RDSFiles must be a list of valid RDS files"
+    message <- paste0(" test.validateRDSFilesParameters_RDSFiles_empty_array() ",
+                        "- Empty array for RDSFiles did not  ",
+                        "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
