@@ -22,7 +22,7 @@ Author@R: c(person("Rawane", "Samb",
     person("Arnaud", "Droit",
     email="arnaud.droit@crchuq.ulaval.ca", role=c("aut")))
 Depends:
-    R (>= 3.0),
+    R (>= 3.1),
     BiocGenerics,
     IRanges,
     GenomicRanges
@@ -30,7 +30,6 @@ Imports:
     MCMCpack,
     consensusSeekeR,
     GenomeInfoDb,
-    PING,
     S4Vectors,
     stats
 Suggests:

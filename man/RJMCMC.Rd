@@ -4,8 +4,9 @@
 \alias{rjmcmc}
 \title{Nucleosome positioning mapping}
 \usage{
-rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax, lambda,
-  minInterval, maxInterval, minReads, adaptIterationsToReads = TRUE)
+rjmcmc(startPosForwardReads, startPosReverseReads, nbrIterations, kMax,
+  lambda = 3, minInterval, maxInterval, minReads = 5,
+  adaptIterationsToReads = TRUE)
 }
 \arguments{
 \item{startPosForwardReads}{a \code{vector} of \code{numeric}, the
@@ -25,7 +26,7 @@ of nucleosomes per region. Non-integer values
 of \code{kMax} will be casted to \code{integer} and truncated towards zero.}
 
 \item{lambda}{a positive \code{numeric}, the theorical mean
-of the Poisson distribution.}
+of the Poisson distribution. Default: 3.}
 
 \item{minInterval}{a \code{numeric}, the minimum distance between two
 nucleosomes.}
@@ -36,7 +37,7 @@ nucleosomes.}
 \item{minReads}{a positive \code{integer} or \code{numeric}, the minimum
 number of reads in a potential canditate region. Non-integer values
 of \code{minReads} will be casted to \code{integer} and truncated towards
-zero.}
+zero. Default: 5.}
 
 \item{adaptIterationsToReads}{a \code{logical} indicating if the number
 of iterations must be modified in function of the number of reads.

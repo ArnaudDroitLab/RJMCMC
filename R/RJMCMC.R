@@ -231,4 +231,8 @@ NULL
 #'     Paired-end reads are identified with an unique id.
 #' }
 #'
+#' @usage data(syntheticNucleosomeReads)
+#'
+#' @keywords datasets
+#'
 NULL

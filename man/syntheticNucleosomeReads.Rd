@@ -22,6 +22,9 @@
     positions of the reads used to generate the paired-end reads.
     Paired-end reads are identified with an unique id.
 }}
+\usage{
+data(syntheticNucleosomeReads)
+}
 \description{
 A \code{list} of \code{class}
 "syntheticNucReads" which contains the information about synthetic reads
@@ -29,4 +32,5 @@ related to nucleosomes. The datset has been created using a total of 300
 well-positioned nucleosomes, 30 fuzzy nucleosomes with variance of reads
 following a Normal distribution.
 }
+\keyword{datasets}
 
