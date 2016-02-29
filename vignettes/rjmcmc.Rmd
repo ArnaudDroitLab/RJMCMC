@@ -1,17 +1,18 @@
 ---
-title: "RJMCMC: Nucleosome Positioning"
+title: "Nucleosome Positioning"
 output:
   BiocStyle::html_document:
     toc: true
 bibliography: rjmcmc.bibtex
 vignette: >
   %\VignetteIndexEntry{Nucleosome Positioning}
-  %\VignettePackage{RJMCMC}
   %\VignetteEngine{knitr::rmarkdown}
+  %\VignettePackage{RJMCMC}
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
 BiocStyle::markdown()
+library(knitr)
 ```
 
 <br />
@@ -72,6 +73,38 @@ library(RJMCMC)
 
 
 # RJMCMC analysis
+
+A typical analysis consists of the following steps:
+
+1. Segment the genome into candidate regions that have sufficient aligned
+reads. The region cannot be larger than one chromosome.
+2. Estimate nucleosome positions for each region.
+3. Regroup all regions together. The final region cannot be larger than
+one chromosome.
+4. Post-process predictions of the regrouped region to correct certain 
+predictions.
+
+# RJMCMC analysis step by step
+
+## Segment the genome into candidate regions
+
+A genome can be pre-processed and segmented into candidate regions to 
+accelerate the analysis. 
+
+A genome should at least be separated by chromosome since the RJMCMC 
+algorithm can only analyze one chromosome at the time.
+
+Genome segmentation can be done using the `segmentPING()` function 
+from the `r Biocpkg("PING")` package.
+
+```{r segment01 , warning=FALSE, collapse=TRUE} 
+## Load PING package
+##library("PING")
+
+
+```
+
+## Run RJMCMC on each segment (when segmented)
 
 ```{r demo01 , warning=FALSE, collapse=TRUE} 
 ## Load the dataset containing forward and reverse reads

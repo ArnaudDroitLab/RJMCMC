@@ -523,3 +523,115 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
                       "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
+
+#########################################################
+## validateParameters() function
+#########################################################
+
+## Test the result when nbrIterations is NA
+test.validateParameters_nbrIterations_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                    72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                    72429.24, 72426.08),
+        nbrIterations = NA,
+        kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "nbrIterations must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_nbrIterations_NA() ",
+                      "- NA for nbrIterations did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when nbrIterations is zero
+test.validateParameters_nbrIterations_zero <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 0,
+        kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "nbrIterations must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_nbrIterations_zero() ",
+                      "- Zero for nbrIterations did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when nbrIterations is negative
+test.validateParameters_nbrIterations_negative <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = -1,
+        kMax = 4, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "nbrIterations must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_nbrIterations_zero() ",
+                      "- Negative value for nbrIterations did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when kMax is NA
+test.validateParameters_kMax_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = NA, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "kMax must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_kMax_NA() ",
+                      "- NA value for kMax did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when kMax is zero
+test.validateParameters_kMax_NA <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 0, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "kMax must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_kMax_zero() ",
+                      "- Zero value for kMax did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when kMax is negative
+test.validateParameters_kMax_negative <- function() {
+    obs <- tryCatch(RJMCMC:::validateParameters (
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = -1, lambda = 1, minReads = 5, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = FALSE), error=conditionMessage)
+    exp <- "kMax must be a positive integer or numeric"
+    message <- paste0(" test.validateParameters_kMax_negative() ",
+                      "- Negative value for kMax did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}

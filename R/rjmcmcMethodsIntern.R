@@ -2450,6 +2450,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @importFrom GenomicRanges GRanges findOverlaps
 #' @importFrom IRanges IRanges
 #' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
+#' @importFrom S4Vectors queryHits subjectHits
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
@@ -2490,7 +2491,8 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     overlapsPeak <- findOverlaps(query = result$consensusRanges,
                         subject =  rjmcmc_peak)
 
-    uniqueOverlap <- unique(overlapsPeak@queryHits)
+    allOverlap <- queryHits(overlapsPeak)
+    uniqueOverlap <- unique(allOverlap)
     nbOverlap <- length(uniqueOverlap)
 
     ## Treat each overlapping region separatly
@@ -2498,7 +2500,7 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     cpt <- 1L
     for(position in 1:nbOverlap){
         ## Extract nucleosomes present in the current overlapping region
-        current <- overlapsPeak@subjectHits[overlapsPeak@queryHits ==
+        current <- subjectHits(overlapsPeak)[queryHits(overlapsPeak) ==
                                                     uniqueOverlap[position]]
         if(length(current) > 1) {
             ## When more than one nucleosome present, use mean position

@@ -51,7 +51,7 @@ data(RJMCMC_result)
 \description{
 A \code{list} of \code{class}
 "rjmcmcNucleosomes" which contains the information about the
-detected nucleosomes:
+detected nucleosomes.
 }
 \examples{
 
@@ -59,10 +59,14 @@ detected nucleosomes:
 data(RJMCMC_result)
 data(reads_demo)
 
+## Results before post-treatment
+RJMCMC_result$mu
+
 ## Post-treatment function which merged closely positioned nucleosomes
 postResult <- postTreatment(startPosForwardReads = reads_demo$readsForward,
 startPosReverseReads = reads_demo$readsReverse, RJMCMC_result, 74, 73500)
 
+## Results after post-treatment
 postResult
 
 }
