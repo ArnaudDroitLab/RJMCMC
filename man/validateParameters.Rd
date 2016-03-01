@@ -50,6 +50,21 @@ successful.
 Validation of all parameters needed by the public
 \code{\link{rjmcmc}} function.
 }
+\examples{
+
+## The function returns 0 when all paramaters are valid
+RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431, 72428,
+72429, 72426), startPosReverseReads = c(72520, 72523, 72521, 72533, 72511),
+nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
+maxInterval = 200, adaptIterationsToReads = TRUE)
+
+## The function raises an error when at least one paramater is not valid
+\dontrun{RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431,
+72428, 72429, 72426), startPosReverseReads = NA,
+nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
+maxInterval = 200, adaptIterationsToReads = TRUE)}
+
+}
 \author{
 Astrid Deschenes
 }

@@ -249,6 +249,7 @@ normal.mixture <- function(i, k, weight, mu, sigma) {
 priorMuDensity <- function(mu, readPositions) {
     ## Get the number of nucleosomes
     k <- length(mu)
+
     ## Create a matrix used in the calculation of the priors
     basicMatrix <- matrix(0L, nrow = k, ncol = k)
     for (i in 1:k) {
@@ -260,13 +261,16 @@ priorMuDensity <- function(mu, readPositions) {
         }
     }
     omega <- t(basicMatrix) %*% basicMatrix
+
     ## Calculating the range (R)
     R <- max(readPositions) - min(readPositions)
+
     ## Calculating the mean (E)
     E <- (max(readPositions) + min(readPositions))/2
     tau <- 1/R^2
     M <- rep(E, k)
     const <- (pi/(2*tau))^{-k/2}
+
     ## The calculation of the prior
     ## Equation 11 in the cited article
     return(const * exp(-(tau/2) * (t(mu - M) %*% omega %*% (mu - M))))
@@ -435,10 +439,6 @@ mergeNucleosomes <- function(yf, yr, y, list,
                             df     = list$df,
                             w      = list$w)
         } ### end of condition if (ecart.min < minInterval)
-
-        ## Trying to split resulting nucleosomes
-        ##list <- splitNucleosome(yf, yr, y, list, minInterval,
-        ##                            maxInterval, minReads)
     } ### end of condition if (k > 1)
 
     return(list)
@@ -534,31 +534,37 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 
                 if (length(classes) > minReads)
                 {
+                    ## Assign new nucleosome positions
                     new.mu <- sort(c(list$mu[1:k], mean(round(classes))))
 
+                    ## Assign new variance of forward reads
                     new.sigmaf <- c(list$sigmaf[1:k],
                                     (list$sigmaf[p] + list$sigmaf[p + 1])/2)
                     new.sigmaf[p + 1] <- (list$sigmaf[p] +
                                                         list$sigmaf[p + 1])/2
                     new.sigmaf[k + 1] <- list$sigmaf[k]
 
+                    ## Assign new variance of reverse reads
                     new.sigmar <- c(list$sigmar[1:k],
                                     (list$sigmar[p] + list$sigmar[p + 1])/2)
                     new.sigmar[p + 1] <- (list$sigmar[p] + list$sigmar[p + 1])/2
                     new.sigmar[k + 1] <- list$sigmar[k]
 
-                    new.delta        <- c(list$delta[1:k],
-                                   (list$delta[p] + list$delta[p + 1])/2)
+                    ## Assign new distance between maxima of forward and
+                    ## reverse reads
+                    new.delta <- c(list$delta[1:k],
+                                    (list$delta[p] + list$delta[p + 1])/2)
                     new.delta[p + 1] <- (list$delta[p] + list$delta[p + 1])/2
                     new.delta[k + 1] <- list$delta[k]
 
+                    ## Assign new degres of freedom
                     new.df <- round(c(list$df[1:k],
                                         (list$df[p] + list$df[p + 1])/2))
                     new.df[p + 1]   <- (list$df[p] + list$df[p + 1])/2
                     new.df[k + 1]   <- list$df[k]
 
-                    new.w           <- c(list$w[1:k], (list$w[p] +
-                                                            list$w[p + 1])/2)
+                    ## Assign new weights
+                    new.w   <- c(list$w[1:k], (list$w[p] + list$w[p + 1])/2)
                     new.w[p + 1]    <- (list$w[p]+list$w[p + 1])/2
                     new.w[k + 1]    <- list$w[k]
 
@@ -633,6 +639,20 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #'
 #' @return \code{0} indicating that all parameters validations have been
 #' successful.
+#'
+#' @examples
+#'
+#' ## The function returns 0 when all paramaters are valid
+#' RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431, 72428,
+#' 72429, 72426), startPosReverseReads = c(72520, 72523, 72521, 72533, 72511),
+#' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
+#' maxInterval = 200, adaptIterationsToReads = TRUE)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{RJMCMC:::validateParameters(startPosForwardReads = c(72400, 72431,
+#' 72428, 72429, 72426), startPosReverseReads = NA,
+#' nbrIterations = 2, kMax = 10, lambda = 1, minReads = 1, minInterval = 100,
+#' maxInterval = 200, adaptIterationsToReads = TRUE)}
 #'
 #' @author Astrid Deschenes
 #' @keywords internal
@@ -2358,10 +2378,15 @@ validateDirectoryParameters <- function(directory) {
 #' pattern = "yeastRes_Chr1_Seg_002.rds", full.names = TRUE)
 #' nucleosome_info <- readRDS(file_002)
 #'
-#' ## Parameters validation
+#' ## The function returns 0 when all parameters are valid
 #' RJMCMC:::validatePrepMergeParameters(startPosForwardReads =
 #' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
 #' resultRJMCMC = nucleosome_info, extendingSize = 74, chrLength = 10000000)
+#'
+#' ## The function raises an error when at least one paramater is not valid
+#' \dontrun{RJMCMC:::validatePrepMergeParameters(startPosForwardReads = c(72400,
+#' 72431, 72428, 72429, 72426), startPosReverseReads = c(72522, 72531, 72528,
+#' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
 #' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
