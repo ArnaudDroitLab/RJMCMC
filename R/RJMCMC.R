@@ -23,6 +23,8 @@
 #' @seealso
 #' \itemize{
 #'     \item \code{\link{rjmcmc}} { for profiling of nucleosome positions}
+#'     \item \code{\link{postTreatment}} { for merging closely positioned
+#'     nucleosomes}
 #' }
 #'
 #' @keywords package

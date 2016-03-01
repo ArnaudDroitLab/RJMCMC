@@ -76,7 +76,8 @@ Bk <- function(k, lambda, kMax = 30) {
 #' @title Random deviate from a truncated normal distribution
 #'
 #' @description Generate a random deviate value from a normal distribution.
-#' The returned value is included inside a specified range ]minValue,maxValue[
+#' The returned value is included inside a specified range
+#' ]\code{minValue},\code{maxValue}[
 #' specified by user. The mean and variance of the normal distribution is
 #' also specified by user.
 #'
@@ -95,6 +96,7 @@ Bk <- function(k, lambda, kMax = 30) {
 #'
 #' @return a \code{numeric} which is superior to \code{minValue} and inferior
 #' to \code{maxValue}.
+#'
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
