@@ -486,6 +486,23 @@ test.validatePrepMergeParameters_chrLength_array <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+## Test the result when all parameters are valid
+test.validatePrepMergeParameters_all_valid <- function() {
+    obs <- RJMCMC:::validatePrepMergeParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        resultRJMCMC = data_002, extendingSize = 74,
+        chrLength = 200000)
+    exp <- 0
+    message <- paste0(" test.validatePrepMergeParameters_all_valid() ",
+                      "- All valid parameters did not  ",
+                      "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
 #########################################################
 ## validateParameters() function
 #########################################################
@@ -811,6 +828,24 @@ test.validateParameters_adaptIterationsToReads_number <- function() {
     message <- paste0(" test.validateParameters_adaptIterationsToReads_number() ",
                         "- Number value for adaptIterationsToReads did not  ",
                         "generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+## Test the result when all parameters are valid
+test.validateParameters_all_valid <- function() {
+    obs <- RJMCMC:::validateParameters(
+        startPosForwardReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        startPosReverseReads = c(72424.14, 72431.49, 72428.21,
+                                 72429.24, 72426.08),
+        nbrIterations = 2,
+        kMax = 10, lambda = 1, minReads = 1, minInterval = 146,
+        maxInterval = 292,
+        adaptIterationsToReads = TRUE)
+    exp <- 0
+    message <- paste0(" test.validateParameters_all_valid() ",
+                      "- All valid parameters did not  ",
+                      "generated expected message.")
     checkEquals(obs, exp, msg = message)
 }
 
