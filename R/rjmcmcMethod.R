@@ -532,7 +532,7 @@ postTreatment <- function(startPosForwardReads, startPosReverseReads,
 
     ## Validate parameters
     validatePrepMergeParameters(startPosForwardReads, startPosReverseReads,
-                                         resultRJMCMC, extendingSize, chrLength)
+                                        resultRJMCMC, extendingSize, chrLength)
 
     ## Run post merging function and return results
     return(postMerge(startPosForwardReads, startPosReverseReads,
