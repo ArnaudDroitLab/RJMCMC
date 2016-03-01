@@ -43,6 +43,24 @@ approach. Beware that each chromosome must be treated separatly.
 The function uses the Bioconductor \code{package} \code{consensusSeeker} to
 group closely positioned nucleosomes.
 }
+\examples{
+
+## Loading dataset
+data(RJMCMC_result)
+data(reads_demo)
+
+## Results before post-treatment
+RJMCMC_result$mu
+
+## Post-treatment function which merged closely positioned nucleosomes
+postResult <- RJMCMC:::postMerge(startPosForwardReads =
+reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+
+## Results after post-treatment
+postResult
+
+}
 \author{
 Pascal Belleau, Astrid Deschenes
 }

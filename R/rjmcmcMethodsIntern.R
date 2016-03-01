@@ -2470,6 +2470,23 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @return a \code{array} of \code{numeric}, the updated values of the
 #' nucleosome positions.
 #'
+#' @examples
+#'
+#' ## Loading dataset
+#' data(RJMCMC_result)
+#' data(reads_demo)
+#'
+#' ## Results before post-treatment
+#' RJMCMC_result$mu
+#'
+#' ## Post-treatment function which merged closely positioned nucleosomes
+#' postResult <- RJMCMC:::postMerge(startPosForwardReads =
+#' reads_demo$readsForward, startPosReverseReads = reads_demo$readsReverse,
+#' resultRJMCMC = RJMCMC_result, extendingSize = 80, chrLength = 73500)
+#'
+#' ## Results after post-treatment
+#' postResult
+#'
 #' @author Pascal Belleau, Astrid Deschenes
 #' @importFrom consensusSeekeR findConsensusPeakRegions
 #' @importFrom GenomicRanges GRanges findOverlaps
