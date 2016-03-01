@@ -655,28 +655,32 @@ splitNucleosome <- function(yf, yr, y, list, minInterval, maxInterval,
 #' maxInterval = 200, adaptIterationsToReads = TRUE)}
 #'
 #' @author Astrid Deschenes
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 validateParameters <- function(startPosForwardReads, startPosReverseReads,
                                     nbrIterations, kMax, lambda,
                                     minInterval, maxInterval, minReads,
                                     adaptIterationsToReads) {
     ## Validate the nbrIterations parameter
-    if (!isInteger(nbrIterations) || as.integer(nbrIterations) < 1) {
+    if (!(isSingleInteger(nbrIterations) || isSingleNumber(nbrIterations)) ||
+            as.integer(nbrIterations) < 1) {
         stop("nbrIterations must be a positive integer or numeric")
     }
 
     ## Validate the kMax parameter
-    if (!isInteger(kMax) || as.integer(kMax) < 1) {
+    if (!(isSingleInteger(kMax) || isSingleNumber(kMax)) ||
+            as.integer(kMax) < 1) {
         stop("kMax must be a positive integer or numeric")
     }
 
     ## Validate the minReads parameter
-    if (!isInteger(minReads) || as.integer(minReads) < 1) {
+    if (!(isSingleInteger(minReads) || isSingleNumber(minReads)) ||
+            as.integer(minReads) < 1) {
         stop("minReads must be a positive integer or numeric")
     }
 
     ## Validate the lambda parameter
-    if (!isInteger(lambda) || lambda <= 0) {
+    if (!isSingleNumber(lambda) || lambda <= 0) {
         stop("lambda must be a positive numeric")
     }
 
@@ -705,41 +709,6 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 
     return(0)
 }
-
-
-#' @title Validate if a value is an integer
-#'
-#' @description Validate if the value passed to the function can be casted
-#' into a \code{integer} or
-#' not. The value must have a length
-#' of 1. The type of value can be a \code{integer} or \code{numerical}.
-#'
-#' @param value an object to validate.
-#'
-#' @return \code{TRUE} is the parameter is a integer; otherwise \code{FALSE}
-#'
-#' @examples
-#'
-#' ## Return TRUE because the input is an integer of length 1
-#' RJMCMC:::isInteger(33L)
-#'
-#' ## Return FALSE because the length of the input is not 1
-#' RJMCMC:::isInteger(c(21L, 33L))
-#'
-#' ## Return TRUE because the input is a numericalof length 1
-#' RJMCMC:::isInteger(323.21)
-#'
-#' ## Return FALSE because the length of the input is not 1
-#' RJMCMC:::isInteger(c(444.2, 442.1))
-#'
-#' @author Astrid Deschenes
-#' @keywords internal
-#'
-isInteger <- function(value) {
-    return((is.integer(value) && length(value) == 1) || (is.numeric(value) &&
-        length(value) == 1))
-}
-
 
 
 #' @title Birth move in the case that only one nucleosome is present
@@ -2390,6 +2359,7 @@ validateDirectoryParameters <- function(directory) {
 #'
 #' @author Astrid Deschenes
 #' @importFrom GenomeInfoDb Seqinfo
+#' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal
 #'
 validatePrepMergeParameters <- function(startPosForwardReads,
@@ -2419,16 +2389,18 @@ validatePrepMergeParameters <- function(startPosForwardReads,
     if (!is(resultRJMCMC, "rjmcmcNucleosomesMerge") &&
                 !is(resultRJMCMC, "rjmcmcNucleosomes")) {
         stop(paste0("resultRJMCMC must be an object of class",
-                        "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'."))
+                    "\'rjmcmcNucleosomes\' or \'rjmcmcNucleosomesMerge\'."))
     }
 
     ## Validate the extendingSize parameter
-    if (!isInteger(extendingSize) || as.integer(extendingSize) < 1) {
+    if (!(isSingleInteger(extendingSize) || isSingleNumber(extendingSize)) ||
+            as.integer(extendingSize) < 1) {
         stop("extendingSize must be a positive integer or numeric")
     }
 
     ## Validate the chrLength parameter
-    if (!isInteger(chrLength) || as.integer(chrLength) < 1) {
+    if (!(isSingleInteger(chrLength) || isSingleNumber(chrLength)) ||
+            as.integer(chrLength) < 1) {
         stop("chrLength must be a positive integer or numeric")
     }
 
