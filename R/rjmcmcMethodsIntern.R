@@ -97,6 +97,14 @@ Bk <- function(k, lambda, kMax = 30) {
 #' @return a \code{numeric} which is superior to \code{minValue} and inferior
 #' to \code{maxValue}.
 #'
+#' @examples
+#'
+#' ## Set seed to replicate results
+#' set.seed(3333)
+#'
+#' ## Return a value, between 1000 and 3000, generated froma a normal
+#' ## distribution with a mean of 2000 and a variance of 30.
+#' RJMCMC:::tnormale(2000, 30, 1000, 30000)
 #'
 #' @author Rawane Samb
 #' @importFrom stats rnorm
