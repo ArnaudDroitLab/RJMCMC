@@ -110,7 +110,7 @@ maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 muPosition <- c(72800, 73000)
 muPosition
 
-## Metropolis-Hastings move
+## Birth move when more than one nucleosome
 result <- RJMCMC:::birthMove(paramValues = paramList, kValue = 2L,
 muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
 deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
