@@ -111,6 +111,7 @@ maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 muPosition <- c(73000)
 muPosition
 
+# Metropolis-Hastings move when 1 nucleosome present
 result <- RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
 muValue = muPosition, sigmafValue = c(100), sigmarValue = c(120),
 deltaValue = c(200), wValue = c(1), dfValue = c(3),
