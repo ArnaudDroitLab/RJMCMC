@@ -23,6 +23,9 @@ file_002 <- dir(system.file("extdata", package = "RJMCMC"),
 
 data_002 <- readRDS(file_002)
 
+data(RJMCMC_result)
+data(reads_demo)
+
 ###########################################################
 ## Dk() function
 ###########################################################
@@ -827,3 +830,33 @@ test.validateRDSFilesParameters_RDSFiles_empty_array <- function() {
     checkEquals(obs, exp, msg = message)
 }
 
+
+#########################################################
+## postMerge() function
+#########################################################
+
+
+## Test the result of postMerge() function
+test.postMerge_good_01 <- function() {
+    obs <- RJMCMC:::postMerge(startPosForwardReads = reads_demo$readsForward,
+                                startPosReverseReads = reads_demo$readsReverse,
+                                resultRJMCMC = RJMCMC_result,
+                                extendingSize = 10, chrLength = 80000)
+    exp <- c(72434.766272478853, 72544.048047704578, 73146.590899701128)
+    message <- paste0(" test.postMerge_good_01() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
+
+
+## Test the result of postMerge() function
+test.postMerge_good_02 <- function() {
+    obs <- RJMCMC:::postMerge(startPosForwardReads = reads_demo$readsForward,
+                              startPosReverseReads = reads_demo$readsReverse,
+                              resultRJMCMC = RJMCMC_result,
+                              extendingSize = 100, chrLength = 80000)
+    exp <- c(72452.452375092398, 73146.590899701128)
+    message <- paste0(" test.postMerge_good_02() ",
+                      "- postMerge() did not generated expected message.")
+    checkEquals(obs, exp, msg = message)
+}
