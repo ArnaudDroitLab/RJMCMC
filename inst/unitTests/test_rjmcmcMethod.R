@@ -18,6 +18,7 @@ if(FALSE) {
 
 data(reads_demo)
 data(reads_demo_02)
+data(RJMCMC_result)
 
 DIRECTORY <- system.file("extdata", package = "RJMCMC")
 
@@ -309,7 +310,6 @@ test.mergeAllRDSFilesFromDirectory_good <- function() {
 ## mergeRDSFiles() function
 ###########################################################
 
-
 test.mergeRDSFiles_notExisting <- function() {
     file_01 <- "/toto1/toto2/toto3/toto4/toto5/improbable_file_01335320111.RDS"
     file_02 <- "/toto5/toto4/toto3/toto2/toto1/improbable_file_01335320111.RDS"
@@ -360,6 +360,46 @@ test.mergeRDSFiles_good <- function() {
     message <- paste0(" test.mergeRDSFiles_good() ",
                       "- The mergeRDSFiles() did not generated ",
                       "expected output.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+
+###########################################################
+## postTreatment() function
+###########################################################
+
+test.postTreatment_good_01 <- function() {
+
+    obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+                              startPosReverseReads = reads_demo$readsReverse,
+                              resultRJMCMC = RJMCMC_result,
+                              extendingSize = 20,
+                              chrLength = 80000)
+
+    exp <- c(72434.76627247885335236788,
+                72544.04804770457849372178,
+                73146.59089970112836454064)
+
+    message <- paste0(" test.postTreatment_good_01() ",
+                      "- posTreatment() did not generated expected message.")
+
+    checkEquals(obs, exp, msg = message)
+}
+
+test.postTreatment_good_02 <- function() {
+
+    obs <- postTreatment(startPosForwardReads = reads_demo$readsForward,
+                        startPosReverseReads = reads_demo$readsReverse,
+                        resultRJMCMC = RJMCMC_result,
+                        extendingSize = 200,
+                        chrLength = 80000)
+
+    exp <- c(72533.80877122777746990323,
+             73146.59089970112836454064)
+
+    message <- paste0(" test.postTreatment_good_02() ",
+                      "- posTreatment() did not generated expected message.")
 
     checkEquals(obs, exp, msg = message)
 }
