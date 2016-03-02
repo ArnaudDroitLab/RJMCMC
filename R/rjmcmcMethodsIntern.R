@@ -1434,20 +1434,30 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' data(reads_demo)
 #'
 #' ## Create a list containing the mandatory parameters
-#' paramList <- list(kmax = 30L, nf = length(reads_demo$readsForward),
+#' paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
 #' nr = length(reads_demo$readsReverse),
 #' nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
-#' zeta = 147, deltamin = 142, deltamax = 142,
+#' y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
+#' startPSF = reads_demo$readsForward,
+#' startPSR = reads_demo$readsReverse, lambda = 2,
+#' zeta = 147, deltamin = 142, deltamax = 152,
 #' minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
 #'
-#' RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
-#' muValue = c(73000), sigmafValue = c(100), sigmarValue = c(120),
-#' deltaValue, wValue = c(1), dfValue = c(3),
+#' ## Initial position of the nucleosome
+#' muPosition <- c(73000)
+#' muPosition
+#'
+#' result <- RJMCMC:::mhMoveK1(paramValues = paramList, kValue = 1L,
+#' muValue = muPosition, sigmafValue = c(100), sigmarValue = c(120),
+#' deltaValue = c(200), wValue = c(1), dfValue = c(3),
 #' aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)),
 #' max(c(reads_demo$readsReverse, reads_demo$readsForward))),
 #' dimValue = c(length(reads_demo$readsForward) +
 #' length(reads_demo$readsReverse)))
+#'
+#' ## Final position of the nucleosome
+#' result$mu[1]
 #'
 #' @importFrom stats runif dmultinom
 #' @importFrom MCMCpack rdirichlet ddirichlet
@@ -1695,6 +1705,7 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
 #' \code{k}, the updated number of reads associated to each nucleosome.
 #'     \item rho a \code{numeric}, the acceptance probability.
 #' }
+#'
 #'
 #' @importFrom stats runif dmultinom dt
 #' @importFrom MCMCpack rdirichlet ddirichlet
