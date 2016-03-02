@@ -90,6 +90,39 @@ Attempt to randomly change the position of one nucleosome.
 This move is given by the usual Metropolis-Hastings move, see for instance
 Tierney (1994).
 }
+\examples{
+
+## Load dataset
+data(reads_demo)
+
+## Create a list containing the mandatory parameters
+paramList <- list(kmax = 5L, nf = length(reads_demo$readsForward),
+nr = length(reads_demo$readsReverse),
+nbrReads = length(reads_demo$readsForward) + length(reads_demo$readsReverse),
+y = sort(c(reads_demo$readsForward, reads_demo$readsReverse)),
+startPSF = reads_demo$readsForward,
+startPSR = reads_demo$readsReverse, lambda = 2,
+zeta = 147, deltamin = 142, deltamax = 152,
+minReadPos = min(c(reads_demo$readsReverse, reads_demo$readsForward)),
+maxReadPos = max(c(reads_demo$readsReverse, reads_demo$readsForward)))
+
+## Initial position of the nucleosomes
+muPosition <- c(72800, 73000)
+muPosition
+
+## Metropolis-Hastings move
+result <- RJMCMC:::mhMove(paramValues = paramList, kValue = 2L,
+muValue = muPosition, sigmafValue = c(100, 120), sigmarValue = c(120, 100),
+deltaValue = c(200, 210), wValue = c(0.5, 0.5), dfValue = c(3, 4),
+aValue = c(min(c(reads_demo$readsReverse, reads_demo$readsForward)), 73150,
+max(c(reads_demo$readsReverse, reads_demo$readsForward))),
+dimValue = c(length(reads_demo$readsForward),
+length(reads_demo$readsReverse)))
+
+## Final position of the nucleosomes
+result$mu[1:2]
+
+}
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
