@@ -487,7 +487,8 @@ validateParameters <- function(startPosForwardReads, startPosReverseReads,
 #' \code{kValue}, the degrees of freedom for each nucleosome.
 #'
 #' @param aValue a \code{vector} of positive \code{numerical} of length
-#' \code{kValue + 1}, TODO
+#' \code{kValue + 1}, the positions, on the chromosome, delimiting the regions
+#' of the reads associated with each nucleosome.
 #'
 #' @param dimValue a \code{vector} of positive \code{numerical} of length
 #' \code{kValue}, the number of reads associated to each nucleosome.
