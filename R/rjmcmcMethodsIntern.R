@@ -821,7 +821,8 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
 #'     \item df a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated degrees of freedom.
 #'     \item a a \code{vector} of positive \code{numerical} of length
-#' \code{k + 1}, TODO
+#' \code{k + 1}, the updated positions, on the chromosome, delimiting the
+#' regions of the reads associated with each nucleosome.
 #'     \item dim a \code{vector} of positive \code{numerical} of length
 #' \code{k}, the updated number of reads associated to each nucleosome.
 #'     \item rho a \code{numeric}, the acceptance probability.
