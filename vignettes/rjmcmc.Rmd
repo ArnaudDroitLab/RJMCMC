@@ -116,12 +116,8 @@ sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
                                     distr="Normal",
                                     offset=val.offset)
 
-## Transform sample into GRanges
-sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
-                          ranges = IRanges(start = sample$dataIP$start, 
-                                           end = sample$dataIP$end), 
-                          strand = sample$dataIP$strand)
-
+## Create visual representation of the synthetic nucleosome sample
+plot(sample)
 ```
 
 ## Segment the analyzed region into candidate regions
@@ -135,29 +131,39 @@ algorithm can only analyze one chromosome at the time.
 Genome segmentation can be done using the `segmentPING()` function 
 from the `r Biocpkg("PING")` package.
 
-```{r segment01, warning=FALSE, collapse=TRUE} 
+```{r segment01, warning=FALSE, collapse=TRUE, message=FALSE} 
 ## Load PING package
 library("PING")
+
+## Transform sample dataset into GRanges object
+sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
+                          ranges = IRanges(start = sample$dataIP$start, 
+                                           end = sample$dataIP$end), 
+                          strand = sample$dataIP$strand)
 
 ## Segment sample
 sampleSegmented <- PING::segmentPING(sampleGRanges)
 
+## Number of segments created
+length(sampleSegmented@List)
 ```
 
 ## Run RJMCMC on each segment (when segmented)
 
 ```{r demo01 , warning=FALSE, collapse=TRUE} 
-## Load the dataset containing forward and reverse reads
-data(reads_demo)
+## Run first segment
+readsForward <- sampleSegmented@List[[1]]@yF
+readsReverse <- sampleSegmented@List[[1]]@yR
 
-## Nucleosome positioning
-result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
-            startPosReverseReads = reads_demo$readsReverse,
+## Run RJMCMC analysis
+## A higher number of iterations is recommanded for real analysis
+resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
+            startPosReverseReads = readsReverse,
             nbrIterations = 1000, lambda = 3, kMax = 30,
-            minInterval = 140, maxInterval = 295, minReads = 5)
+            minInterval = 100, maxInterval = 200, minReads = 5)
 
 # Print the resulting nucleosomes and the related information
-result
+resultSegment01
 
 ```
 
