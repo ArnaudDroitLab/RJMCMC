@@ -8,6 +8,10 @@ env:
   global:
     - BIOC_USE_DEVEL="TRUE"
 
+# Package dependencies installed using apt-get
+apt_packages:
+  - libgsl0ldbl
+
 # Be strict when checking package
 warnings_are_errors: true
 
