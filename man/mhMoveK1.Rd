@@ -55,8 +55,9 @@ reverse reads position densities for each nucleosome.}
 \item{dfValue}{a \code{vector} of positive \code{numerical} of length
 \code{kValue}, the degrees of freedom for each nucleosome.}
 
-\item{aValue}{a \code{vector} of positive \code{integer} of length
-\code{kValue + 1}, TODO}
+\item{aValue}{a \code{vector} of positive \code{numerical} of length
+\code{kValue + 1}, the positions, on the chromosome, delimiting the regions
+of the reads associated with each nucleosome.}
 
 \item{dimValue}{a \code{vector} of positive \code{integer} of length
 \code{kValue}, the number of reads associated to each nucleosome.}
