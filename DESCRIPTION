@@ -36,6 +36,8 @@ Suggests:
     BiocStyle,
     knitr,
     rmarkdown,
+    PING,
+    nucleoSim,
     RUnit
 Encoding: UTF-8
 License: Artistic-2.0

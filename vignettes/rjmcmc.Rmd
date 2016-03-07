@@ -55,12 +55,14 @@ short-read data (MNase-Seq data). The implemantation is based on a strategy
 which incorporates four aspects. First, it jointly models local concentrations
 of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
 construction of an informative prior distribution coupled to a t-mixture model 
-with unknown degrees of freedom. Third,the number of nucleosomes
+with unknown degrees of freedom. Third, the number of nucleosomes
 is considered to be a random variable and refers to a prior distribution. 
 Fourth, the unknown parameters are simultaneously using the reversible jump 
 Markov chain Monte Carlo (RJMCMC) simulation technique (see for instance 
 @Green1995 and @Richardson1997). 
 
+Detailed information about the **RJMCMC** model can be found in the article 
+mentioned in the precedent section.
 
 # Loading the RJMCMC package
 
@@ -74,7 +76,7 @@ library(RJMCMC)
 
 # RJMCMC analysis
 
-A typical analysis consists of the following steps:
+A typical **RJMCMC** analysis consists of the following steps:
 
 1. Segment the genome into candidate regions that have sufficient aligned
 reads. The region cannot be larger than one chromosome.
@@ -86,21 +88,59 @@ predictions.
 
 # RJMCMC analysis step by step
 
-## Segment the genome into candidate regions
+A synthetic nucleosome sample containing 300 nucleosomes has been created 
+for the purposes of this example.The Bioconductor package 
+`r Biocpkg("nucleoSim")`.
+
+```{r }
+## Load nucleoSim package
+library(nucleoSim)
+
+val.num       <- 300  ### Number of well-positioned nucleosomes
+val.del       <- 50   ### Number of well-positioned nucleosomes to delete
+val.var       <- 30   ### variance associated to the well-positioned nucleosomes
+val.fuz       <- 50   ### Number of fuzzy nucleosomes
+val.fuz.var   <- 50   ### variance associated to the fuzzy nucleosomes
+val.rnd.seed  <- 444  ### Set seed when result needs to be reproducible
+val.offset    <- 10000  ### The number of bases used to offset all nucleosomes and reads
+
+set.seed(292)   ### Set seed when result needs to be reproducible
+
+## Create sample using a Normal distribution
+sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
+                                    wp.del=val.del,
+                                    wp.var=val.var,
+                                    fuz.num=val.del,
+                                    fuz.var=val.fuz.var,
+                                    rnd.seed=val.rnd.seed,
+                                    distr="Normal",
+                                    offset=val.offset)
+
+## Transform sample into GRanges
+sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
+                          ranges = IRanges(start = sample$dataIP$start, 
+                                           end = sample$dataIP$end), 
+                          strand = sample$dataIP$strand)
+
+```
+
+## Segment the analyzed region into candidate regions
 
 A genome can be pre-processed and segmented into candidate regions to 
 accelerate the analysis. 
 
-A genome should at least be separated by chromosome since the RJMCMC 
+A genome must at least be separated by chromosome since the RJMCMC 
 algorithm can only analyze one chromosome at the time.
 
 Genome segmentation can be done using the `segmentPING()` function 
 from the `r Biocpkg("PING")` package.
 
-```{r segment01 , warning=FALSE, collapse=TRUE} 
+```{r segment01, warning=FALSE, collapse=TRUE} 
 ## Load PING package
-##library("PING")
+library("PING")
 
+## Segment sample
+sampleSegmented <- PING::segmentPING(sampleGRanges)
 
 ```
 
@@ -118,15 +158,9 @@ result <- rjmcmc(startPosForwardReads = reads_demo$readsForward,
 
 # Print the resulting nucleosomes and the related information
 result
+
 ```
 
-
-# Genome segmentation
-
-A genome can be pre-processed and segmented into candidate regions to 
-accelerate the analysis. Genome segmentation
-can be done using the `segmentPING()` function from the `r Biocpkg("PING")` 
-package.
 
 # Session info
 
