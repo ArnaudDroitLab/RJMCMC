@@ -10,7 +10,8 @@ env:
 
 # Package dependencies installed using apt-get
 apt_packages:
-  - libgsl0ldbl
+  - gsl-bin
+  - libgsl0-dev
 
 # Be strict when checking package
 warnings_are_errors: true
