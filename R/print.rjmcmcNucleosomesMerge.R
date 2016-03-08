@@ -29,9 +29,8 @@
 #' @author Astrid Deschenes
 #' @export
 print.rjmcmcNucleosomesMerge <- function(x, ...) {
-    # Print title before printing the content of the regression object
-    cat("\nCall:\n")
-    print(x$call, ...)
+    # Print title before printing the content
+    cat("\nRJMCMC - Predicted nucleosomes\n")
     cat("\nNumber of nucleosomes:\n")
     print(x$k, ...)
     cat("\nNucleosomes positions:\n")

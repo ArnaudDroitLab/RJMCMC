@@ -19,7 +19,8 @@
 #' @author Astrid Deschenes
 #' @export
 print.rjmcmcNucleosomes <- function(x, ...) {
-    # Print title before printing the content of the regression object
+    # Print title before printing the content
+    cat("RJMCMC - Predicted nucleosomes\n")
     cat("\nCall:\n")
     print(x$call, ...)
     cat("\nNumber of nucleosomes:\n")
