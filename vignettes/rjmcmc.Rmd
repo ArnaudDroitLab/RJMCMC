@@ -6,8 +6,9 @@ output:
 bibliography: rjmcmc.bibtex
 vignette: >
   %\VignetteIndexEntry{Nucleosome Positioning}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignettePackage{RJMCMC}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r style, echo = FALSE, results = 'asis'}
@@ -88,15 +89,15 @@ predictions.
 
 # RJMCMC analysis step by step
 
-A synthetic nucleosome sample containing 300 nucleosomes has been created 
-for the purposes of this example.The Bioconductor package 
-`r Biocpkg("nucleoSim")`.
+A synthetic nucleosome sample containing 200 nucleosomes (150 nucleosomes 
+well-positioned + 50 fuzzy nucleosomes) has been created using the 
+Bioconductor package `r Biocpkg("nucleoSim")`.
 
-```{r }
+```{r createSample, collapse=TRUE, message=FALSE}
 ## Load nucleoSim package
 library(nucleoSim)
 
-val.num       <- 300  ### Number of well-positioned nucleosomes
+val.num       <- 200  ### Number of well-positioned nucleosomes
 val.del       <- 50   ### Number of well-positioned nucleosomes to delete
 val.var       <- 30   ### variance associated to the well-positioned nucleosomes
 val.fuz       <- 50   ### Number of fuzzy nucleosomes
@@ -122,18 +123,20 @@ plot(sample)
 
 ## Segment the analyzed region into candidate regions
 
-A genome can be pre-processed and segmented into candidate regions to 
-accelerate the analysis. 
+It is suggested, in order to accelerate the learning process, to segment the 
+analyzed region into candidate regions to accelerate the analysis. 
 
-A genome must at least be separated by chromosome since the RJMCMC 
-algorithm can only analyze one chromosome at the time.
+Moreover, it is mandatory to analyse each chromosome separatly since the 
+RJMCMC algorithm can only analyze one chromosome at the time.
 
-Genome segmentation can be done using the `segmentPING()` function 
-from the `r Biocpkg("PING")` package.
+Region segmentation can be done using the `segmentPING()` function 
+from the Bioconductor `r Biocpkg("PING")` package.
 
 ```{r segment01, warning=FALSE, collapse=TRUE, message=FALSE} 
-## Load PING package
+## Load needed packages
 library("PING")
+library("GenomicRanges")
+
 
 ## Transform sample dataset into GRanges object
 sampleGRanges <- GRanges(seqnames = sample$dataIP$chr, 
@@ -141,16 +144,20 @@ sampleGRanges <- GRanges(seqnames = sample$dataIP$chr,
                                            end = sample$dataIP$end), 
                           strand = sample$dataIP$strand)
 
-## Segment sample
+## Segment sample into candidate regions
 sampleSegmented <- PING::segmentPING(sampleGRanges)
 
 ## Number of segments created
-length(sampleSegmented@List)
+length(slot(sampleSegmented, "List"))
 ```
 
-## Run RJMCMC on each segment (when segmented)
+## Run RJMCMC
 
-```{r demo01 , warning=FALSE, collapse=TRUE} 
+The RJMCMC algorithm must be run on each candidate region. As an example, the 
+first candidate region is processed using a very low number of iterations. On
+real data, the number of iterations should be higher.
+
+```{r runRJMCMC01 , warning=FALSE, collapse=TRUE} 
 ## Run first segment
 readsForward <- sampleSegmented@List[[1]]@yF
 readsReverse <- sampleSegmented@List[[1]]@yR
@@ -158,16 +165,40 @@ readsReverse <- sampleSegmented@List[[1]]@yR
 ## Run RJMCMC analysis
 ## A higher number of iterations is recommanded for real analysis
 resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
-            startPosReverseReads = readsReverse,
-            nbrIterations = 1000, lambda = 3, kMax = 30,
-            minInterval = 100, maxInterval = 200, minReads = 5)
+                            startPosReverseReads = readsReverse,
+                            nbrIterations = 1000, lambda = 3, kMax = 30,
+                            minInterval = 100, maxInterval = 200, minReads = 5)
 
-# Print the resulting nucleosomes and the related information
+## Print the predicted nucleosomes for the first segment
 resultSegment01
+
+
 
 ```
 
+## Regroup all regions together
 
+```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
+
+directory <- system.file("extdata", "demo_vignette", package = "RJMCMC")
+
+resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
+```
+
+## Post-process predictions
+```{r postProcess01, collapse=TRUE, message=FALSE}
+
+allReadsForward <- subset(sample$dataIP, strand == "+")
+allReadsReverse <- subset(sample$dataIP, strand == "-")
+
+resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsForward$start, 
+                                    startPosReverseReads = allReadsReverse$start, 
+                                    resultRJMCMC = resultsAllMerged,
+                                    chrLength = max(allReadsForward$start, 
+                                                        allReadsReverse$start))
+
+
+```
 # Session info
 
 Here is the output of `sessionInfo()` on the system on which this document was 
