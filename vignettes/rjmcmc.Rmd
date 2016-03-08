@@ -124,10 +124,9 @@ plot(sample)
 ## Segment the analyzed region into candidate regions
 
 It is suggested, in order to accelerate the learning process, to segment the 
-analyzed region into candidate regions to accelerate the analysis. 
-
-Moreover, it is mandatory to analyse each chromosome separatly since the 
-RJMCMC algorithm can only analyze one chromosome at the time.
+analyzed region into candidate regions to accelerate the analysis. Moreover, 
+it is mandatory to analyse each chromosome separatly since the 
+\code{rjmcmc} function can only analyze one chromosome at the time.
 
 Region segmentation can be done using the `segmentPING()` function 
 from the Bioconductor `r Biocpkg("PING")` package.
@@ -153,7 +152,7 @@ length(slot(sampleSegmented, "List"))
 
 ## Run RJMCMC
 
-The RJMCMC algorithm must be run on each candidate region. As an example, the 
+The RJMCMC function must be run on each candidate region. As an example, the 
 first candidate region is processed using a very low number of iterations. On
 real data, the number of iterations should be higher.
 
@@ -178,19 +177,51 @@ resultSegment01
 
 ## Regroup all regions together
 
-```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
+Once all segments have been analyzed, the predicted nucleosomes can be merged 
+together. Two functions are available to facilitate the merging process:
 
+* \code{mergeRDSFiles} function: An array containing the name of all RDS files
+to merge is passed to it
+* \code{mergeAllRDSFilesFromDirectory} function: the name of the directory 
+(relative or absolute path) containing all RDS files to merge is passed to it
+
+The segments of the sample created sooner have all been processed (using 
+100000 iterations) and saved in RDS files. Those will now be merged together.
+
+```{r regroup01, warning=FALSE, collapse=TRUE, message=FALSE}
+## The directory containing the results of all segments
+## On RDS file has been created for each segment
 directory <- system.file("extdata", "demo_vignette", package = "RJMCMC")
 
+## Merging predicted nucleosomes from all segments
 resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
+
+resultsAllMerged
 ```
 
 ## Post-process predictions
+
+In some cases the RJMCMC method tends to over split the distribution of reads 
+for a single nucleosome. Although this characteristic increases the number 
+of false positives, it is still beneficial for regions rich in nucleosomes.  
+
+A function, which merges closely positioned nucleosomes, has been implemented 
+to rectify the over splitting and provide more conservative results.
+
+The \code{postTreatment} function must be run on the entire analyzed region to
+be efficiant. So, it should not be run on segmented results. The function needs
+the positions of the reads used for the RJMCMC analysis.
+
 ```{r postProcess01, collapse=TRUE, message=FALSE}
 
+## Split reads from the initial sample data into forward and reverse subsets
 allReadsForward <- subset(sample$dataIP, strand == "+")
 allReadsReverse <- subset(sample$dataIP, strand == "-")
 
+## Number of nucleosomes before the post-treatment
+resultsAllMerged$k
+
+## Use the post-treatment function
 resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsForward$start, 
                                     startPosReverseReads = allReadsReverse$start, 
                                     resultRJMCMC = resultsAllMerged,
@@ -198,7 +229,11 @@ resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsFo
                                                         allReadsReverse$start))
 
 
+## Number of nucleosomes before the post-treatment
+length(resultsPostTreatment)
+
 ```
+
 # Session info
 
 Here is the output of `sessionInfo()` on the system on which this document was 
