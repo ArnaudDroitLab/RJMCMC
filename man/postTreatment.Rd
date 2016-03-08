@@ -2,9 +2,8 @@
 % Please edit documentation in R/rjmcmcMethod.R
 \name{postTreatment}
 \alias{postTreatment}
-\title{A post treatment function to merge closely positioned nucleosomes
-, from the same chromosome,
-identified by the \code{\link{rjmcmc}} function..}
+\title{A post treatment function to merge closely positioned nucleosomes,
+from the same chromosome, identified by the \code{\link{rjmcmc}} function.}
 \usage{
 postTreatment(startPosForwardReads, startPosReverseReads, resultRJMCMC,
   extendingSize = 74L, chrLength)

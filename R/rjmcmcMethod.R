@@ -471,9 +471,8 @@ mergeRDSFiles <- function(RDSFiles) {
 }
 
 
-#' @title A post treatment function to merge closely positioned nucleosomes
-#' , from the same chromosome,
-#' identified by the \code{\link{rjmcmc}} function..
+#' @title A post treatment function to merge closely positioned nucleosomes,
+#' from the same chromosome, identified by the \code{\link{rjmcmc}} function.
 #'
 #' @description A helper function which merges closely positioned nucleosomes
 #' to rectify the over splitting and provide a more conservative approach.
