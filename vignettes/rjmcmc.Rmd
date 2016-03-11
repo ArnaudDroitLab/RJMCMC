@@ -41,7 +41,7 @@ Global gene expression patterns are established and maintained by the
 concerted actions of transcription factors (TFs) and the proteins that 
 constitute chromatin. The key structural element of chromatin is the 
 nucleosome, which consists of an octameric histone core wrapped by 146 bps 
-of DNA and connected to its neighbor by approximately 10-80 pbs of linker 
+of DNA and connected to its neighbour by approximately 10-80 pbs of linker 
 DNA [@Polishko2012].
 
 The literature on nucleosome positioning commonly focuses on frequentist 
@@ -50,9 +50,9 @@ inferences within parametric approaches (see for instance @Chen2010 and
 using a hidden Markov model with a known order by 
 assumption.  
 
-The **RJMCMC** package is an implemantation of a fully Bayesian hierarchical 
+The **RJMCMC** package is an implementation of a fully Bayesian hierarchical 
 model for profiling of nucleosome positions based on high-throughput
-short-read data (MNase-Seq data). The implemantation is based on a strategy 
+short-read data (MNase-Seq data). The implementation is based on a strategy 
 which incorporates four aspects. First, it jointly models local concentrations
 of directional reads. Second, it uses a Multinomial-Dirichlet model in the 
 construction of an informative prior distribution coupled to a t-mixture model 
@@ -202,7 +202,7 @@ resultSegment01$w
 ```
 
 
-## Regroup all regions together
+## Regroup all regions
 
 Once all segments have been analyzed, the predicted nucleosomes can be merged 
 together. Two functions are available to facilitate the merging process:
