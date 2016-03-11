@@ -87,25 +87,28 @@ one chromosome.
 4. Post-process predictions of the regrouped region to correct certain 
 predictions.
 
+
 # RJMCMC analysis step by step
 
-A synthetic nucleosome sample containing 200 nucleosomes (150 nucleosomes 
-well-positioned + 50 fuzzy nucleosomes) has been created using the 
+A synthetic nucleosome sample containing 100 nucleosomes (80 
+well-positioned + 20 fuzzy) has been created using the 
 Bioconductor package `r Biocpkg("nucleoSim")`.
 
 ```{r createSample, collapse=TRUE, message=FALSE}
 ## Load nucleoSim package
 library(nucleoSim)
 
-val.num       <- 200  ### Number of well-positioned nucleosomes
-val.del       <- 50   ### Number of well-positioned nucleosomes to delete
+val.num       <- 100  ### Number of well-positioned nucleosomes
+val.del       <- 20   ### Number of well-positioned nucleosomes to delete
 val.var       <- 30   ### variance associated to the well-positioned nucleosomes
-val.fuz       <- 50   ### Number of fuzzy nucleosomes
+val.fuz       <- 20   ### Number of fuzzy nucleosomes
 val.fuz.var   <- 50   ### variance associated to the fuzzy nucleosomes
-val.rnd.seed  <- 444  ### Set seed when result needs to be reproducible
+val.max.cover <- 70   ### Maximum coverage for one nucleosome
+val.nuc.len   <- 147  ### Distance between nucleosomes
+val.len.var   <- 10   ### Variance associated to the length of the reads
+val.lin.len   <- 20   ### The length of the DNA linker
+val.rnd.seed  <- 100  ### Set seed when result needs to be reproducible
 val.offset    <- 10000  ### The number of bases used to offset all nucleosomes and reads
-
-set.seed(292)   ### Set seed when result needs to be reproducible
 
 ## Create sample using a Normal distribution
 sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
@@ -113,6 +116,10 @@ sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
                                     wp.var=val.var,
                                     fuz.num=val.del,
                                     fuz.var=val.fuz.var,
+                                    max.cover=val.max.cover,
+                                    nuc.len=val.nuc.len,
+                                    len.var=val.len.var,
+                                    lin.len=val.lin.len,
                                     rnd.seed=val.rnd.seed,
                                     distr="Normal",
                                     offset=val.offset)
@@ -120,6 +127,7 @@ sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
 ## Create visual representation of the synthetic nucleosome sample
 plot(sample)
 ```
+
 
 ## Segment the analyzed region into candidate regions
 
@@ -150,6 +158,7 @@ sampleSegmented <- PING::segmentPING(sampleGRanges)
 length(slot(sampleSegmented, "List"))
 ```
 
+
 ## Run RJMCMC
 
 The RJMCMC function must be run on each candidate region. As an example, the 
@@ -157,9 +166,12 @@ first candidate region is processed using a very low number of iterations. On
 real data, the number of iterations should be higher.
 
 ```{r runRJMCMC01 , warning=FALSE, collapse=TRUE} 
-## Run first segment
-readsForward <- sampleSegmented@List[[1]]@yF
-readsReverse <- sampleSegmented@List[[1]]@yR
+## Extract forward and reverse reads associated to the first segment
+readsForward <- slot(slot(sampleSegmented, "List")[[1]], "yF")
+readsReverse <- slot(slot(sampleSegmented, "List")[[1]], "yR")
+
+## Fix seed to enable replication of the results
+set.seed(2221)
 
 ## Run RJMCMC analysis
 ## A higher number of iterations is recommanded for real analysis
@@ -171,9 +183,24 @@ resultSegment01 <- rjmcmc(startPosForwardReads = readsForward,
 ## Print the predicted nucleosomes for the first segment
 resultSegment01
 
+## More information is available from the output, such as
+## The variance of the forward reads for each nucleosome
+resultSegment01$sigmaf
 
+## The variance of the reverse reads for each nucleosome
+resultSegment01$sigmar
 
+## The distance between the maxima of the forward and reverse reads 
+## position densities for each nucleosome
+resultSegment01$delta
+
+## The degrees of freedom for each nucleosome
+resultSegment01$df
+
+## The weight for each nucleosome
+resultSegment01$w
 ```
+
 
 ## Regroup all regions together
 
@@ -197,7 +224,22 @@ directory <- system.file("extdata", "demo_vignette", package = "RJMCMC")
 resultsAllMerged <- mergeAllRDSFilesFromDirectory(directory)
 
 resultsAllMerged
+
+## More information is available from the output, such as
+## The variance of the forward reads for each nucleosome
+resultsAllMerged$sigmaf
+
+## The variance of the reverse reads for each nucleosome
+resultsAllMerged$sigmar
+
+## The distance between the maxima of the forward and reverse reads 
+## position densities for each nucleosome
+resultsAllMerged$delta
+
+## The degrees of freedom for each nucleosome
+resultsAllMerged$df
 ```
+
 
 ## Post-process predictions
 
@@ -213,7 +255,6 @@ be efficiant. So, it should not be run on segmented results. The function needs
 the positions of the reads used for the RJMCMC analysis.
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
-
 ## Split reads from the initial sample data into forward and reverse subsets
 allReadsForward <- subset(sample$dataIP, strand == "+")
 allReadsReverse <- subset(sample$dataIP, strand == "-")
@@ -229,10 +270,14 @@ resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsFo
                                                         allReadsReverse$start))
 
 
-## Number of nucleosomes before the post-treatment
+## Number of nucleosomes after the post-treatment
 length(resultsPostTreatment)
 
 ```
+
+The \code{postTreatment} function significantly reduces the number of 
+nucleosomes by merging closely positioned nucleosomes.
+
 
 # Session info
 
