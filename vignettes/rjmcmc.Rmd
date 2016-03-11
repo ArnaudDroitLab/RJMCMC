@@ -47,8 +47,7 @@ DNA [@Polishko2012].
 The literature on nucleosome positioning commonly focuses on frequentist 
 inferences within parametric approaches (see for instance @Chen2010 and
 @Xi2010).  In those works, the detection of nucleosome positions is done 
-using a hidden Markov model with a known order by 
-assumption.  
+using a hidden Markov model with an assumed known order.
 
 The **RJMCMC** package is an implementation of a fully Bayesian hierarchical 
 model for profiling of nucleosome positions based on high-throughput
@@ -133,7 +132,7 @@ plot(sample)
 
 It is suggested, in order to accelerate the learning process, to segment the 
 analyzed region into candidate regions to accelerate the analysis. Moreover, 
-it is mandatory to analyse each chromosome separatly since the 
+it is mandatory to analyse each chromosome separately since the 
 \code{rjmcmc} function can only analyze one chromosome at the time.
 
 Region segmentation can be done using the `segmentPING()` function 
@@ -245,13 +244,14 @@ resultsAllMerged$df
 
 In some cases the RJMCMC method tends to over split the distribution of reads 
 for a single nucleosome. Although this characteristic increases the number 
-of false positives, it is still beneficial for regions rich in nucleosomes.  
+of false positives, it is still beneficial for the region’s rich in 
+nucleosomes.  
 
 A function, which merges closely positioned nucleosomes, has been implemented 
 to rectify the over splitting and provide more conservative results.
 
 The \code{postTreatment} function must be run on the entire analyzed region to
-be efficiant. So, it should not be run on segmented results. The function needs
+be efficient. So, it should not be run on segmented results. The function needs
 the positions of the reads used for the RJMCMC analysis.
 
 ```{r postProcess01, collapse=TRUE, message=FALSE}
