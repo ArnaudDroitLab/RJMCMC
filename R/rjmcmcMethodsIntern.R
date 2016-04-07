@@ -2327,19 +2327,13 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     names(rjmcmc_peak) <- rep("RJMCMC", nbPeaks)
     rjmcmc_peak$name   <- paste0("RJMCMC_", 1:nbPeaks)
 
-    ## Prepare second GRanges using same nucleosome positions
-    rjmcmc_peak1 <- rjmcmc_peak
-    names(rjmcmc_peak1) <- rep("RJMCMC1", nbPeaks)
-    rjmcmc_peak1$name   <- paste0("RJMCMC1_", 1:nbPeaks)
-
-
     ## Find nucleosomes present in same regions
-    result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak, rjmcmc_peak1),
+    result <- findConsensusPeakRegions(peaks = c(rjmcmc_peak),
                                         chrInfo = seqinfo,
                                         extendingSize = extendingSize,
                                         expandToFitPeakRegion = FALSE,
                                         shrinkToFitPeakRegion = FALSE,
-                                        minNbrExp = 2)
+                                        minNbrExp = 1)
 
     overlapsPeak <- findOverlaps(query = result$consensusRanges,
                         subject =  rjmcmc_peak)
