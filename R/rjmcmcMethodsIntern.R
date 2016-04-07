@@ -2304,12 +2304,12 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @importFrom IRanges IRanges
 #' @importFrom GenomeInfoDb Seqinfo seqinfo seqnames
 #' @importFrom S4Vectors queryHits subjectHits
+#' @importFrom stats na.omit
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
                                 resultRJMCMC, extendingSize, chrLength)
 {
-
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
     segReads$yF <- startPosForwardReads
@@ -2343,7 +2343,7 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     nbOverlap <- length(uniqueOverlap)
 
     ## Treat each overlapping region separatly
-    newMu <- numeric(nbOverlap)
+    newMu <- array(dim = nbOverlap)
     cpt <- 1L
     for(position in 1:nbOverlap){
         ## Extract nucleosomes present in the current overlapping region
@@ -2370,15 +2370,12 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
                 cpt <- cpt + 1L
             }
 
-            ## QUESTION : et si on ne respecte pas la condition,
-            ## qu'advient-il du nucleosome
+            ## Nucleosomes not respecting the condition are flushed
         } else {
             newMu[cpt] <- resultRJMCMC$mu[current]
             cpt <- cpt + 1L
         }
-
     }
 
-    return(newMu)
+    return(as.numeric(na.omit(newMu)))
 }
-
