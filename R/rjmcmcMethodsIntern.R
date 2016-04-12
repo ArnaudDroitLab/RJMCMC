@@ -2342,6 +2342,10 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
     uniqueOverlap <- unique(allOverlap)
     nbOverlap <- length(uniqueOverlap)
 
+    ## Interval used to check for reads
+    maxLimit <- 74 + extendingSize
+    minLimit <- 74 - extendingSize
+
     ## Treat each overlapping region separatly
     newMu <- array(dim = nbOverlap)
     cpt <- 1L
@@ -2354,8 +2358,7 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
             valCentral <- mean(resultRJMCMC$mu[current])
             a <- min(resultRJMCMC$mu[current]) # - (74 + extendingSize)
             b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
-            maxLimit <- 74 + extendingSize
-            minLimit <- 74 - extendingSize
+
             if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
                                     segReads$yF <= (b - minLimit)]) > 4 &
                 length(segReads$yR[segReads$yR >= (a + minLimit) &
