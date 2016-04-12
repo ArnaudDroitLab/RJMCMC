@@ -2278,6 +2278,12 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' chromosome is used to ensure that the consensus positions are all
 #' located inside the chromosome.
 #'
+#' @param minReads a positive \code{integer} or \code{numeric}, the minimum
+#' number of reads in a potential canditate region. Non-integer values
+#' of \code{minReads} will be casted to \code{integer} and truncated towards
+#' zero. Default: 5.
+#
+#'
 #' @return a \code{array} of \code{numeric}, the updated values of the
 #' nucleosome positions.
 #'
@@ -2308,7 +2314,7 @@ validatePrepMergeParameters <- function(startPosForwardReads,
 #' @keywords internal
 #'
 postMerge <- function(startPosForwardReads, startPosReverseReads,
-                                resultRJMCMC, extendingSize, chrLength)
+                                resultRJMCMC, extendingSize, chrLength, minReads = 5)
 {
     ## Prepare information about reads
     segReads <- list(yF = numeric(), yR = numeric())
@@ -2360,9 +2366,9 @@ postMerge <- function(startPosForwardReads, startPosReverseReads,
             b <- max(resultRJMCMC$mu[current]) # + (74 - extendingSize)
 
             if(length(segReads$yF[segReads$yF >= (a - maxLimit) &
-                                    segReads$yF <= (b - minLimit)]) > 4 &
+                                    segReads$yF <= (b - minLimit)]) >= minReads &
                 length(segReads$yR[segReads$yR >= (a + minLimit) &
-                                    segReads$yR <= (b + maxLimit)]) > 4) {
+                                    segReads$yR <= (b + maxLimit)]) >= minReads) {
                 ## Calculate the new position of the nucleosome
                 newMu[cpt] <- (mean(segReads$yF[segReads$yF >= (a - maxLimit) &
                                     segReads$yF <= (b - minLimit)]) +
