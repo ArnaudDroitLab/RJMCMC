@@ -7,7 +7,7 @@ nucleosomes, from the same chromosome,
 identified by the \code{\link{rjmcmc}} function}
 \usage{
 postMerge(startPosForwardReads, startPosReverseReads, resultRJMCMC,
-  extendingSize, chrLength)
+  extendingSize, chrLength, minReads = 5)
 }
 \arguments{
 \item{startPosReverseReads}{a \code{vector} of \code{numeric}, the
@@ -27,6 +27,11 @@ be treated as an integer.}
 indicating the lenght of the current chromosome. The length of the
 chromosome is used to ensure that the consensus positions are all
 located inside the chromosome.}
+
+\item{minReads}{a positive \code{integer} or \code{numeric}, the minimum
+number of reads in a potential canditate region. Non-integer values
+of \code{minReads} will be casted to \code{integer} and truncated towards
+zero. Default: 5.}
 
 \item{startPosFrowardReads}{a \code{vector} of \code{numeric}, the
 start position of all the forward reads.}
