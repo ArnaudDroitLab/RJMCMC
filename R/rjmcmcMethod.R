@@ -212,10 +212,10 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     for (i in 2:nbrIterations) {
         ## List of current values that is going to be passed to sub-functions
         varTilde <- list()
-
+        u <- runif(1)
         if (kValue == 1L) {
             ## CASE : Number of nucleosomes equal to 1
-            u <- runif(1)
+
 
             if (u <= 0.5) {
                 ## Birth move in case k=1
@@ -233,7 +233,6 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
         }  ## end CASE : Number of nucleosomes equal to 1
         else {
             ## CASE : Number of nucleosomes larger than 1
-            u<-runif(1)
 
             if (u <= Dk(kValue, lambda, kMax)) {
                 ## Death move
