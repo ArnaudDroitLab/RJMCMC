@@ -1346,20 +1346,18 @@ mhMoveK1 <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
         rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
                             paramValues$y)/priorMuDensity(muValue[1:kValue],
                             paramValues$y))
-        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k],
-                            alphatilde)/ddirichlet(wValue[1:kValue], alpha))
         rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
                             varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
                             paramValues$nbrReads, wValue[1:kValue])
-        rap.priork    <- 1
-        rap.propmu    <- 1
-        rap.propw     <- (ddirichlet(wValue[1:kValue], alphaprop)/
-                            ddirichlet(varTilde$w[1:varTilde$k],
-                            alphaproptilde))
 
-        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu * rap.propw
-        varTilde$rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
+        rap.prior     <- rap.priormu * rap.priorenne
+
+#       In Samb et al. rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
+#       but rap.prop = rap.propmu = 1
+#       so rho  <- min(1, rap.vrais * (rap.prior))
+#       we removed : rap.priork = 1
+
+        varTilde$rho  <- min(1, rap.vrais * (rap.prior))
 
     }
 
@@ -1655,18 +1653,19 @@ mhMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
                             paramValues$y)/
                             priorMuDensity(muValue[1:kValue], paramValues$y))
-        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k], alphatilde)/
-                            ddirichlet(wValue[1:kValue], alpha))
+
         rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
                         varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
                         paramValues$nbrReads, wValue[1:kValue])
-        rap.priork    <- 1
-        rap.propmu    <- 1
-        rap.propw     <- (ddirichlet(wValue[1:kValue], alphaprop)/
-                        ddirichlet(varTilde$w[1:varTilde$k], alphaproptilde))
-        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu  * rap.propw
-        varTilde$rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
+
+        rap.prior     <- rap.priormu * rap.priorenne
+
+#       In Samb et al. rho  <- min(1, rap.vrais * (rap.prior) * (rap.prop))
+#       but rap.prop = rap.propmu = 1
+#       so rho  <- min(1, rap.vrais * (rap.prior))
+#       we removed : rap.priork = 1
+
+        varTilde$rho  <- min(1, rap.vrais * (rap.prior))
 
     }
 
