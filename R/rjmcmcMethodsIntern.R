@@ -1953,8 +1953,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         rap.priormu    <- (priorMuDensity(varTilde$mu[1:varTilde$k],
                             paramValues$y)/priorMuDensity(muValue[1:kValue],
                             paramValues$y))
-        rap.priorw     <- (ddirichlet(varTilde$w[1:varTilde$k], alphatilde)/
-                                ddirichlet(wValue[1:kValue], alpha))
+
         rap.priorenne  <- dmultinom(ennetilde, paramValues$nbrReads,
                                 varTilde$w[1:varTilde$k])/
                                 dmultinom(dimValue[1:kValue],
@@ -1962,12 +1961,9 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
         rap.priork     <- (dpois(varTilde$k, paramValues$lambda)/
                                dpois(kValue, paramValues$lambda))
         rap.propmu     <- (qalloc)
-        rap.propw      <- (ddirichlet(varTilde$w[1:varTilde$k],
-                                alphaproptilde)/ddirichlet(wValue[1:kValue],
-                                alphaprop))
 
-        rap.prior      <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop       <- rap.propmu  * rap.propw
+        rap.prior      <- rap.priormu * rap.priorenne * rap.priork
+        rap.prop       <- rap.propmu
 
         varTilde$rho  <- min(1, (rap.vrais) * (rap.prior) * (rap.prop) *
                             (Bk(varTilde$k, paramValues$lambda,
