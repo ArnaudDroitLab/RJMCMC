@@ -653,7 +653,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         ennetilde               <- varTilde$dim[1:varTilde$k]
         enne <- rmultinom(1, paramValues$nbrReads, wValue[1:kValue])
 
-        #Rapport de vraisemblance
+        # likelihood ratio
 
         for (m in 1:kValue) {
             Kaf[ ,m] <- (varTilde$w[m] * (1/sqrt(varTilde$sigmaf[m])) *
@@ -717,8 +717,7 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
                             paramValues$y)/priorMuDensity(muValue[1:kValue],
                             paramValues$y))
-        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k],
-                            alphatilde)/ddirichlet(wValue[1:kValue], alpha))
+
         rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
                             varTilde$w[1:varTilde$k])/
                             dmultinom(dimValue[1:kValue],
@@ -726,12 +725,10 @@ birthMoveK1 <- function(paramValues, kValue, muValue, sigmafValue,
         rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/
                             dpois(kValue, paramValues$lambda))
         rap.propmu    <- (1/(qalloc))
-        rap.propw     <- (ddirichlet(wValue[1:kValue], alphaprop)/
-                            ddirichlet(varTilde$w[1:varTilde$k],
-                            alphaproptilde))
 
-        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu  * rap.propw
+
+        rap.prior     <- rap.priormu * rap.priorenne * rap.priork
+        rap.prop      <- rap.propmu
 
         varTilde$rho  <- min(1, (rap.vrais) * (rap.prior) * (rap.prop ) *
                             (Dk(varTilde$k, paramValues$lambda,
@@ -1002,7 +999,7 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
                                             wValue[1:kValue])
         varTilde$w[1:varTilde$k] <- rdirichlet(1, alphaproptilde)
 
-        ### Rapport de vraisemblance ###
+        ### likelihood ratio
 
         for (m in 1:kValue) {
             Kaf[, m]<- (varTilde$w[m] *(1/sqrt(varTilde$sigmaf[m])) *
@@ -1066,21 +1063,17 @@ birthMove <- function(paramValues, kValue, muValue, sigmafValue, sigmarValue,
         rap.priormu   <- (priorMuDensity(varTilde$mu[1:varTilde$k],
                             paramValues$y)/priorMuDensity(muValue[1:kValue],
                             paramValues$y))
-        rap.priorw    <- (ddirichlet(varTilde$w[1:varTilde$k],
-                            alphatilde)/ddirichlet(wValue[1:kValue],
-                            alpha))
+
         rap.priorenne <- dmultinom(ennetilde, paramValues$nbrReads,
                         varTilde$w[1:varTilde$k])/dmultinom(dimValue[1:kValue],
                         paramValues$nbrReads, wValue[1:kValue])
         rap.priork    <- (dpois(varTilde$k, paramValues$lambda)/dpois(kValue,
                                                     paramValues$lambda))
         rap.propmu    <- (1/(qalloc))
-        rap.propw     <- (ddirichlet(wValue[1:kValue],
-                            alphaprop)/ddirichlet(varTilde$w[1:varTilde$k],
-                            alphaproptilde))
 
-        rap.prior     <- rap.priormu * rap.priorw * rap.priorenne * rap.priork
-        rap.prop      <- rap.propmu  * rap.propw
+
+        rap.prior     <- rap.priormu * rap.priorenne * rap.priork
+        rap.prop      <- rap.propmu
         varTilde$rho  <- min(1, (rap.vrais) * (rap.prior)  *  (rap.prop ) *
                             (Dk(varTilde$k, paramValues$lambda,
                             paramValues$kmax)/Bk(kValue, paramValues$lambda,
