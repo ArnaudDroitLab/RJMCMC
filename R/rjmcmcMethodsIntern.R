@@ -32,7 +32,8 @@
 #' @keywords internal
 Dk <- function(k, lambda, kMax = 30) {
     ifelse((k == 1 || k > kMax), 0,
-            0.5*min(1, dpois(k - 1, lambda)/dpois(k, lambda)))
+            0.5* min(1, k / lambda)) # min(1, dpois(k - 1, lambda)/dpois(k, lambda)))
+
 }
 
 
@@ -69,7 +70,7 @@ Dk <- function(k, lambda, kMax = 30) {
 #' @keywords internal
 Bk <- function(k, lambda, kMax = 30) {
     ifelse((k >= kMax), 0,
-            0.5 * min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
+            0.5 * min(1, lambda/ (k+1))) # min(1, dpois(k + 1, lambda) / dpois(k, lambda)))
 }
 
 
