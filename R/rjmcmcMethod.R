@@ -307,49 +307,53 @@ rjmcmc <- function(startPosForwardReads, startPosReverseReads,
     ## ATTENTION: Beware that the potential return of NA is not handled
     ## Getting the number of nucleosomes with the highest frequency
     km          <- elementWithHighestMode(as.integer(k))
-    kPositions  <- which(as.integer(k) == km)
+    result <- NA
 
-    mu_hat     <- colMeans(mu[kPositions, 1:km, drop = FALSE])
-    sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop = FALSE])
-    sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
-    w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
-    delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
-    df_hat     <- round(colMeans(df[kPositions, 1:km, drop = FALSE]))
+    if(!(is.na(km))){
+        kPositions  <- which(as.integer(k) == km)
 
-    # Getting 2.5% and 97.5% quantiles for each important data type
-    qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmaf <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qsigmar <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qdf     <- t(apply(df[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
-    qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
-                        FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        mu_hat     <- colMeans(mu[kPositions, 1:km, drop = FALSE])
+        sigmaf_hat <- colMeans(sigmaf[kPositions, 1:km, drop = FALSE])
+        sigmar_hat <- colMeans(sigmar[kPositions, 1:km, drop = FALSE])
+        w_hat      <- colMeans(w[kPositions, 1:km, drop = FALSE])
+        delta_hat  <- colMeans(delta[kPositions, 1:km, drop = FALSE])
+        df_hat     <- round(colMeans(df[kPositions, 1:km, drop = FALSE]))
 
-    # Create the final list
-    result <- list(
-        call    = cl,
-        K       = k,
-        k       = km,
-        mu      = mu_hat,
-        sigmaf  = sigmaf_hat,
-        sigmar  = sigmar_hat,
-        delta   = delta_hat,
-        df      = df_hat,
-        w       = w_hat,
-        qmu     = qmu,
-        qsigmaf = qsigmaf,
-        qsigmar = qsigmar,
-        qdelta  = qdelta,
-        qdf     = qdf,
-        qw      = qw
-    )
+        # Getting 2.5% and 97.5% quantiles for each important data type
+        qmu     <- t(apply(mu[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        qsigmaf <- t(apply(sigmaf[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        qsigmar <- t(apply(sigmar[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        qdelta  <- t(apply(delta[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        qdf     <- t(apply(df[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
+        qw      <- t(apply(w[kPositions, 1:km, drop = FALSE], MARGIN = 2,
+                            FUN = quantile, probs = c(0.025, 0.975), na.rm = TRUE))
 
-    class(result)<-"rjmcmcNucleosomes"
+        # Create the final list
+        result <- list(
+            call    = cl,
+            K       = k,
+            k       = km,
+            mu      = mu_hat,
+            sigmaf  = sigmaf_hat,
+            sigmar  = sigmar_hat,
+            delta   = delta_hat,
+            df      = df_hat,
+            w       = w_hat,
+            qmu     = qmu,
+            qsigmaf = qsigmaf,
+            qsigmar = qsigmar,
+            qdelta  = qdelta,
+            qdf     = qdf,
+            qw      = qw
+        )
+
+        class(result)<-"rjmcmcNucleosomes"
+    }
 
     return(result)
 }
