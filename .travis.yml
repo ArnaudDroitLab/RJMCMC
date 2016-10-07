@@ -20,10 +20,7 @@ warnings_are_errors: true
 
 # Package dependencies from CRAN
 r_binary_packages:
-  - RUnit
-  - knitr
-  - rmarkdown
-  - MCMCpack
+  - covr
 
 # Package dependencies from Bioconductor
 bioc_packages:
@@ -36,7 +33,6 @@ bioc_packages:
 
 # Package dependencies from github
 r_github_packages:
-  - jimhester/covr
   - arnauddroitlab/consensusseeker
   - arnauddroitlab/nucleoSim
 
