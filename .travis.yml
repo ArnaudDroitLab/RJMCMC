@@ -22,10 +22,5 @@ warnings_are_errors: true
 r_binary_packages:
   - covr
 
-# Package dependencies from github
-r_github_packages:
-  - arnauddroitlab/consensusseeker
-  - arnauddroitlab/nucleoSim
-
 after_success:
   - Rscript -e 'library(covr);codecov()'
