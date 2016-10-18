@@ -93,7 +93,7 @@ A synthetic nucleosome sample containing 100 nucleosomes (80
 well-positioned + 20 fuzzy) has been created using the 
 Bioconductor package `r Biocpkg("nucleoSim")`.
 
-```{r createSample, collapse=TRUE, message=FALSE}
+```{r createSample, fig.height = 5, collapse=TRUE, message=FALSE}
 ## Load nucleoSim package
 library(nucleoSim)
 
@@ -111,10 +111,8 @@ val.offset    <- 10000  ### The number of bases used to offset all nucleosomes a
 
 ## Create sample using a Normal distribution
 sample <- nucleoSim::syntheticNucReadsFromDist(wp.num=val.num,
-                                    wp.del=val.del,
-                                    wp.var=val.var,
-                                    fuz.num=val.del,
-                                    fuz.var=val.fuz.var,
+                                    wp.del=val.del, wp.var=val.var,
+                                    fuz.num=val.del, fuz.var=val.fuz.var,
                                     max.cover=val.max.cover,
                                     nuc.len=val.nuc.len,
                                     len.var=val.len.var,
@@ -264,7 +262,7 @@ resultsAllMerged$k
 
 ## Use the post-treatment function
 resultsPostTreatment <- RJMCMC::postTreatment(startPosForwardReads =  allReadsForward$start, 
-                                    startPosReverseReads = allReadsReverse$start, 
+                                    startPosReverseReads = allReadsReverse$end, 
                                     resultRJMCMC = resultsAllMerged,
                                     chrLength = max(allReadsForward$start, 
                                                         allReadsReverse$start))
