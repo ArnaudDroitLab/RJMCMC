@@ -47,4 +47,3 @@ mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5), dfr = c(5L, 3L, 12L, 4L))
 Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
-

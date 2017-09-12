@@ -48,4 +48,3 @@ result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
 Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

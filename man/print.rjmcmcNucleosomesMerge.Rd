@@ -36,4 +36,3 @@ result
 \author{
 Astrid Deschenes
 }
-

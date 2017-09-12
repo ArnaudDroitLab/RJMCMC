@@ -112,4 +112,3 @@ result$mu
 \author{
 Rawane Samb, Pascal Belleau, Astrid Deschênes
 }
-

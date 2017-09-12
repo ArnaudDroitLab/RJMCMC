@@ -70,4 +70,3 @@ postResult
 Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

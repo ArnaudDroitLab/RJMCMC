@@ -32,4 +32,3 @@ RJMCMC:::validateDirectoryParameters(directory)
 Astrid Deschenes
 }
 \keyword{internal}
-

@@ -41,4 +41,3 @@ mu = c(12L, 15L, 25L, 44L), sigma = c(4, 7, 6, 5))
 Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
-

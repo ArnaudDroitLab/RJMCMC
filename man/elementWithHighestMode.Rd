@@ -36,4 +36,3 @@ RJMCMC:::elementWithHighestMode(data02)
 Rawane Samb, Astrid Deschenes
 }
 \keyword{internal}
-

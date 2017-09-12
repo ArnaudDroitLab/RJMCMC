@@ -45,4 +45,3 @@ RJMCMC:::tnormale(2000, 30, 1000, 30000)
 Rawane Samb
 }
 \keyword{internal}
-

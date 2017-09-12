@@ -40,9 +40,6 @@ mu <- c(10000L, 26700L, 45000L)
 density <- RJMCMC:::priorMuDensity(mu, readPositions)
 
 }
-\author{
-Rawane Samb, Astrid Deschenes
-}
 \references{
 Samb R., Khadraoui K., Belleau P., Deschenes A., Lakhal L.
 and Droit A. Using
@@ -52,5 +49,7 @@ profiling. Statistical Applications in Genetics and Molecular Biology.
 Volume 14, Issue 6, Pages 517-532, ISSN (Online) 1544-6115,
 ISSN (Print) 2194-6302, DOI: 10.1515/sagmb-2014-0098, December 2015
 }
+\author{
+Rawane Samb, Astrid Deschenes
+}
 \keyword{internal}
-

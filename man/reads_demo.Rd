@@ -38,4 +38,3 @@ rjmcmc(startPosForwardReads = reads_demo$readsForward,
 }
 }
 \keyword{datasets}
-

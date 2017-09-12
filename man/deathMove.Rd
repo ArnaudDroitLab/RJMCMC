@@ -128,4 +128,3 @@ result$mu[1:2]
 Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

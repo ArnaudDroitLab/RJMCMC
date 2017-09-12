@@ -34,4 +34,3 @@ RJMCMC:::validateRDSFilesParameters(c(file_test))
 Astrid Deschenes
 }
 \keyword{internal}
-

@@ -41,4 +41,3 @@ RJMCMC:::Dk(k = 31L, lambda = 2L, kMax = 30L)
 Rawane Samb
 }
 \keyword{internal}
-

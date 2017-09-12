@@ -125,4 +125,3 @@ length(reads_demo$readsReverse), rep(0, 29)))
 Rawane Samb, Pascal Belleau, Astrid Deschenes
 }
 \keyword{internal}
-

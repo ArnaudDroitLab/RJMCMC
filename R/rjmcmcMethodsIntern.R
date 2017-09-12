@@ -2014,6 +2014,7 @@ deathMove <- function(paramValues , kValue, muValue, sigmafValue, sigmarValue,
 #' ## Merging nucleosomes informations from the two files
 #' result <- RJMCMC:::mergeAllRDSFiles(c(file_100, file_101))
 #'
+#' @importFrom methods is
 #' @author Pascal Belleau, Astrid Deschenes
 #' @keywords internal
 #'
@@ -2186,6 +2187,7 @@ validateDirectoryParameters <- function(directory) {
 #' 72559, 72546), resultRJMCMC = NA, extendingSize = 74, chrLength = 10000000)}
 #'
 #' @author Astrid Deschenes
+#' @importFrom methods is
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom S4Vectors isSingleInteger isSingleNumber
 #' @keywords internal

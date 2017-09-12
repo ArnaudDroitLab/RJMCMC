@@ -26,4 +26,3 @@ print(RJMCMC_result)
 \author{
 Astrid Deschenes
 }
-

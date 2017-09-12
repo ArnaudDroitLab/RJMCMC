@@ -69,4 +69,3 @@ maxInterval = 200, adaptIterationsToReads = TRUE)}
 Astrid Deschenes
 }
 \keyword{internal}
-
